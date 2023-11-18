@@ -95,7 +95,17 @@ class RayCasting{
             this.ctx.stroke(255, 255, 0)
             this.ctx.line(ox*100, oy*100, 100*ox+100*depth*cosA, 100*oy+100*depth*sinA)
             
-         
+            // proyection
+            const projHeight = SCREEN_DIST / (depth+0.0001)
+            
+            // Draw walls
+            const color = (255/(1+depth**5*0.00002))*3
+            console.log(color)
+            this.ctx.noStroke()
+            this.ctx.fill(color)
+            this.ctx.rect(ray*SCALE, HALF_HEIGHT - Math.floor(projHeight/2), SCALE, projHeight)
+
+
             rayAngle += DELTA_ANGLE
         }
     }

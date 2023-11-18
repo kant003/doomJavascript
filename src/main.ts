@@ -32,7 +32,7 @@ const _app = new p5((p5Instance:p5.p5InstanceExtensions) => {
     rayCasting.update()
 
     player.draw()
-    map.drawMap()
+    //map.drawMap()
     p.text(`FPS: ${this.getTargetFrameRate()}`, 10, 10)
 
     
