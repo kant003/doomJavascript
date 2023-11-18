@@ -92,9 +92,12 @@ class RayCasting{
             depth = depthHorz
             }
             // DRAW debug
-            this.ctx.stroke(255, 255, 0)
-            this.ctx.line(ox*100, oy*100, 100*ox+100*depth*cosA, 100*oy+100*depth*sinA)
+            //this.ctx.stroke(255, 255, 0)
+            //this.ctx.line(ox*100, oy*100, 100*ox+100*depth*cosA, 100*oy+100*depth*sinA)
             
+            // remove fish eye
+            depth *= Math.cos(this.player.angle - rayAngle)
+
             // proyection
             const projHeight = SCREEN_DIST / (depth+0.0001)
             

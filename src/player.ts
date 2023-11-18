@@ -65,11 +65,6 @@ class Player {
     if(this.checkWall(Math.floor(this.x),Math.floor(this.y+dy))){
           this.y += dy 
     }
-    //console.log(Math.floor(this.x),Math.floor(this.y))
-    //console.log(this.map.getValue(3,2))
-    //console.log(this.map.worldMap[Math.floor(this.x)][Math.floor(this.y)])
-   // this.x+=dx
-   // this.y+=dy
 }
   draw(){
     this.ctx.fill(255,255,255)
