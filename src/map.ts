@@ -70,6 +70,9 @@ class Mapa {
     }
 
     getValue(x:number,y:number){
+        if(x<0 || x>=this.worldMap[0].length || y<0 || y>=this.worldMap.length){
+            return 0
+        }
         return this.worldMap[y][x]
     }
 
