@@ -23,19 +23,19 @@ const _app = new p5((p5Instance:p5.p5InstanceExtensions) => {
     p.background(0);
     p.fill(205);
     //p.rect(x, y, 50, 50);
-    p.text(`FPS: ${this.getTargetFrameRate()}`, 10, 10)
-
+    
     player.update()
 
     player.draw()
 
-   // map.drawMap()
+    map.drawMap()
+    p.text(`FPS: ${this.getTargetFrameRate()}`, 10, 10)
 
     
   };
 
   const newGame = ()=>{
     map = new Mapa(p)
-    player = new Player(p)
+    player = new Player(p, map)
   } 
 }, document.getElementById('app')!);

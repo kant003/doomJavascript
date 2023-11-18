@@ -37,8 +37,9 @@ const mini_map = [
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 ]
 
+const scale =100
 class Mapa {
-    worldMap: number[][];
+    worldMap: (number)[][];
     ctx: p5.p5InstanceExtensions
     constructor(ctx: p5.p5InstanceExtensions) {
         this.worldMap = []
@@ -54,15 +55,22 @@ class Mapa {
             }
           }
 
-        mini_map.forEach((row, i) => {
-            row.forEach((col, j) => {
-                if (col) {
-                    this.worldMap[i][j] = col
+        mini_map.forEach((col, i) => {
+            col.forEach((row, j) => {
+                if (row) {
+                    this.worldMap[i][j] = row
+                    //sthis.worldMap["d"] = col
                 }
             })
         })
         console.log(this.worldMap)
+    
+       // console.log(this.worldMap)
                   
+    }
+
+    getValue(x:number,y:number){
+        return this.worldMap[y][x]
     }
 
     drawMap() {
@@ -70,10 +78,16 @@ class Mapa {
             row.forEach((col, j) => {
                 if (col) {
                     this.ctx.fill(45)
-                    this.ctx.rect(j * 100, i * 100, 100, 100)
+                    if(col == 1){ this.ctx.fill(255,0,0)}   
+                    if(col == 2){ this.ctx.fill(0,255,0)}
+                    if(col == 3){ this.ctx.fill(0,0,255)}
+                    if(col == 4){ this.ctx.fill(255,255,0)}
+
+                    this.ctx.rect(j * scale, i * scale, scale, scale)
                 }
             })
         }) 
+
     }
 }
 

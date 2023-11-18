@@ -1,14 +1,18 @@
 import p5 from "p5";
 
 import { RES, PLAYER_POS, PLAYER_ANGLE, PLAYER_SPEED,PLAYER_ROT_SPEED } from "./settings";
+import Mapa from "./map";
 
+const scale = 100;
 class Player {
   ctx: p5.p5InstanceExtensions;
+  map: Mapa;
   x: number = PLAYER_POS.x;
   y: number = PLAYER_POS.y;
   angle: number = PLAYER_ANGLE;
-  constructor(ctx: p5.p5InstanceExtensions) {
+  constructor(ctx: p5.p5InstanceExtensions, map:Mapa) {
     this.ctx = ctx;
+    this.map = map;
   }
 
   movement() {
@@ -18,32 +22,28 @@ class Player {
     const speed_sin = speed * sin_a;
     const speed_cos = speed * cos_a;
     let dx = 0, dy = 0;
-    console.log(this.ctx.keyCode)  
-   // if (this.ctx.keyIsPressed === true) {
       if (this.ctx.keyIsDown(87)) {
         dx += speed_cos;
         dy += speed_sin;
-        console.log('w')
     }
     if (this.ctx.keyIsDown(83)) {
         dx += -speed_cos;
         dy += -speed_sin;
-        console.log('r')
     }
     if (this.ctx.keyIsDown(65)) {
         dx += speed_sin;
         dy += -speed_cos;
-        console.log('y')
     }
     if (this.ctx.keyIsDown(68)) {
         dx += -speed_sin;
         dy += speed_cos;
-        console.log('h')
       }
    // }
-    this.x += dx;
-    this.y += dy;
-
+    //this.x += dx;
+    //this.y += dy;
+   // console.log(this.x+dx,this.y+dy)
+   // console.log(this.map.worldMap[this.x | 0][this.y | 0])
+    this.checkWallCollision(dx,dy)
     if (this.ctx.keyIsPressed === true) {
       if (this.ctx.keyCode === this.ctx.LEFT_ARROW) {
         this.angle -= PLAYER_ROT_SPEED*this.ctx.deltaTime ;
@@ -52,21 +52,34 @@ class Player {
         this.angle += PLAYER_ROT_SPEED*this.ctx.deltaTime ;
       }
     }
-    //console.log(this.angle)
     this.angle %= Math.PI * 2;
-    //console.log(this.x, this.y, this.angle)
 
   }
+  checkWall(x: number,y: number){
+     return !this.map.getValue(x,y) 
+  }
+  checkWallCollision(dx: number,dy: number){
+    if(this.checkWall(Math.floor(this.x+dx),Math.floor(this.y))){
+        this.x += dx
+    }
+    if(this.checkWall(Math.floor(this.x),Math.floor(this.y+dy))){
+          this.y += dy 
+    }
+    //console.log(Math.floor(this.x),Math.floor(this.y))
+    //console.log(this.map.getValue(3,2))
+    //console.log(this.map.worldMap[Math.floor(this.x)][Math.floor(this.y)])
+   // this.x+=dx
+   // this.y+=dy
+}
   draw(){
     this.ctx.fill(255,255,255)
     this.ctx.stroke(255,255,255)
-    this.ctx.line(this.x*100,
-        this.y*100,
-        this.x*100+RES.width*Math.cos(this.angle),
-        this.y*100+RES.heigth*Math.sin(this.angle) )
+    this.ctx.line(this.x*scale,
+        this.y*scale,
+        this.x*scale+RES.width*Math.cos(this.angle),
+        this.y*scale+RES.heigth*Math.sin(this.angle) )
     // TODO
-         this.ctx.circle(this.x*100,this.y*100,15)
-         this.ctx.circle(this.x,this.y,40)
+         this.ctx.circle(this.x*scale,this.y*scale,scale/2)
   }
   update() {
     this.movement();
