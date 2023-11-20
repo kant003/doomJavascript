@@ -2,6 +2,7 @@ import type p5 from 'p5'
 
 import { SCALE, TEXTURE_SIZE, RES } from './settings'
 import type Mapa from './map'
+import { type ObjectToRenderType } from './raycasting'
 
 class ObjectRenderer {
   wallTextures: p5.Image[]
@@ -15,17 +16,18 @@ class ObjectRenderer {
   //  this.rayTracing = rayTracing
   }
 
-  draw (objectToRender: Array<{ depth: number, wallColumn: p5.Image, wallPos: { x: number, y: number } }> = []): void {
+  draw (objectToRender: ObjectToRenderType[] = []): void {
     this.renderGameObjects(objectToRender)
   }
 
-  renderGameObjects (objectToRender: Array<{ depth: number, wallColumn: p5.Image, wallPos: { x: number, y: number }, projHeight: number }> = []): void {
+  renderGameObjects (objectToRender: ObjectToRenderType[] = []): void {
     // const listObjects = this.rayTracing.objects_to_render
     const listObjects = objectToRender
     listObjects.forEach(object => {
-      const { depth, wallColumn: image, wallPos: pos, projHeight } = object
+      const { wallColumn: image, wallPos: pos, projHeight } = object
       // console.log(object)
-      this.ctx.image(image, pos.x, pos.y, SCALE, projHeight<RES.heigth?projHeight:RES.heigth)
+      this.ctx.image(image, pos.x, pos.y, SCALE, projHeight < RES.heigth ? projHeight : RES.heigth)
+      // this.ctx.image(image, pos.x, pos.y)
     })
   }
 
@@ -45,7 +47,7 @@ class ObjectRenderer {
 
   scale (): void {
     this.wallTextures?.forEach(img => {
-      img.resize(255, 0)
+      img.resize(TEXTURE_SIZE, TEXTURE_SIZE)
     })
     // this.img?.resize(255, 0);
   }

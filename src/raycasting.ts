@@ -16,13 +16,26 @@ import type Mapa from './map'
 import type Player from './player'
 import type ObjectRender from './objectRenderer'
 
+interface RayCastingResult {
+  depth: number
+  projHeight: number
+  texture: number
+  offset: number
+}
+interface ObjectToRenderType {
+  depth: number
+  wallColumn: p5.Image
+  wallPos: { x: number, y: number }
+  projHeight: number
+}
+
 class RayCasting {
   ctx: p5.p5InstanceExtensions
   map: Mapa
   player: Player
 
-  rayCastingResult: Array<{ depth: number, projHeight: number, texture: number, offset: number }> = []
-  objects_to_render: Array<{ depth: number, wallColumn: p5.Image, wallPos: { x: number, y: number }, projHeight: number }> = []
+  rayCastingResult: RayCastingResult[] = []
+  objects_to_render: ObjectToRenderType[] = []
   textures: p5.Image[]
   cont = 1
 
@@ -109,17 +122,21 @@ class RayCasting {
     this.rayCastingResult.forEach((value, ray) => {
       const { depth, projHeight, texture, offset } = value
 
-        let wallColumn,wallPos
-        if(projHeight<RES.heigth){
-          wallColumn= this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
-          wallPos = { x: (ray * SCALE), y: HALF_HEIGHT - Math.floor(projHeight / 2) }
+      let wallColumn, wallPos
+      if (projHeight < RES.heigth) {
+        wallColumn = this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
+        wallPos = { x: (ray * SCALE), y: HALF_HEIGHT - Math.floor(projHeight / 2) }
+      } else {
+        const textureHeigth = TEXTURE_SIZE * RES.heigth / projHeight
+        wallColumn = this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), HALF_TEXTURE_SIZE - Math.floor(textureHeigth / 2), SCALE, textureHeigth)
+        wallPos = { x: (ray * SCALE), y: 0 }
+      }
 
-        }else{
-          const textureHeigth= TEXTURE_SIZE*RES.heigth/projHeight
-          wallColumn= this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), HALF_TEXTURE_SIZE-Math.floor(textureHeigth/2), SCALE, textureHeigth)
-          wallPos = { x: (ray * SCALE), y: 0 }
-
-        }
+      this.ctx.noFill()
+      this.ctx.stroke(255, 0, 0)
+      // if (ray === this.cont) {
+      // this.ctx.rect(ray * SCALE, HALF_HEIGHT - Math.floor(projHeight / 2), SCALE, projHeight)
+      // }
       // console.log(value)
       // const subImagen = this.textures[texture]
 
@@ -214,3 +231,4 @@ class RayCasting {
 }
 
 export default RayCasting
+export type { ObjectToRenderType }

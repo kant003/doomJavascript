@@ -1,5 +1,5 @@
 import type p5 from 'p5'
-import { RES, PLAYER_POS, PLAYER_ANGLE, PLAYER_SPEED, PLAYER_ROT_SPEED } from './settings'
+import { RES, PLAYER_POS, PLAYER_ANGLE, PLAYER_SPEED, PLAYER_ROT_SPEED, PLAYER_SIZE_SCALE } from './settings'
 import type Mapa from './map'
 
 const scale = 100
@@ -55,7 +55,7 @@ class Player {
     this.angle %= Math.PI * 2
   }
 
-  rigth(): void{
+  rigth (): void {
     this.angle += PLAYER_ROT_SPEED * this.ctx.deltaTime
   }
 
@@ -64,10 +64,11 @@ class Player {
   }
 
   checkWallCollision (dx: number, dy: number): void {
-    if (this.checkWall(Math.floor(this.x + dx), Math.floor(this.y))) {
+    const scale = PLAYER_SIZE_SCALE / this.ctx.deltaTime
+    if (this.checkWall(Math.floor(this.x + dx * scale), Math.floor(this.y))) {
       this.x += dx
     }
-    if (this.checkWall(Math.floor(this.x), Math.floor(this.y + dy))) {
+    if (this.checkWall(Math.floor(this.x), Math.floor(this.y + dy * scale))) {
       this.y += dy
     }
   }

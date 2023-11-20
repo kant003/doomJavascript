@@ -1,6 +1,6 @@
 import './style.css'
 import p5 from 'p5'
-import { RES, FPS } from './settings'
+import { RES, FPS, MOUSE_BORDER_LEFT, MOUSE_BORDER_RIGHT, HALF_HEIGHT, HALF_WIDTH, MOUSE_SENSIBILITY, MOUSE_MAX_REL } from './settings'
 import Mapa from './map'
 import Player from './player'
 import RayCasting from './raycasting'
@@ -9,8 +9,8 @@ import ObjectRenderer from './objectRenderer'
 const _app = new p5((p5Instance: p5.p5InstanceExtensions) => {
   const p = p5Instance as unknown as p5
 
-  const x = 100
-  const y = 100
+  // const x = 100
+  // const y = 100
   let map: Mapa
   let player: Player
   let rayCasting: RayCasting
@@ -18,7 +18,7 @@ const _app = new p5((p5Instance: p5.p5InstanceExtensions) => {
 
   p.setup = function setup () {
     p.createCanvas(RES.width, RES.heigth)
-    // p.frameRate(FPS)
+    p.frameRate(FPS)
     newGame()
     objectRenderer.scale()
   }
@@ -59,6 +59,16 @@ const _app = new p5((p5Instance: p5.p5InstanceExtensions) => {
       player.rigth()
     } */
     // return false
+  }
+  p.mouseMoved = function mouseMoved () {
+    const mx = p.mouseX
+    if (mx < MOUSE_BORDER_LEFT || mx > MOUSE_BORDER_RIGHT) {
+      p.mouseX = HALF_WIDTH
+      p.mouseX = HALF_HEIGHT
+    }
+    // let rel = p.pmouseX
+    const rel = Math.max(-MOUSE_MAX_REL, Math.min(MOUSE_MAX_REL, p.mouseX - p.pmouseX))
 
+    player.angle += rel * MOUSE_SENSIBILITY * p.deltaTime
   }
 }, document.getElementById('app')!)
