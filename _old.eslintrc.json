@@ -1,0 +1,20 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": ["standard-with-typescript",
+    "plugin:jest-dom/recommended",
+    "plugin:prettier/recommended"],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "script"
+    },
+    "rules": {
+        "prettier/prettier": "warn"
+    },
+    "plugins": ["jest", "testing-library", "prettier"],
+
+}
