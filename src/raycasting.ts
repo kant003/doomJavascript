@@ -8,7 +8,9 @@ import {
   NUM_RAYS,
   SCALE,
   SCREEN_DIST,
-  TEXTURE_SIZE
+  TEXTURE_SIZE,
+  RES,
+  HALF_TEXTURE_SIZE
 } from './settings'
 import type Mapa from './map'
 import type Player from './player'
@@ -52,7 +54,6 @@ class RayCasting {
         // const v = this.map?.worldMap[tileHorzX][tileHorzY]
         // textureHor = v ?? 0
         textureHor = this.map?.worldMap[tileHorzX][tileHorzY] ?? 0
-        textureHor = 0
         break
       }
       xHorz += dx
@@ -82,7 +83,6 @@ class RayCasting {
         // const v = this.map.worldMap[tileVertX][tileVertY]
         // textureVert = v ?? 0
         textureVert = this.map.worldMap[tileVertX][tileVertY] ?? 0
-        textureVert = 0
         break
       }
       xVert += dx
@@ -108,18 +108,26 @@ class RayCasting {
     }
     this.rayCastingResult.forEach((value, ray) => {
       const { depth, projHeight, texture, offset } = value
-      // console.log(ray)
-      // if (ray !== this.cont) { return }
-      this.ctx.text(this.cont, 100, 90)
 
+        let wallColumn,wallPos
+        if(projHeight<RES.heigth){
+          wallColumn= this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
+          wallPos = { x: (ray * SCALE), y: HALF_HEIGHT - Math.floor(projHeight / 2) }
+
+        }else{
+          const textureHeigth= TEXTURE_SIZE*RES.heigth/projHeight
+          wallColumn= this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), HALF_TEXTURE_SIZE-Math.floor(textureHeigth/2), SCALE, textureHeigth)
+          wallPos = { x: (ray * SCALE), y: 0 }
+
+        }
       // console.log(value)
       // const subImagen = this.textures[texture]
 
-      const subImagen = this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
+      // const subImagen = this.textures[texture].get(offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
       // const subImagen = this.textures[texture].get(100, 0, 20, TEXTURE_SIZE)
-      const wallColumn = subImagen
+      // const wallColumn = subImagen
       // wallColumn.resize(SCALE, projHeight)
-      const wallPos = { x: (ray * SCALE), y: HALF_HEIGHT - Math.floor(projHeight / 2) }
+      // const wallPos = { x: (ray * SCALE), y: HALF_HEIGHT - Math.floor(projHeight / 2) }
       this.objects_to_render.push({ depth, wallColumn, wallPos, projHeight })
     })
   }

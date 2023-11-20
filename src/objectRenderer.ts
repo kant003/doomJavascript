@@ -1,8 +1,7 @@
 import type p5 from 'p5'
 
-import { SCALE, TEXTURE_SIZE } from './settings'
+import { SCALE, TEXTURE_SIZE, RES } from './settings'
 import type Mapa from './map'
-import type RayCasting from './raycasting'
 
 class ObjectRenderer {
   wallTextures: p5.Image[]
@@ -26,7 +25,7 @@ class ObjectRenderer {
     listObjects.forEach(object => {
       const { depth, wallColumn: image, wallPos: pos, projHeight } = object
       // console.log(object)
-      this.ctx.image(image, pos.x, pos.y, SCALE, projHeight)
+      this.ctx.image(image, pos.x, pos.y, SCALE, projHeight<RES.heigth?projHeight:RES.heigth)
     })
   }
 

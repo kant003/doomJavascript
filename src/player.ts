@@ -55,6 +55,10 @@ class Player {
     this.angle %= Math.PI * 2
   }
 
+  rigth(): void{
+    this.angle += PLAYER_ROT_SPEED * this.ctx.deltaTime
+  }
+
   checkWall (x: number, y: number): boolean {
     return this.map.getValue(x, y) === null
   }

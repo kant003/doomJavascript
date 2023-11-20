@@ -18,7 +18,7 @@ const _app = new p5((p5Instance: p5.p5InstanceExtensions) => {
 
   p.setup = function setup () {
     p.createCanvas(RES.width, RES.heigth)
-    p.frameRate(FPS)
+    // p.frameRate(FPS)
     newGame()
     objectRenderer.scale()
   }
@@ -51,5 +51,14 @@ const _app = new p5((p5Instance: p5.p5InstanceExtensions) => {
     objectRenderer = new ObjectRenderer(p, map)
     objectRenderer.loadAllTextures()
     // this.loadImage('textures/1.png');
+  }
+
+  p.keyPressed = function keyPressed () {
+    console.log(p.keyCode)
+    /* if (p.keyCode === p.RIGHT_ARROW) {
+      player.rigth()
+    } */
+    // return false
+
   }
 }, document.getElementById('app')!)

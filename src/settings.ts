@@ -1,9 +1,9 @@
-const RES = { width: 1600, heigth: 900 }
+const RES = {width: 1600, heigth: 900}
 const HALF_WIDTH = Math.floor(RES.width / 2)
 const HALF_HEIGHT = Math.floor(RES.heigth / 2)
-const FPS = 60
+const FPS = 120
 
-const PLAYER_POS = { x: 1.5, y: 5 }
+const PLAYER_POS = {x: 1.5, y: 5}
 const PLAYER_ANGLE = 0
 const PLAYER_SPEED = 0.004
 const PLAYER_ROT_SPEED = 0.002
