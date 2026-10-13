@@ -40,6 +40,8 @@ let context: mobj_context_t | null = null;
 export function P_InitMobjContext(game: mobj_context_t): void { context = game; }
 function game(): mobj_context_t { if (!context) throw new Error('P_InitMobjContext: gameplay dependencies are not linked'); return context; }
 const owners = new WeakMap<thinker_t, mobj_t>();
+// Explicit equivalent of C's cast from the initial thinker field to its enclosing actor.
+export function P_MobjForThinker(thinker:thinker_t):mobj_t|null {return owners.get(thinker)??null;}
 export const itemrespawnque: mapthing_t[] = Array.from({length:ITEMQUESIZE},()=>({x:0,y:0,angle:0,type:0,options:0}));
 export const itemrespawntime = new Int32Array(ITEMQUESIZE);
 export let iquehead = 0, iquetail = 0;

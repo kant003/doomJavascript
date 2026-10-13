@@ -127,8 +127,8 @@
       "notes": "Interfaz Canvas; eventos devueltos al llamador."
     },
     "linuxdoom-1.10/info.h": {
-      "status": "partial",
-      "notes": "Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo."
+      "status": "adapted",
+      "notes": "Enums y structs completos; tablas en info.ts. Reexports runtime separados para evitar ciclos de inicialización."
     },
     "linuxdoom-1.10/d_event.h": {
       "status": "partial",
@@ -223,8 +223,8 @@
       "notes": "Interfaz del renderer de sprites. Prototipos obsoletos sin implementación en C no se añaden como stubs."
     },
     "linuxdoom-1.10/info.c": {
-      "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 29 acciones reales convertidas; 45 símbolos restantes pendientes."
+      "status": "adapted",
+      "notes": "138 nombres, 967 estados, 137 actores literales. Las 74 acciones tienen implementación y se enlazan explícitamente con identidad y firmas de uno/dos argumentos."
     },
     "linuxdoom-1.10/sounds.h": {
       "status": "partial",
@@ -259,8 +259,8 @@
       "notes": "30 funciones originales: estados psprite, selección/munición, subida/bajada, disparos, flashes y BFG spray. 20 acciones reales enlazables; hitscan, daño y sonido mediante contexto obligatorio."
     },
     "linuxdoom-1.10/p_enemy.c": {
-      "status": "partial",
-      "notes": "Ruido, tres acciones de recarga y seis acciones de dolor/muerte/explosión convertidas. Chase, percepción, movimiento, ataques y resto de comportamiento de enemigos pendientes."
+      "status": "adapted",
+      "notes": "64 funciones originales: percepción/chase, ataques, arch-vile, mancubus, lost souls, jefes y brain. 54 acciones reales; contexto obligatorio de juego, sonido, eventos de sectores y salida."
     },
     "linuxdoom-1.10/p_map.c": {
       "status": "adapted",
@@ -281,6 +281,10 @@
     "linuxdoom-1.10/d_englsh.h": {
       "status": "translated",
       "notes": "285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py."
+    },
+    "linuxdoom-1.10/p_spec.h": {
+      "status": "partial",
+      "notes": "Enums originales vldoor_e y floor_e para eventos de jefes. Resto de declaraciones y sistemas de sectores pendientes."
     }
   }
 }

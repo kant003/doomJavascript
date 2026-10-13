@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 33,
-    "partial": 11,
-    "pending": 76
+    "adapted": 36,
+    "partial": 9,
+    "pending": 75
   },
   "files": [
     {
@@ -454,8 +454,8 @@
       "source": "linuxdoom-1.10/info.c",
       "target": "src/linuxdoom-1.10/info.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.ts",
-      "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 29 acciones reales convertidas; 45 símbolos restantes pendientes.",
+      "status": "adapted",
+      "notes": "138 nombres, 967 estados, 137 actores literales. Las 74 acciones tienen implementación y se enlazan explícitamente con identidad y firmas de uno/dos argumentos.",
       "lines": 4670,
       "sha256": "e09631527669ee528bdae20a47be79e1cb33972b39964c33ac4814e1701a0949"
     },
@@ -463,8 +463,8 @@
       "source": "linuxdoom-1.10/info.h",
       "target": "src/linuxdoom-1.10/info.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.h.ts",
-      "status": "partial",
-      "notes": "Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo.",
+      "status": "adapted",
+      "notes": "Enums y structs completos; tablas en info.ts. Reexports runtime separados para evitar ciclos de inicialización.",
       "lines": 1340,
       "sha256": "3e68ee6cc13323e69cbcf208e9a0af7b13867bead49e66d765abefa5d914b0dd"
     },
@@ -634,8 +634,8 @@
       "source": "linuxdoom-1.10/p_enemy.c",
       "target": "src/linuxdoom-1.10/p_enemy.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_enemy.ts",
-      "status": "partial",
-      "notes": "Ruido, tres acciones de recarga y seis acciones de dolor/muerte/explosión convertidas. Chase, percepción, movimiento, ataques y resto de comportamiento de enemigos pendientes.",
+      "status": "adapted",
+      "notes": "64 funciones originales: percepción/chase, ataques, arch-vile, mancubus, lost souls, jefes y brain. 54 acciones reales; contexto obligatorio de juego, sonido, eventos de sectores y salida.",
       "lines": 2008,
       "sha256": "bfe1e3c039443d787e4a0dcb485720c9707f3381b69b00ad35f3e52796bfeec0"
     },
@@ -803,10 +803,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_spec.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_spec.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Enums originales vldoor_e y floor_e para eventos de jefes. Resto de declaraciones y sistemas de sectores pendientes.",
       "lines": 645,
       "sha256": "95d93e2e3b803126b0ecf6ea42de41d2bce7b2d09ea701e03992f0cc6dae22a3"
     },

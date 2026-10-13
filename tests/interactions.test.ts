@@ -21,21 +21,8 @@ import { M_ClearRandom, prndindex } from '../src/linuxdoom-1.10/m_random';
 import { sfxenum_t as SFX } from '../src/linuxdoom-1.10/sounds.h';
 import * as TEXT from '../src/linuxdoom-1.10/d_englsh.h';
 
-function init() {
-    const fixture=createMobjWorld(),{g}=fixture,p=g.players[0];p.maxammo.set(maxammo);p.weaponowned[WP.wp_fist]=p.weaponowned[WP.wp_pistol]=true;
-    p.mo=P_SpawnMobj(0,0,ONFLOORZ,MT.MT_PLAYER);p.mo.player=p;
-    const sounds:{origin:mobj_t|null;sound:SFX}[]=[],tactile:number[][]=[];let automapStops=0;
-    const context:interaction_context_t={gameskill:skill_t.sk_medium,gamemode:GameMode_t.commercial,netgame:false,deathmatch:0,players:g.players,consoleplayer:0,automapactive:false,
-        S_StartSound:(origin,sound)=>sounds.push({origin,sound}),AM_Stop:()=>{automapStops++;},I_Tactile:(...v)=>tactile.push(v)};
-    P_InitInteractionContext(context);P_InitEnemyContext({S_StartSound:context.S_StartSound,S_StartGlobalSound:sound=>context.S_StartSound(null,sound),gamemode:context.gamemode});
-    I_LinkStateActions({...weaponStateActions,...reloadStateActions,...deathStateActions},false);
-    P_InitMapContext({gamemap:1,P_DamageMobj,P_TouchSpecialThing,S_StartSound:context.S_StartSound,
-        P_CrossSpecialLine:()=>assert.fail('no crossing'),P_UseSpecialLine:()=>assert.fail('no use'),P_ShootSpecialLine:()=>assert.fail('no shoot switch')});
-    g.P_TryMove=P_TryMove;g.P_CheckPosition=P_CheckPosition;g.P_SlideMove=P_SlideMove;g.P_AimLineAttack=P_AimLineAttack;
-    Object.defineProperties(g,{linetarget:{get:()=>mapclip.linetarget},ceilingline:{get:()=>mapclip.ceilingline},attackrange:{get:()=>mapclip.attackrange}});
-    P_InitPspriteContext({gamemode:context.gamemode,get linetarget(){return mapclip.linetarget;},S_StartSound:context.S_StartSound,P_NoiseAlert,P_AimLineAttack,P_LineAttack,P_DamageMobj});
-    return {...fixture,p,a:p.mo,context,sounds,tactile,get automapStops(){return automapStops;}};
-}
+import { createCombatWorld as init } from './helpers/combat-world';
+
 function item(sprite:SPR,x=32*F):mobj_t {
     const type=mobjinfo.findIndex(i=>states[i.spawnstate].sprite===sprite);assert.ok(type>=0,SPR[sprite]);return P_SpawnMobj(x,0,ONFLOORZ,type);
 }
@@ -105,11 +92,11 @@ test('Player death stops automap, drops weapon and counts environment suicide',(
     const f=init(),{p,a,context}=f;context.automapactive=true;P_DamageMobj(a,null,null,1000);
     assert.equal(p.playerstate,PST.PST_DEAD);assert.equal(p.frags[0],1);assert.equal(a.flags&MF.MF_SOLID,0);assert.equal(p.damagecount,100);assert.equal(f.automapStops,1);
 });
-test('Pain and retargeting preserve reaction/threshold rules without inventing chase behavior',()=>{
+test('Pain and retargeting preserve reaction/threshold rules with explicit partial bindings',()=>{
     const {a}=init(),target=P_SpawnMobj(64*F,0,ONFLOORZ,MT.MT_POSSESSED);target.threshold=1;M_ClearRandom();P_DamageMobj(target,null,a,1);
     assert.equal(target.health,19);assert.strictEqual(target.state,states[target.info!.painstate]);assert.ok(target.flags&MF.MF_JUSTHIT);assert.equal(target.reactiontime,0);
     target.threshold=0;P_DamageMobj(target,null,a,1);assert.strictEqual(target.target,a);assert.equal(target.threshold,100);
-    // Spawn-state retargeting calls A_Chase; it must still fail explicitly until converted.
+    // This fixture deliberately omits A_Chase from its partial bindings; execution must fail explicitly.
     target.state=states[target.info!.spawnstate];target.threshold=0;target.info={...target.info!,painchance:0};assert.throws(()=>P_DamageMobj(target,null,a,1),/A_Chase/);
 });
 test('Native radius explosions now reduce real health and respect boss immunity',()=>{
