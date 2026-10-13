@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **28** · Parcial: **10** · Pendiente: **84**
+Traducido: **24** · Adaptado a web: **29** · Parcial: **10** · Pendiente: **83**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -103,7 +103,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_telept.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_tick.c` | `src/linuxdoom-1.10/p_tick.ts` | Adaptado a web | Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free. |
 | `linuxdoom-1.10/p_tick.h` | `src/linuxdoom-1.10/p_tick.h.ts` | Adaptado a web | P_Ticker con contexto explícito de juego. |
-| `linuxdoom-1.10/p_user.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_user.c` | `src/linuxdoom-1.10/p_user.ts` | Adaptado a web | Cinco funciones originales: thrust, bob/altura, movimiento, muerte y ticker de jugador. Contexto obligatorio de psprites, sector especial y uso; control aún sin conectar al bucle web. |
 | `linuxdoom-1.10/r_bsp.c` | `src/linuxdoom-1.10/r_bsp.ts` | Adaptado a web | Recorte angular, solidsegs/portales, BBox, BSP front-to-back y recogida de sprites por sector. |
 | `linuxdoom-1.10/r_bsp.h` | `src/linuxdoom-1.10/r_bsp.h.ts` | Adaptado a web | Interfaz de visibilidad; globals compartidos como bsp/wall/planes. |
 | `linuxdoom-1.10/r_data.c` | `src/linuxdoom-1.10/r_data.ts` | Adaptado a web | PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone. |

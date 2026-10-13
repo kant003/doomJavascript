@@ -25,19 +25,14 @@ import { R_InitData } from '../src/linuxdoom-1.10/r_data';
 import { P_LoadMapData } from '../src/linuxdoom-1.10/p_setup';
 import { demoWad } from '../src/web/demo';
 
-function player(): player_t {
-    return {mo:null,playerstate:playerstate_t.PST_LIVE,cmd:{forwardmove:0,sidemove:0,angleturn:0,consistancy:0,chatchar:0,buttons:0},
-        viewz:1,viewheight:VIEWHEIGHT,deltaviewheight:0,bob:0,health:100,armorpoints:0,armortype:0,powers:new Int32Array(6),cards:Array(6).fill(false),backpack:false,
-        frags:new Int32Array(4),readyweapon:weapontype_t.wp_pistol,pendingweapon:weapontype_t.wp_nochange,weaponowned:Array(9).fill(false),ammo:new Int32Array(4),maxammo:new Int32Array(4),
-        attackdown:0,usedown:0,cheats:0,refire:0,killcount:0,itemcount:0,secretcount:0,message:null,damagecount:0,bonuscount:0,attacker:null,
-        extralight:0,fixedcolormap:0,colormap:0,psprites:Array.from({length:2},()=>({state:null,tics:0,sx:0,sy:0})),didsecret:false};
-}
+import { createPlayer } from './helpers/player';
+
 function init() {
     W_InitFile({name:'demo.wad',data:demoWad()});R_InitData();P_LoadMapData(W_GetNumForName('E1M1'));
     P_InitThinkers();P_ResetLevelTime();P_ResetItemRespawnQueue();M_ClearRandom();I_LinkStateActions({},false);
     const sounds:{origin:mobj_t;sound:sfxenum_t}[]=[],stopped:mobj_t[]=[],calls:string[]=[];
     const missing=(name:string):never=>{throw new Error(`Test dependency not configured: ${name}`);};
-    const g:mobj_context_t={gameskill:skill_t.sk_medium,deathmatch:0,netgame:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},player),
+    const g:mobj_context_t={gameskill:skill_t.sk_medium,deathmatch:0,netgame:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},createPlayer),
         playeringame:[false,false,false,false],consoleplayer:0,playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,ceilingline:null,linetarget:null,attackrange:0,
         P_TryMove:()=>missing('P_TryMove'),P_CheckPosition:()=>missing('P_CheckPosition'),P_SlideMove:()=>missing('P_SlideMove'),P_AimLineAttack:()=>missing('P_AimLineAttack'),
         S_StartSound:(origin,sound)=>sounds.push({origin,sound}),S_StopSound:origin=>stopped.push(origin),

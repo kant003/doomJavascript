@@ -136,3 +136,15 @@ El siguiente bloque debe convertir p_mobj/p_map/p_user y enlazar acciones reales
 - Pruebas nuevas cubren la presencia de todas las funciones, spawn sin acciones iniciales, identidad de actor/thinker, cadenas de estados, eliminación, subdivisión/fricción, gravedad/floating, misiles/cielo, cola circular, tiempos de respawn, filtros de mapa, jugador y proyectiles. No prueban todavía colisiones reales ni equivalencia frente a un ejecutable C.
 
 El siguiente trabajo debe trasladar p_map, p_user y p_pspr, y enlazar sus acciones reales antes de habilitar el juego.
+
+## Séptima etapa: control y actualización del jugador
+
+- `p_user.c` convierte las cinco funciones P_Thrust, P_CalcHeight, P_MovePlayer, P_DeathThink y P_PlayerThink. Conserva momentum en punto fijo, BAM unsigned, cambios a S_PLAY_RUN1, restricciones de thrust en el aire y delay de reacción al teleport.
+- P_CalcHeight mantiene MAXBOB, fase entera FINEANGLES/20 por leveltime, recuperación de viewheight y el comportamiento original que sobrescribe el clamp de techo en el caso aéreo/CF_NOMOMENTUM. No se corrige silenciosamente ese detalle de C.
+- P_DeathThink conserva caída de POV a seis unidades, giro ANG90/18 hacia el atacante, reducción de damagecount cuando lo mira y solicitud PST_REBORN mediante BT_USE.
+- P_PlayerThink conserva noclip, lunge de motosierra, orden de sector/use/psprites, máscara de botones especiales, weapon ownership, selección chainsaw/berserk y shotgun comercial, restricciones shareware, contadores de poderes y colormap intermitente.
+- El contexto obligatorio aporta gamemode y los callbacks reales de psprites, sectores especiales y uso. Esos módulos y colisiones siguen pendientes; la cámara de inspección no se sustituye por una simulación incompleta.
+- La web abre la vista 3D por defecto al cargar datos con mapas, incluidos los datos sintéticos. Los WAD sin mapas conservan la vista de título. La etiqueta del WAD sintético ya no sobrescribe E1M1 / VISTA 3D.
+- Las pruebas cubren movimiento en tierra/aire, overflow de momentum, bob/fase/altura, delay y lunge, orden de hooks y debounce de uso, selección de armas, expiración de poderes, colormaps y muerte. El fixture completo de jugador se comparte con las pruebas de actores.
+
+El siguiente bloque debe convertir colisiones (p_map), psprites/armas (p_pspr) y acciones especiales antes de enlazar el control al navegador.

@@ -127,10 +127,10 @@ function load(files: WadFile[], synthetic: boolean): void {
     mapSelect.replaceChildren(...maps.map(map => new Option(map.name, String(map.index))));
     mapSelect.disabled = maps.length === 0;
     if (!maps.length) mapSelect.add(new Option('Sin mapas', ''));
-    viewSelect.value = W_CheckNumForName('TITLEPIC') >= 0 || !maps.length ? 'title' : 'map';
+    viewSelect.value = maps.length ? 'world' : 'title';
     report(`${synthetic ? 'Datos sintéticos de prueba' : files.map(f => f.name).join(' + ')} · ${W_NumLumps().toLocaleString('es')} recursos · ${maps.length} ${maps.length === 1 ? 'mapa' : 'mapas'}`);
     render();
-    if (synthetic) { label.textContent = 'PRUEBA DE VÍDEO / SIN DATOS COMERCIALES'; }
+    if (synthetic && viewSelect.value === 'title') { label.textContent = 'PRUEBA DE VÍDEO / SIN DATOS COMERCIALES'; }
 }
 input.addEventListener('change', async () => {
     const selected = Array.from(input.files ?? []);

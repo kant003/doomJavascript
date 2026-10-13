@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web arranca con un WAD sintético de prueba con textura 0 reservada como NoTexture y paredes orientadas hacia el interior y permite seleccionar archivos WAD locales. No sube los archivos a ningún servidor.
+Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web abre por defecto la vista 3D del nivel cuando hay mapas disponibles y arranca con un WAD sintético de prueba con textura 0 reservada como NoTexture y paredes orientadas hacia el interior y permite seleccionar archivos WAD locales. No sube los archivos a ningún servidor.
 
 - **Imagen de título**: lee `PLAYPAL` y `TITLEPIC` (o `INTERPIC`/`CREDIT`), dibujando los posts originales sobre el framebuffer.
 - **Geometría del mapa**: inspecciona vértices, líneas y posición inicial. Es una utilidad de desarrollo, no el automapa original ni un modo jugable.
@@ -56,9 +56,9 @@ Se distingue `.h.ts` de `.ts` para mantener una correspondencia inequívoca con 
 
 Implementados: punto fijo 16.16, RNG original con dos streams, tablas trigonométricas, tipos internos de actores/jugadores/mapas, intercambio de bytes, argumentos, cheats, datos de armas, WAD, vídeo de 8 bits, primitivas de columnas/spans, texturas compuestas, flats, cabeceras de sprites, iluminación y transiciones. Se han convertido los lectores geométricos de `p_setup.c`, la geometría/proyección/iluminación de `r_main.c`, la visibilidad de `r_bsp.c`, las paredes/transparentes de `r_segs.c`, los visplanes de `r_plane.c` y el renderer de sprites/psprites de `r_things.c`. Se conservan las tablas de `info.c` con 967 estados y 137 tipos de actor. La interfaz de plataforma es parcial.
 
-También se han trasladado la lista de thinkers y el ticker (`p_tick.c`), las utilidades espaciales y trazas (`p_maputl.c`) y el ciclo de vida de actores (`p_mobj.c`): estados, movimiento XY/Z, spawn, proyectiles y respawn. Los módulos de simulación requieren dependencias explícitas de gameplay todavía pendientes; la vista web sigue usando objetos estáticos y cámara libre.
+También se han trasladado la lista de thinkers y el ticker (`p_tick.c`), las utilidades espaciales y trazas (`p_maputl.c`) y el ciclo de vida de actores (`p_mobj.c`): estados, movimiento XY/Z, spawn, proyectiles y respawn. `p_user.c` incorpora las rutinas de control y actualización del jugador: movimiento, altura/bob, muerte, selección de arma y poderes. Los módulos de simulación requieren dependencias explícitas de gameplay todavía pendientes; la vista web sigue usando objetos estáticos y cámara libre.
 
-**Pendientes:** enlazado del renderer con el ciclo de juego, acciones de actores, arranque completo del nivel con actores y acciones especiales, colisiones, control del jugador, enemigos, armas en funcionamiento, menús, HUD, sonido, partidas, demos y red. Los datos de armas/actores y estados convertidos no implementan sus acciones. Los 74 símbolos de acción requieren enlace explícito y fallan si se ejecutan sin una implementación.
+**Pendientes:** enlazado del renderer con el ciclo de juego, acciones de actores, arranque completo del nivel con actores y acciones especiales, colisiones, integración del control del jugador, enemigos, armas en funcionamiento, menús, HUD, sonido, partidas, demos y red. Los datos de armas/actores y estados convertidos no implementan sus acciones. Los 74 símbolos de acción requieren enlace explícito y fallan si se ejecutan sin una implementación.
 
 Consultar [PORT_STATUS.md](PORT_STATUS.md) para el estado exacto. El conteo de archivos no representa un porcentaje de funcionalidad.
 

@@ -249,6 +249,10 @@
     "linuxdoom-1.10/p_mobj.c": {
       "status": "adapted",
       "notes": "16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido."
+    },
+    "linuxdoom-1.10/p_user.c": {
+      "status": "adapted",
+      "notes": "Cinco funciones originales: thrust, bob/altura, movimiento, muerte y ticker de jugador. Contexto obligatorio de psprites, sector especial y uso; control aún sin conectar al bucle web."
     }
   }
 }
