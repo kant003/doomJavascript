@@ -9,6 +9,10 @@ import { R_InitData, R_GetColumn, texturestate } from '../linuxdoom-1.10/r_data'
 import { P_LoadMapData } from '../linuxdoom-1.10/p_setup';
 import { R_PointInSubsector, R_InitLightTables, R_SetViewSize, R_ExecuteSetViewSize } from '../linuxdoom-1.10/r_main';
 import { WorldPreview } from './world-preview';
+import { R_InitSprites } from '../linuxdoom-1.10/r_things';
+import { sprnames } from '../linuxdoom-1.10/info';
+import { createStaticMapActors } from './map-actors';
+import { R_InitTranslationTables } from '../linuxdoom-1.10/r_draw';
 import { sky, R_InitSkyMap } from '../linuxdoom-1.10/r_sky';
 import { R_CheckTextureNumForName, R_FlatNumForName } from '../linuxdoom-1.10/r_data';
 import { R_InitBuffer, R_DrawColumn, draw } from '../linuxdoom-1.10/r_draw';
@@ -55,6 +59,7 @@ function render(): void {
         const index = Number(mapSelect.value), level = P_LoadMapData(index);
         const player = level.things.find(thing => thing.type === 1);
         if (!player) throw new Error('No se ha encontrado el inicio del jugador 1');
+        R_InitSprites(sprnames); const actors = createStaticMapActors(); R_InitTranslationTables();
         R_InitLightTables(); R_SetViewSize(11,0); R_ExecuteSetViewSize(); R_InitSkyMap();
         sky.skyflatnum = W_CheckNumForName('F_SKY1') >= 0 ? R_FlatNumForName('F_SKY1') : -1;
         const name = mapSelect.selectedOptions[0].textContent ?? '';
@@ -67,7 +72,7 @@ function render(): void {
         screens[0].fill(0); 
         worldPreview.start(camera);
         label.textContent = `${name} / VISTA 3D`;
-        element('frame-state').textContent = 'Paredes, suelos y techos · cámara libre';
+        element('frame-state').textContent = `${actors.length} ${actors.length === 1 ? 'objeto estático' : 'objetos estáticos'} · cámara libre`;
     } else if (viewSelect.value === 'map' || viewSelect.value === 'level') {
         if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos de DOOM');
         const map = loadMapPreview(Number(mapSelect.value));

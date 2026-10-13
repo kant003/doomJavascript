@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **15** · Parcial: **14** · Pendiente: **93**
+Traducido: **24** · Adaptado a web: **24** · Parcial: **9** · Pendiente: **89**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -59,8 +59,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/i_system.h` | `src/linuxdoom-1.10/i_system.h.ts` | Parcial | Interfaz parcial de plataforma. |
 | `linuxdoom-1.10/i_video.c` | `src/linuxdoom-1.10/i_video.ts` | Parcial | Canvas y teclado web. Entrada de ratón/joystick pendiente. |
 | `linuxdoom-1.10/i_video.h` | `src/linuxdoom-1.10/i_video.h.ts` | Adaptado a web | Interfaz Canvas; eventos devueltos al llamador. |
-| `linuxdoom-1.10/info.c` | — | Pendiente |  |
-| `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Todos los enums y structs state_t/mobjinfo_t; tablas y declaraciones de info.c pendientes. |
+| `linuxdoom-1.10/info.c` | `src/linuxdoom-1.10/info.ts` | Parcial | 138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes. |
+| `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo. |
 | `linuxdoom-1.10/m_argv.c` | `src/linuxdoom-1.10/m_argv.ts` | Adaptado a web | Argumentos suministrados por la web. |
 | `linuxdoom-1.10/m_argv.h` | `src/linuxdoom-1.10/m_argv.h.ts` | Traducido |  |
 | `linuxdoom-1.10/m_bbox.c` | `src/linuxdoom-1.10/m_bbox.ts` | Traducido |  |
@@ -104,29 +104,29 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_tick.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_tick.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_user.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_bsp.c` | `src/linuxdoom-1.10/r_bsp.ts` | Parcial | Recorte angular, rangos sólidos/portales, BBox y BSP front-to-back; R_Subsector aún no llama a R_AddSprites. |
-| `linuxdoom-1.10/r_bsp.h` | `src/linuxdoom-1.10/r_bsp.h.ts` | Parcial | Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes. |
+| `linuxdoom-1.10/r_bsp.c` | `src/linuxdoom-1.10/r_bsp.ts` | Adaptado a web | Recorte angular, solidsegs/portales, BBox, BSP front-to-back y recogida de sprites por sector. |
+| `linuxdoom-1.10/r_bsp.h` | `src/linuxdoom-1.10/r_bsp.h.ts` | Adaptado a web | Interfaz de visibilidad; globals compartidos como bsp/wall/planes. |
 | `linuxdoom-1.10/r_data.c` | `src/linuxdoom-1.10/r_data.ts` | Adaptado a web | PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone. |
 | `linuxdoom-1.10/r_data.h` | `src/linuxdoom-1.10/r_data.h.ts` | Adaptado a web | Interfaz de recursos; precache recibe contexto de juego explícito. |
 | `linuxdoom-1.10/r_defs.h` | `src/linuxdoom-1.10/r_defs.h.ts` | Adaptado a web | Tipos de mapa/render; spans con base explícita y visplanes con arrays acolchados. |
 | `linuxdoom-1.10/r_draw.c` | `src/linuxdoom-1.10/r_draw.ts` | Adaptado a web | Variables globales mutables agrupadas en draw; punteros a filas como offsets. Primitivas, no renderer BSP. |
 | `linuxdoom-1.10/r_draw.h` | — | Pendiente |  |
 | `linuxdoom-1.10/r_local.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_main.c` | `src/linuxdoom-1.10/r_main.ts` | Parcial | Geometría, proyección, escalas, iluminación, tamaño diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes. |
-| `linuxdoom-1.10/r_main.h` | `src/linuxdoom-1.10/r_main.h.ts` | Parcial | Constantes e interfaz de geometría/vista; ciclo completo de render jugable pendiente. |
+| `linuxdoom-1.10/r_main.c` | `src/linuxdoom-1.10/r_main.ts` | Adaptado a web | Geometría, proyección, luz, R_Init/R_SetupFrame/R_RenderPlayerView; NetUpdate inyectado obligatoriamente en el frame de jugador. |
+| `linuxdoom-1.10/r_main.h` | `src/linuxdoom-1.10/r_main.h.ts` | Adaptado a web | Interfaz completa de geometría y render; globals como view. |
 | `linuxdoom-1.10/r_plane.c` | `src/linuxdoom-1.10/r_plane.ts` | Adaptado a web | Visplanes, spans de suelos/techos y cielo; buffers acolchados, límites explícitos y GC. |
 | `linuxdoom-1.10/r_plane.h` | `src/linuxdoom-1.10/r_plane.h.ts` | Adaptado a web | Interfaz de visplanes/planes; globals agrupados en planes. |
-| `linuxdoom-1.10/r_segs.c` | `src/linuxdoom-1.10/r_segs.ts` | Parcial | R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente. |
-| `linuxdoom-1.10/r_segs.h` | `src/linuxdoom-1.10/r_segs.h.ts` | Parcial | Interfaz de paredes; dibujo transparente pendiente de r_things.c. |
+| `linuxdoom-1.10/r_segs.c` | `src/linuxdoom-1.10/r_segs.ts` | Adaptado a web | Tiers opacos y masked midtextures con recorte y orden por profundidad; composite masked fuera del formato de cache clásico se rechaza. |
+| `linuxdoom-1.10/r_segs.h` | `src/linuxdoom-1.10/r_segs.h.ts` | Adaptado a web | Interfaz de paredes y R_RenderMaskedSegRange. |
 | `linuxdoom-1.10/r_sky.c` | `src/linuxdoom-1.10/r_sky.ts` | Traducido |  |
 | `linuxdoom-1.10/r_sky.h` | `src/linuxdoom-1.10/r_sky.h.ts` | Traducido |  |
-| `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Parcial | Mapa compartido; vista/proyección/planes/walls definidos en módulos convertidos. Definiciones de sprites pendientes. |
-| `linuxdoom-1.10/r_things.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_things.h` | — | Pendiente |  |
+| `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Adaptado a web | Mapa, texturas, sprites, vista, planes y paredes exportados mediante objetos compartidos. |
+| `linuxdoom-1.10/r_things.c` | `src/linuxdoom-1.10/r_things.ts` | Adaptado a web | Frames/rotaciones, proyección, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros. |
+| `linuxdoom-1.10/r_things.h` | `src/linuxdoom-1.10/r_things.h.ts` | Adaptado a web | Interfaz del renderer de sprites. Prototipos obsoletos sin implementación en C no se añaden como stubs. |
 | `linuxdoom-1.10/s_sound.c` | — | Pendiente |  |
 | `linuxdoom-1.10/s_sound.h` | — | Pendiente |  |
 | `linuxdoom-1.10/sounds.c` | — | Pendiente |  |
-| `linuxdoom-1.10/sounds.h` | — | Pendiente |  |
+| `linuxdoom-1.10/sounds.h` | `src/linuxdoom-1.10/sounds.h.ts` | Parcial | Enums de efectos/música para info.c; estructuras y tablas de audio pendientes. |
 | `linuxdoom-1.10/st_lib.c` | — | Pendiente |  |
 | `linuxdoom-1.10/st_lib.h` | — | Pendiente |  |
 | `linuxdoom-1.10/st_stuff.c` | — | Pendiente |  |

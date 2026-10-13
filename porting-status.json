@@ -128,7 +128,7 @@
     },
     "linuxdoom-1.10/info.h": {
       "status": "partial",
-      "notes": "Todos los enums y structs state_t/mobjinfo_t; tablas y declaraciones de info.c pendientes."
+      "notes": "Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo."
     },
     "linuxdoom-1.10/d_event.h": {
       "status": "partial",
@@ -163,8 +163,8 @@
       "notes": "Tipos de mapa/render; spans con base expl\u00edcita y visplanes con arrays acolchados."
     },
     "linuxdoom-1.10/r_state.h": {
-      "status": "partial",
-      "notes": "Mapa compartido; vista/proyecci\u00f3n/planes/walls definidos en m\u00f3dulos convertidos. Definiciones de sprites pendientes."
+      "status": "adapted",
+      "notes": "Mapa, texturas, sprites, vista, planes y paredes exportados mediante objetos compartidos."
     },
     "linuxdoom-1.10/r_data.c": {
       "status": "adapted",
@@ -183,20 +183,20 @@
       "notes": "Interfaz de lectores; ciclo completo de nivel pendiente."
     },
     "linuxdoom-1.10/r_main.c": {
-      "status": "partial",
-      "notes": "Geometr\u00eda, proyecci\u00f3n, escalas, iluminaci\u00f3n, tama\u00f1o diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes."
+      "status": "adapted",
+      "notes": "Geometr\u00eda, proyecci\u00f3n, luz, R_Init/R_SetupFrame/R_RenderPlayerView; NetUpdate inyectado obligatoriamente en el frame de jugador."
     },
     "linuxdoom-1.10/r_main.h": {
-      "status": "partial",
-      "notes": "Constantes e interfaz de geometr\u00eda/vista; ciclo completo de render jugable pendiente."
+      "status": "adapted",
+      "notes": "Interfaz completa de geometr\u00eda y render; globals como view."
     },
     "linuxdoom-1.10/r_bsp.c": {
-      "status": "partial",
-      "notes": "Recorte angular, rangos s\u00f3lidos/portales, BBox y BSP front-to-back; R_Subsector a\u00fan no llama a R_AddSprites."
+      "status": "adapted",
+      "notes": "Recorte angular, solidsegs/portales, BBox, BSP front-to-back y recogida de sprites por sector."
     },
     "linuxdoom-1.10/r_bsp.h": {
-      "status": "partial",
-      "notes": "Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes."
+      "status": "adapted",
+      "notes": "Interfaz de visibilidad; globals compartidos como bsp/wall/planes."
     },
     "linuxdoom-1.10/r_plane.c": {
       "status": "adapted",
@@ -207,12 +207,28 @@
       "notes": "Interfaz de visplanes/planes; globals agrupados en planes."
     },
     "linuxdoom-1.10/r_segs.c": {
-      "status": "partial",
-      "notes": "R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente."
+      "status": "adapted",
+      "notes": "Tiers opacos y masked midtextures con recorte y orden por profundidad; composite masked fuera del formato de cache cl\u00e1sico se rechaza."
     },
     "linuxdoom-1.10/r_segs.h": {
+      "status": "adapted",
+      "notes": "Interfaz de paredes y R_RenderMaskedSegRange."
+    },
+    "linuxdoom-1.10/r_things.c": {
+      "status": "adapted",
+      "notes": "Frames/rotaciones, proyecci\u00f3n, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros."
+    },
+    "linuxdoom-1.10/r_things.h": {
+      "status": "adapted",
+      "notes": "Interfaz del renderer de sprites. Prototipos obsoletos sin implementaci\u00f3n en C no se a\u00f1aden como stubs."
+    },
+    "linuxdoom-1.10/info.c": {
       "status": "partial",
-      "notes": "Interfaz de paredes; dibujo transparente pendiente de r_things.c."
+      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan expl\u00edcitamente; sus implementaciones siguen pendientes."
+    },
+    "linuxdoom-1.10/sounds.h": {
+      "status": "partial",
+      "notes": "Enums de efectos/m\u00fasica para info.c; estructuras y tablas de audio pendientes."
     }
   }
 }

@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// BSP visibility and wall clipping. Actor sprite collection in R_Subsector is pending.
+// Original BSP visibility, wall clipping and sector sprite collection.
 import { view,R_PointOnSide,R_PointToAngle } from './r_main';
 import { ANG90,ANG180,ANGLETOFINESHIFT } from './tables.h';
 import { NF_SUBSECTOR } from './doomdata.h';
@@ -7,6 +7,7 @@ import { BOXLEFT,BOXRIGHT,BOXTOP,BOXBOTTOM } from './m_bbox.h';
 import { mapstate } from './r_state.h';
 import { R_FindPlane,planes } from './r_plane';
 import { sky } from './r_sky';
+import { R_AddSprites } from './r_things';
 import { wall,R_StoreWallRange } from './r_segs';
 import type { seg_t,sector_t,drawseg_t } from './r_defs.h';
 export interface cliprange_t {first:number;last:number}
@@ -81,7 +82,7 @@ export function R_Subsector(num:number):void{
     view.sscount++;const sector=bsp.frontsector=sub.sector;
     planes.floorplane=sector.floorheight<view.viewz?R_FindPlane(sector.floorheight,sector.floorpic,sector.lightlevel):null;
     planes.ceilingplane=sector.ceilingheight>view.viewz || sector.ceilingpic===sky.skyflatnum?R_FindPlane(sector.ceilingheight,sector.ceilingpic,sector.lightlevel):null;
-    // R_AddSprites belongs to r_things.c; this entry point renders static world geometry only.
+    R_AddSprites(sector);
     for(let i=0;i<sub.numlines;i++)R_AddLine(mapstate.segs[sub.firstline+i]);
 }
 export function R_RenderBSPNode(bspnum:number):void{

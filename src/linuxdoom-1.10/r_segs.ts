@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Original opaque wall tiers, visplane marking and saved sprite clipping. Masked drawing pending.
+// Original wall tiers, visplane marking, sprite clipping and masked middle textures.
 import { bsp } from './r_bsp';
 import { view,R_PointToDist,R_ScaleFromGlobalAngle } from './r_main';
 import { LIGHTSEGSHIFT,LIGHTLEVELS,LIGHTSCALESHIFT,MAXLIGHTSCALE } from './r_main.h';
@@ -11,10 +11,11 @@ import { ML_MAPPED,ML_DONTPEGBOTTOM,ML_DONTPEGTOP } from './doomdata.h';
 import { MAXINT,MININT } from './doomtype.h';
 import { SIL_BOTH,SIL_BOTTOM,SIL_TOP,MAXDRAWSEGS } from './r_defs.h';
 import type { drawseg_t,ClipSpan } from './r_defs.h';
-import { texturestate as t,R_GetColumn } from './r_data';
+import { texturestate as t,R_GetColumn,R_GetMaskedColumn } from './r_data';
 import { planes,R_CheckPlane } from './r_plane';
 import { draw } from './r_draw';
 import { sky } from './r_sky';
+import { spritesState,R_DrawMaskedColumn } from './r_things';
 export const HEIGHTBITS=12,HEIGHTUNIT=1<<HEIGHTBITS;
 export const wall={
     rw_normalangle:0,rw_angle1:0,rw_x:0,rw_stopx:0,rw_centerangle:0,rw_offset:0,rw_distance:0,rw_scale:0,rw_scalestep:0,
@@ -143,4 +144,26 @@ export function R_StoreWallRange(start:number,stop:number):void{
     if(wall.maskedtexture && !(ds.silhouette&SIL_TOP)){ds.silhouette|=SIL_TOP;ds.tsilheight=MININT;}
     if(wall.maskedtexture && !(ds.silhouette&SIL_BOTTOM)){ds.silhouette|=SIL_BOTTOM;ds.bsilheight=MAXINT;}
     bsp.drawsegs.push(ds);
+}
+export function R_RenderMaskedSegRange(ds:drawseg_t,x1:number,x2:number):void{
+    const line=ds.curline,front=line.frontsector,back=line.backsector,columns=ds.maskedtexturecol;
+    if(!front || !back || !columns || !ds.sprbottomclip || !ds.sprtopclip)throw new Error('Masked wall requires both sectors and clip spans');
+    const texnum=t.texturetranslation[line.sidedef.midtexture];
+    let light=(front.lightlevel>>LIGHTSEGSHIFT)+view.extralight;
+    if(line.v1.y===line.v2.y)light--;else if(line.v1.x===line.v2.x)light++;
+    view.walllights=view.scalelight[Math.max(0,Math.min(LIGHTLEVELS-1,light))];
+    wall.rw_scalestep=ds.scalestep;spritesState.spryscale=(ds.scale1+Math.imul(x1-ds.x1,ds.scalestep))|0;
+    spritesState.mfloorclip=ds.sprbottomclip;spritesState.mceilingclip=ds.sprtopclip;
+    draw.dc_texturemid=(line.linedef.flags&ML_DONTPEGBOTTOM)?Math.max(front.floorheight,back.floorheight)+t.textureheight[texnum]-view.viewz:Math.min(front.ceilingheight,back.ceilingheight)-view.viewz;
+    draw.dc_texturemid=(draw.dc_texturemid+line.sidedef.rowoffset)|0;
+    for(draw.dc_x=x1;draw.dc_x<=x2;draw.dc_x++){
+        const index=draw.dc_x-columns.base;if(index<0 || index>=columns.data.length)throw new Error('Masked wall column outside saved span');
+        if(columns.data[index]!==32767){
+            draw.dc_colormap=view.fixedcolormap??view.walllights[Math.min(MAXLIGHTSCALE-1,(spritesState.spryscale>>LIGHTSCALESHIFT)>>>0)];
+            spritesState.sprtopscreen=(view.centeryfrac-FixedMul(draw.dc_texturemid,spritesState.spryscale))|0;
+            draw.dc_iscale=Math.floor(0xffffffff/(spritesState.spryscale>>>0))|0;
+            R_DrawMaskedColumn(R_GetMaskedColumn(texnum,columns.data[index]));columns.data[index]=32767;
+        }
+        spritesState.spryscale=(spritesState.spryscale+ds.scalestep)|0;
+    }
 }

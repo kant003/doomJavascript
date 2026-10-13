@@ -39,7 +39,7 @@ export function demoWad(): Uint8Array {
     [[-128, -128], [128, -128], [128, 128], [-128, 128]].forEach(([x, y], i) => { vv.setInt16(i * 4, x, true); vv.setInt16(i * 4 + 2, y, true); });
     const lines = new Uint8Array(56), lv = new DataView(lines.buffer);
     for (let i = 0; i < 4; i++) { lv.setInt16(i * 14, (i + 1) % 4, true); lv.setInt16(i * 14 + 2, i, true); lv.setInt16(i * 14 + 4, 1, true); lv.setInt16(i * 14 + 12, -1, true); }
-    const things = new Uint8Array(10); new DataView(things.buffer).setInt16(6, 1, true);
+    const things = new Uint8Array(20), thv = new DataView(things.buffer); thv.setInt16(6,1,true); thv.setInt16(10,72,true); thv.setInt16(12,24,true); thv.setInt16(16,2028,true); thv.setInt16(18,7,true);
     const names = new Uint8Array(12);new DataView(names.buffer).setInt32(0,1,true);names.set(new TextEncoder().encode('WALLPAT'),4);
     // Texture 0 is the original NoTexture sentinel; visible walls use texture 1.
     const texture = new Uint8Array(76), tv = new DataView(texture.buffer);
@@ -65,10 +65,26 @@ export function demoWad(): Uint8Array {
         { name: 'PLAYPAL', data: palette }, { name: 'TITLEPIC', data: patch(320, 200) },
         { name: 'PNAMES',data:names },{ name:'TEXTURE1',data:texture },{ name:'WALLPAT',data:patch(128,128) },
         { name:'F_START',data:new Uint8Array() },{ name:'TESTFLAT',data:flat },{ name:'F_END',data:new Uint8Array() },
-        { name:'S_START',data:new Uint8Array() },{ name:'S_END',data:new Uint8Array() },{ name:'COLORMAP',data:colormap },
+        { name:'S_START',data:new Uint8Array() },{name:'COLUA0',data:maskedPatch(32,64,(x,y)=> {const radius=y<14?10:y<45?4:9;return Math.abs(x-16)<radius?(y<14?242:y<45?112:96):null;},16,64)},{ name:'S_END',data:new Uint8Array() },{ name:'COLORMAP',data:colormap },
         { name: 'E1M1', data: new Uint8Array() },{ name: 'THINGS', data: things },
         { name: 'LINEDEFS', data: lines }, { name: 'SIDEDEFS', data: side }, { name: 'VERTEXES', data: vertices },
         { name:'SEGS',data:segs },{ name:'SSECTORS',data:subsector },{ name:'NODES',data:new Uint8Array() },
         { name:'SECTORS',data:sector },{ name:'REJECT',data:new Uint8Array(1) },{ name:'BLOCKMAP',data:blockmap }
     ]);
+}
+
+// Encode classic transparent patch posts for synthetic sprite/texture fixtures.
+export function maskedPatch(width:number,height:number,pixel:(x:number,y:number)=>number|null,leftoffset=0,topoffset=0):Uint8Array{
+    if(width<1 || height<1 || height>254)throw new Error('Synthetic patch requires classic dimensions');
+    const columns:Uint8Array[]=[];
+    for(let x=0;x<width;x++){
+        const bytes:number[]=[];let y=0;
+        while(y<height){while(y<height && pixel(x,y)===null)y++;if(y===height)break;
+            const start=y,run:number[]=[];while(y<height && pixel(x,y)!==null)run.push(pixel(x,y++)!);
+            bytes.push(start,run.length,0,...run,0);
+        }bytes.push(255);columns.push(new Uint8Array(bytes));
+    }
+    const header=8+width*4,data=new Uint8Array(header+columns.reduce((n,c)=>n+c.length,0)),v=new DataView(data.buffer);
+    v.setInt16(0,width,true);v.setInt16(2,height,true);v.setInt16(4,leftoffset,true);v.setInt16(6,topoffset,true);
+    let offset=header;columns.forEach((col,x)=>{v.setUint32(8+x*4,offset,true);data.set(col,offset);offset+=col.length;});return data;
 }

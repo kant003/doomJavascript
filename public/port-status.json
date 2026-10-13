@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 15,
-    "partial": 14,
-    "pending": 93
+    "adapted": 24,
+    "partial": 9,
+    "pending": 89
   },
   "files": [
     {
@@ -452,10 +452,10 @@
     },
     {
       "source": "linuxdoom-1.10/info.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/info.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes.",
       "lines": 4670,
       "sha256": "e09631527669ee528bdae20a47be79e1cb33972b39964c33ac4814e1701a0949"
     },
@@ -464,7 +464,7 @@
       "target": "src/linuxdoom-1.10/info.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.h.ts",
       "status": "partial",
-      "notes": "Todos los enums y structs state_t/mobjinfo_t; tablas y declaraciones de info.c pendientes.",
+      "notes": "Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo.",
       "lines": 1340,
       "sha256": "3e68ee6cc13323e69cbcf208e9a0af7b13867bead49e66d765abefa5d914b0dd"
     },
@@ -859,8 +859,8 @@
       "source": "linuxdoom-1.10/r_bsp.c",
       "target": "src/linuxdoom-1.10/r_bsp.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_bsp.ts",
-      "status": "partial",
-      "notes": "Recorte angular, rangos sólidos/portales, BBox y BSP front-to-back; R_Subsector aún no llama a R_AddSprites.",
+      "status": "adapted",
+      "notes": "Recorte angular, solidsegs/portales, BBox, BSP front-to-back y recogida de sprites por sector.",
       "lines": 580,
       "sha256": "26f3459ca881d09fddfbcf829a4745dde4346597a55ccc8cb4882bc438295407"
     },
@@ -868,8 +868,8 @@
       "source": "linuxdoom-1.10/r_bsp.h",
       "target": "src/linuxdoom-1.10/r_bsp.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_bsp.h.ts",
-      "status": "partial",
-      "notes": "Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes.",
+      "status": "adapted",
+      "notes": "Interfaz de visibilidad; globals compartidos como bsp/wall/planes.",
       "lines": 72,
       "sha256": "08ca429757b65ac35798cf9f47ef9dea072e27a5b856fdf300c9fc2fcba5fac6"
     },
@@ -931,8 +931,8 @@
       "source": "linuxdoom-1.10/r_main.c",
       "target": "src/linuxdoom-1.10/r_main.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_main.ts",
-      "status": "partial",
-      "notes": "Geometría, proyección, escalas, iluminación, tamaño diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes.",
+      "status": "adapted",
+      "notes": "Geometría, proyección, luz, R_Init/R_SetupFrame/R_RenderPlayerView; NetUpdate inyectado obligatoriamente en el frame de jugador.",
       "lines": 898,
       "sha256": "2aae43cf807929a8758f71ed0205fc08017556541ba8df2ea9167c003d0dec5a"
     },
@@ -940,8 +940,8 @@
       "source": "linuxdoom-1.10/r_main.h",
       "target": "src/linuxdoom-1.10/r_main.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_main.h.ts",
-      "status": "partial",
-      "notes": "Constantes e interfaz de geometría/vista; ciclo completo de render jugable pendiente.",
+      "status": "adapted",
+      "notes": "Interfaz completa de geometría y render; globals como view.",
       "lines": 172,
       "sha256": "9576bf120653af7127dcfd754f50e294b76be38bacb3b43f8686111a2dcd501b"
     },
@@ -967,8 +967,8 @@
       "source": "linuxdoom-1.10/r_segs.c",
       "target": "src/linuxdoom-1.10/r_segs.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_segs.ts",
-      "status": "partial",
-      "notes": "R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente.",
+      "status": "adapted",
+      "notes": "Tiers opacos y masked midtextures con recorte y orden por profundidad; composite masked fuera del formato de cache clásico se rechaza.",
       "lines": 746,
       "sha256": "cf89e394506dceb64ad442846a5722fb8a3990f924508e253eaec8f8411d2406"
     },
@@ -976,8 +976,8 @@
       "source": "linuxdoom-1.10/r_segs.h",
       "target": "src/linuxdoom-1.10/r_segs.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_segs.h.ts",
-      "status": "partial",
-      "notes": "Interfaz de paredes; dibujo transparente pendiente de r_things.c.",
+      "status": "adapted",
+      "notes": "Interfaz de paredes y R_RenderMaskedSegRange.",
       "lines": 44,
       "sha256": "9343a51c57d93f13098118cfbc23377487b4063ec0dbf447c6aee8a7d0fd68ce"
     },
@@ -1003,26 +1003,26 @@
       "source": "linuxdoom-1.10/r_state.h",
       "target": "src/linuxdoom-1.10/r_state.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_state.h.ts",
-      "status": "partial",
-      "notes": "Mapa compartido; vista/proyección/planes/walls definidos en módulos convertidos. Definiciones de sprites pendientes.",
+      "status": "adapted",
+      "notes": "Mapa, texturas, sprites, vista, planes y paredes exportados mediante objetos compartidos.",
       "lines": 138,
       "sha256": "35a0d8f2e6a8f88ff100625708e54a6f04d22506319bef1c08033293e3ca22bd"
     },
     {
       "source": "linuxdoom-1.10/r_things.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_things.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_things.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Frames/rotaciones, proyección, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros.",
       "lines": 989,
       "sha256": "b3ff03ba213782ed6488a9e0fb0afa0a0ee1f5cfbff8ce498c7133e93e01e0e3"
     },
     {
       "source": "linuxdoom-1.10/r_things.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_things.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_things.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Interfaz del renderer de sprites. Prototipos obsoletos sin implementación en C no se añaden como stubs.",
       "lines": 76,
       "sha256": "7e7a985f29f971e7e5c14c93c79f8d3462f4a42f5544d4c298a90df00561cf50"
     },
@@ -1055,10 +1055,10 @@
     },
     {
       "source": "linuxdoom-1.10/sounds.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/sounds.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/sounds.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Enums de efectos/música para info.c; estructuras y tablas de audio pendientes.",
       "lines": 297,
       "sha256": "fa5a6c19c689eeb6e4a2df08b1d4efe5c445b3d0cb4081dc3a7d28fdadfd39f8"
     },

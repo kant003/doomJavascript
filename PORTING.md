@@ -92,3 +92,20 @@ La siguiente etapa debe completar tablas de actores/estados, el render de sprite
 - Se prueba render repetible en varios octantes, luz fija, clipping contra un mapa independiente de cobertura, visplanes con padding y tiers de un portal. No se ha comprobado todavía equivalencia de framebuffer con un binario C ni con un WAD comercial.
 
 El motor completo sigue pendiente. El siguiente trabajo debe incorporar tablas de estados/actores, sprites y superficies transparentes antes de comenzar la simulación del jugador y enemigos.
+
+## Cuarta etapa: sprites, texturas transparentes y tablas de actores
+
+- `r_things.c` incorpora selección de frames/rotaciones y mirroring, proyección en punto fijo, posts transparentes, siluetas, profundidad, orden estable por escala, sombras, traducción de color y psprites. Conserva MAXVISSPRITES=128 y el objeto de overflow no añadido al conjunto visible.
+- Las inicializaciones de frames mantienen un estado interno -1, separado del boolean público rotate, como el memset(-1) original. Se comprueban frames ausentes, rotaciones incompletas, duplicadas o mezcladas con rot=0.
+- Los prototipos obsoletos de r_things.h que no tienen implementación en r_things.c no se añaden como funciones vacías.
+- `R_RenderMaskedSegRange` utiliza los spans de clip guardados, actualiza columnas dibujadas a MAXSHORT y respeta el orden frente/detrás de sprites. `R_GetMaskedColumn` retorna el encabezado de post, equivalente al puntero R_GetColumn-3 para una columna de patch único. Composites opacos no contienen posts: este caso falla explícitamente, sin simular una composición transparente inexistente en la cache original.
+- `R_Subsector` ya llama a R_AddSprites; el validcount evita duplicar sprites de un sector dividido por BSP. La cámara de inspección llama a R_DrawMasked(false), mientras que el frame real de jugador puede dibujar psprites.
+- `R_Init` y `R_RenderPlayerView` se incorporan con la secuencia original. NetUpdate se inyecta como dependencia obligatoria para las cuatro llamadas del frame de jugador. El arranque y bucle D_Main/G_Game continúan pendientes.
+- Los globals de r_state.h tienen una única instancia en mapstate/texturestate/spritesState/view/planes/wall. Sus reexports no duplican estado.
+- `info.c` aporta 138 nombres de sprite, 967 estados y 137 tipos de actor. Cada campo escalar se comprueba contra su expresión original y los enums. `sounds.h` solo aporta los enums usados por las tablas; esto no implementa audio.
+- Los 74 símbolos de acciones se mantienen explícitos. I_LinkStateActions valida nombres y requiere todas las implementaciones por defecto; la vinculación parcial debe pedirse explícitamente. Una acción no enlazada lanza error. Tras el enlace, los estados referencian las funciones reales para conservar identidad de puntero. No existen acciones de enemigos/armas vacías que aparenten simulación.
+- `src/web/map-actors.ts` crea exclusivamente objetos estáticos de inspección desde doomednum/spawnstate y los enlaza a su sector. Usa el frame inicial, altura de floor/ceiling y flags originales; no ejecuta P_SpawnMapThing, acciones, think, colisiones, filtros de dificultad ni red. Objetos sin definición/frame disponible no se representan.
+- El WAD sintético contiene ahora un sprite COLUA0 de una lámpara, incluido en S_START/S_END, y un objeto 2028. Sigue sin contener datos comerciales.
+- Las pruebas comprueban tablas completas, enlaces de acciones, transparencia y clips de posts, variantes de rotación, estabilidad de sorting, overflow, oclusión por paredes, profundidad de masked walls respecto a sprites y psprite/frame de jugador con las cuatro llamadas de NetUpdate.
+
+El próximo trabajo es trasladar thinkers, ticker y posicionamiento/collision helpers para comenzar la simulación real sin sustituir P_PlayerThink por la cámara de inspección.

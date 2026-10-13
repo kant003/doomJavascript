@@ -200,3 +200,13 @@ export function R_PrecacheLevel(context: PrecacheContext): void {
         }
     }
 }
+// Masked columns require the post header, equivalent to R_GetColumn(...) - 3 in C.
+// Composite caches in Linux Doom are opaque bytes, not post streams; reject this case explicitly.
+export function R_GetMaskedColumn(tex: number, col: number): Uint8Array {
+    textureAt(tex);col &= texturestate.texturewidthmask[tex];
+    const lump=texturestate.texturecolumnlump[tex][col],offset=texturestate.texturecolumnofs[tex][col]-3;
+    if(lump<0)throw new Error('Masked composite columns are not supported by the classic opaque cache');
+    const data=W_CacheLumpNum(lump,101);
+    if(offset<0 || offset>=data.length)throw new Error('Masked column outside patch');
+    return data.subarray(offset);
+}

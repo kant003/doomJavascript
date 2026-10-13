@@ -45,7 +45,7 @@ function pnames(names:string[]):Uint8Array {
     names.forEach((n,i)=>data.set(new TextEncoder().encode(n),4+i*8));return data;
 }
 test('Render resources initialize original identity translations, dimensions and names',()=>{
-    init();assert.equal(t.numtextures,2);assert.equal(t.numflats,1);assert.equal(t.numspritelumps,0);
+    init();assert.equal(t.numtextures,2);assert.equal(t.numflats,1);assert.equal(t.numspritelumps,1);
     assert.equal(t.textureheight[0],128*FRACUNIT);assert.equal(t.texturewidthmask[0],127);
     assert.equal(R_CheckTextureNumForName('testwall'),1);assert.equal(R_CheckTextureNumForName('-'),0);
     assert.throws(()=>R_TextureNumForName('MISSING'));assert.equal(R_FlatNumForName('TESTFLAT'),0);

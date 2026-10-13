@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// r_main.c: view geometry, projection, lighting and frame setup. Sprites/game orchestration remain pending.
+// r_main.c: view geometry, projection, lighting, startup and complete renderer frame ordering.
 import { FixedMul, FixedDiv } from './m_fixed';
 import { FRACBITS, FRACUNIT } from './m_fixed.h';
 import { NF_SUBSECTOR } from './doomdata.h';
@@ -11,11 +11,14 @@ import { finesine, finecosine, finetangent, tantoangle, SlopeDiv } from './table
 import { BOXLEFT, BOXRIGHT, BOXBOTTOM, BOXTOP } from './m_bbox.h';
 import { LIGHTLEVELS, MAXLIGHTZ, LIGHTZSHIFT, LIGHTSCALESHIFT, MAXLIGHTSCALE, NUMCOLORMAPS } from './r_main.h';
 import { texturestate } from './r_data';
-import { draw, R_InitBuffer, R_DrawColumn, R_DrawColumnLow, R_DrawFuzzColumn, R_DrawTranslatedColumn, R_DrawSpan, R_DrawSpanLow } from './r_draw';
+import { draw, R_InitBuffer, R_DrawColumn, R_DrawColumnLow, R_DrawFuzzColumn, R_DrawTranslatedColumn, R_DrawSpan, R_DrawSpanLow, R_InitTranslationTables } from './r_draw';
 import type { player_t } from './d_player.h';
-import { planes, R_ClearPlanes, R_DrawPlanes } from './r_plane';
+import { planes, R_ClearPlanes, R_DrawPlanes, R_InitPlanes } from './r_plane';
 import { wall } from './r_segs';
+import { R_InitData } from './r_data';
+import { R_InitSkyMap } from './r_sky';
 import { R_ClearClipSegs, R_ClearDrawSegs, R_RenderBSPNode } from './r_bsp';
+import { R_ClearSprites,R_DrawMasked } from './r_things';
 
 export function R_PointOnSide(x: number, y: number, node: Pick<node_t, 'x' | 'y' | 'dx' | 'dy'>): number {
     if (!node.dx) return Number(x <= node.x ? node.dy > 0 : node.dy < 0);
@@ -129,7 +132,7 @@ export function R_SetViewSize(blocks: number, detail: number): void {
     view.setsizeneeded = true; view.setblocks = blocks; view.setdetail = detail;
 }
 export function R_ExecuteSetViewSize(): void {
-    view.setsizeneeded = false;
+    view.setsizeneeded = false; draw.colormaps = texturestate.colormaps;
     view.scaledviewwidth = view.setblocks === 11 ? SCREENWIDTH : view.setblocks*32;
     view.viewheight = view.setblocks === 11 ? SCREENHEIGHT : Math.trunc(view.setblocks*168/10) & ~7;
     view.detailshift = view.setdetail; view.viewwidth = view.scaledviewwidth >> view.detailshift;
@@ -170,9 +173,22 @@ export function R_SetupFrame(player: player_t): void {
     view.viewplayer = player;
     R_SetupWorldFrame({x:player.mo.x,y:player.mo.y,z:player.viewz,angle:player.mo.angle,extralight:player.extralight,fixedcolormap:player.fixedcolormap});
 }
-// World inspection boundary. No actor sprites, masked textures, psprites or NetUpdate yet.
+// World inspection boundary. Includes sector sprites and masked walls; psprites/NetUpdate require gameplay.
 export function R_RenderWorldView(camera: WorldCamera): void {
     if (view.setsizeneeded) R_ExecuteSetViewSize();
-    R_SetupWorldFrame(camera); R_ClearClipSegs(); R_ClearDrawSegs(); R_ClearPlanes();
-    R_RenderBSPNode(mapstate.numnodes-1); R_DrawPlanes();
+    R_SetupWorldFrame(camera); R_ClearClipSegs(); R_ClearDrawSegs(); R_ClearPlanes(); R_ClearSprites();
+    R_RenderBSPNode(mapstate.numnodes-1); R_DrawPlanes(); R_DrawMasked(false);
+}
+
+// Original frame ordering. NetUpdate is a required platform dependency, not an empty stub.
+export function R_RenderPlayerView(player: player_t, NetUpdate: () => void): void {
+    if (view.setsizeneeded) R_ExecuteSetViewSize();
+    R_SetupFrame(player);
+    R_ClearClipSegs(); R_ClearDrawSegs(); R_ClearPlanes(); R_ClearSprites();
+    NetUpdate(); R_RenderBSPNode(mapstate.numnodes-1);
+    NetUpdate(); R_DrawPlanes(); NetUpdate(); R_DrawMasked(); NetUpdate();
+}
+export function R_Init(screenblocks=10,detailLevel=0): void {
+    R_InitData(); R_InitPointToAngle(); R_InitTables(); R_SetViewSize(screenblocks,detailLevel);
+    R_InitPlanes(); R_InitLightTables(); R_InitSkyMap(); R_InitTranslationTables(); view.framecount=0;
 }
