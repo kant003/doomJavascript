@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 27,
+    "adapted": 28,
     "partial": 10,
-    "pending": 85
+    "pending": 84
   },
   "files": [
     {
@@ -680,7 +680,7 @@
       "target": "src/linuxdoom-1.10/p_local.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_local.h.ts",
       "status": "partial",
-      "notes": "Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes.",
+      "notes": "Constantes de movimiento/spawn, tipos y utilidades espaciales, thinkers. Gameplay restante y reexports de actores pendientes; p_mobj se importa directamente para evitar ciclos de inicialización.",
       "lines": 289,
       "sha256": "8d71f591ed5f26580042d991558c89d674b683f9cd1c2801ac7714de04b0185f"
     },
@@ -704,10 +704,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_mobj.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_mobj.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_mobj.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido.",
       "lines": 988,
       "sha256": "21a39bdbd746d6fba38660500203216052f0723b8e0ab033ce2a650ada2b403f"
     },

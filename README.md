@@ -23,6 +23,12 @@ Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web arra
 
 Para PWAD que dependan del juego base, seleccionar también el IWAD. La web coloca el IWAD primero; los PWAD posteriores pueden sobrescribir recursos. Mapas Hexen/UDMF, patches altos extendidos y formatos de source ports modernos no forman parte de esta etapa. Las columnas de texturas transparentes que requieren composición de varios patches no están representadas como posts en la cache opaca original; se rechazan explícitamente.
 
+## Publicación en GitHub Pages
+
+La web se publica en https://kant003.github.io/doomJavascript/ desde la rama `master` mediante `.github/workflows/pages.yml`. Cada push instala dependencias con `npm ci`, ejecuta `npm run verify` y publica únicamente `dist/`. Los pull requests ejecutan las comprobaciones sin desplegar. También se puede lanzar el workflow manualmente desde Actions.
+
+GitHub Pages debe tener **GitHub Actions** seleccionado como fuente en Settings → Pages. Vite genera rutas relativas para servir los recursos bajo el directorio del repositorio. No se requieren secretos de despliegue adicionales: el workflow usa los permisos de Pages y el token temporal de GitHub.
+
 ## Estructura
 
 ```text
@@ -50,7 +56,9 @@ Se distingue `.h.ts` de `.ts` para mantener una correspondencia inequívoca con 
 
 Implementados: punto fijo 16.16, RNG original con dos streams, tablas trigonométricas, tipos internos de actores/jugadores/mapas, intercambio de bytes, argumentos, cheats, datos de armas, WAD, vídeo de 8 bits, primitivas de columnas/spans, texturas compuestas, flats, cabeceras de sprites, iluminación y transiciones. Se han convertido los lectores geométricos de `p_setup.c`, la geometría/proyección/iluminación de `r_main.c`, la visibilidad de `r_bsp.c`, las paredes/transparentes de `r_segs.c`, los visplanes de `r_plane.c` y el renderer de sprites/psprites de `r_things.c`. Se conservan las tablas de `info.c` con 967 estados y 137 tipos de actor. La interfaz de plataforma es parcial.
 
-**Pendientes:** enlazado del renderer con el ciclo de juego, animación y acciones de actores, arranque completo del nivel con actores y acciones especiales, colisiones, jugadores, enemigos, armas en funcionamiento, menús, HUD, sonido, partidas, demos y red. Los datos de armas/actores y estados convertidos no implementan sus acciones. Los 74 símbolos de acción requieren enlace explícito y fallan si se ejecutan sin una implementación.
+También se han trasladado la lista de thinkers y el ticker (`p_tick.c`), las utilidades espaciales y trazas (`p_maputl.c`) y el ciclo de vida de actores (`p_mobj.c`): estados, movimiento XY/Z, spawn, proyectiles y respawn. Los módulos de simulación requieren dependencias explícitas de gameplay todavía pendientes; la vista web sigue usando objetos estáticos y cámara libre.
+
+**Pendientes:** enlazado del renderer con el ciclo de juego, acciones de actores, arranque completo del nivel con actores y acciones especiales, colisiones, control del jugador, enemigos, armas en funcionamiento, menús, HUD, sonido, partidas, demos y red. Los datos de armas/actores y estados convertidos no implementan sus acciones. Los 74 símbolos de acción requieren enlace explícito y fallan si se ejecutan sin una implementación.
 
 Consultar [PORT_STATUS.md](PORT_STATUS.md) para el estado exacto. El conteo de archivos no representa un porcentaje de funcionalidad.
 

@@ -244,7 +244,11 @@
     },
     "linuxdoom-1.10/p_local.h": {
       "status": "partial",
-      "notes": "Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes."
+      "notes": "Constantes de movimiento/spawn, tipos y utilidades espaciales, thinkers. Gameplay restante y reexports de actores pendientes; p_mobj se importa directamente para evitar ciclos de inicialización."
+    },
+    "linuxdoom-1.10/p_mobj.c": {
+      "status": "adapted",
+      "notes": "16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido."
     }
   }
 }

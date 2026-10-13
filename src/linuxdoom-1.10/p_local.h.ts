@@ -6,6 +6,9 @@ import type { mobj_t } from './p_mobj.h';
 export const MAPBLOCKUNITS = 128, MAPBLOCKSIZE = MAPBLOCKUNITS * FRACUNIT;
 export const MAPBLOCKSHIFT = FRACBITS + 7, MAPBMASK = MAPBLOCKSIZE - 1, MAPBTOFRAC = MAPBLOCKSHIFT - FRACBITS;
 export const MAXRADIUS = 32 * FRACUNIT, MAXINTERCEPTS = 128;
+export const FLOATSPEED = 4 * FRACUNIT, VIEWHEIGHT = 41 * FRACUNIT;
+export const GRAVITY = FRACUNIT, MAXMOVE = 30 * FRACUNIT, MELEERANGE = 64 * FRACUNIT;
+export const ONFLOORZ = -0x80000000, ONCEILINGZ = 0x7fffffff, ITEMQUESIZE = 128;
 export const PT_ADDLINES = 1, PT_ADDTHINGS = 2, PT_EARLYOUT = 4;
 export interface divline_t { x: number; y: number; dx: number; dy: number }
 export type intercept_t = { frac: number; isaline: true; d: { line: line_t } } | { frac: number; isaline: false; d: { thing: mobj_t } };

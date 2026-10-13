@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **27** · Parcial: **10** · Pendiente: **85**
+Traducido: **24** · Adaptado a web: **28** · Parcial: **10** · Pendiente: **84**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -84,10 +84,10 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_inter.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_inter.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_lights.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_local.h` | `src/linuxdoom-1.10/p_local.h.ts` | Parcial | Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes. |
+| `linuxdoom-1.10/p_local.h` | `src/linuxdoom-1.10/p_local.h.ts` | Parcial | Constantes de movimiento/spawn, tipos y utilidades espaciales, thinkers. Gameplay restante y reexports de actores pendientes; p_mobj se importa directamente para evitar ciclos de inicialización. |
 | `linuxdoom-1.10/p_map.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_maputl.c` | `src/linuxdoom-1.10/p_maputl.ts` | Adaptado a web | Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante. |
-| `linuxdoom-1.10/p_mobj.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_mobj.c` | `src/linuxdoom-1.10/p_mobj.ts` | Adaptado a web | 16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido. |
 | `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
 | `linuxdoom-1.10/p_plats.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_pspr.c` | — | Pendiente |  |
