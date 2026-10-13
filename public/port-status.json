@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 30,
+    "adapted": 32,
     "partial": 11,
-    "pending": 81
+    "pending": 79
   },
   "files": [
     {
@@ -686,10 +686,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_map.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_map.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_map.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "20 funciones: colisiones, telefrag, sliding, alturas/sectores, autoaim/hitscan, use y radius. Contexto obligatorio para daño, pickups, especiales y sonido; guard MAXSPECIALCROSS.",
       "lines": 1339,
       "sha256": "752c7873c81fe6b10b77a08b7ef5716fe49c3103f6caa02097ed299e6e04736c"
     },
@@ -785,10 +785,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_sight.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_sight.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_sight.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado.",
       "lines": 349,
       "sha256": "81014a71e4155db6da0af21e6ecf14687daf18075fb75322b63bdc254ce11120"
     },

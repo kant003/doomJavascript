@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **30** · Parcial: **11** · Pendiente: **81**
+Traducido: **24** · Adaptado a web: **32** · Parcial: **11** · Pendiente: **79**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -85,7 +85,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_inter.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_lights.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_local.h` | `src/linuxdoom-1.10/p_local.h.ts` | Parcial | Constantes de movimiento/spawn, tipos y utilidades espaciales, thinkers. Gameplay restante y reexports de actores pendientes; p_mobj se importa directamente para evitar ciclos de inicialización. |
-| `linuxdoom-1.10/p_map.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_map.c` | `src/linuxdoom-1.10/p_map.ts` | Adaptado a web | 20 funciones: colisiones, telefrag, sliding, alturas/sectores, autoaim/hitscan, use y radius. Contexto obligatorio para daño, pickups, especiales y sonido; guard MAXSPECIALCROSS. |
 | `linuxdoom-1.10/p_maputl.c` | `src/linuxdoom-1.10/p_maputl.ts` | Adaptado a web | Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante. |
 | `linuxdoom-1.10/p_mobj.c` | `src/linuxdoom-1.10/p_mobj.ts` | Adaptado a web | 16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido. |
 | `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
@@ -96,7 +96,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_saveg.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes. |
 | `linuxdoom-1.10/p_setup.h` | `src/linuxdoom-1.10/p_setup.h.ts` | Parcial | Interfaz de lectores; ciclo completo de nivel pendiente. |
-| `linuxdoom-1.10/p_sight.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_sight.c` | `src/linuxdoom-1.10/p_sight.ts` | Adaptado a web | Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado. |
 | `linuxdoom-1.10/p_spec.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_spec.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_switch.c` | — | Pendiente |  |

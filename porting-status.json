@@ -261,6 +261,14 @@
     "linuxdoom-1.10/p_enemy.c": {
       "status": "partial",
       "notes": "P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes."
+    },
+    "linuxdoom-1.10/p_map.c": {
+      "status": "adapted",
+      "notes": "20 funciones: colisiones, telefrag, sliding, alturas/sectores, autoaim/hitscan, use y radius. Contexto obligatorio para daño, pickups, especiales y sonido; guard MAXSPECIALCROSS."
+    },
+    "linuxdoom-1.10/p_sight.c": {
+      "status": "adapted",
+      "notes": "Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado."
     }
   }
 }
