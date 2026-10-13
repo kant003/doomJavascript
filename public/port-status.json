@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 29,
-    "partial": 10,
-    "pending": 83
+    "adapted": 30,
+    "partial": 11,
+    "pending": 81
   },
   "files": [
     {
@@ -455,7 +455,7 @@
       "target": "src/linuxdoom-1.10/info.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.ts",
       "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes.",
+      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes.",
       "lines": 4670,
       "sha256": "e09631527669ee528bdae20a47be79e1cb33972b39964c33ac4814e1701a0949"
     },
@@ -632,10 +632,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_enemy.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_enemy.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_enemy.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes.",
       "lines": 2008,
       "sha256": "bfe1e3c039443d787e4a0dcb485720c9707f3381b69b00ad35f3e52796bfeec0"
     },
@@ -731,10 +731,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_pspr.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_pspr.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_pspr.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "30 funciones originales: estados psprite, selección/munición, subida/bajada, disparos, flashes y BFG spray. 20 acciones reales enlazables; hitscan, daño y sonido mediante contexto obligatorio.",
       "lines": 879,
       "sha256": "b47100f9c2c2c4f7913831c170bff55161af2d5d01f5467dbbc6be081c4f1af1"
     },

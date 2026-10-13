@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **29** · Parcial: **10** · Pendiente: **83**
+Traducido: **24** · Adaptado a web: **30** · Parcial: **11** · Pendiente: **81**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -59,7 +59,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/i_system.h` | `src/linuxdoom-1.10/i_system.h.ts` | Parcial | Interfaz parcial de plataforma. |
 | `linuxdoom-1.10/i_video.c` | `src/linuxdoom-1.10/i_video.ts` | Parcial | Canvas y teclado web. Entrada de ratón/joystick pendiente. |
 | `linuxdoom-1.10/i_video.h` | `src/linuxdoom-1.10/i_video.h.ts` | Adaptado a web | Interfaz Canvas; eventos devueltos al llamador. |
-| `linuxdoom-1.10/info.c` | `src/linuxdoom-1.10/info.ts` | Parcial | 138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes. |
+| `linuxdoom-1.10/info.c` | `src/linuxdoom-1.10/info.ts` | Parcial | 138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes. |
 | `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo. |
 | `linuxdoom-1.10/m_argv.c` | `src/linuxdoom-1.10/m_argv.ts` | Adaptado a web | Argumentos suministrados por la web. |
 | `linuxdoom-1.10/m_argv.h` | `src/linuxdoom-1.10/m_argv.h.ts` | Traducido |  |
@@ -79,7 +79,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/m_swap.h` | `src/linuxdoom-1.10/m_swap.h.ts` | Traducido |  |
 | `linuxdoom-1.10/p_ceilng.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_doors.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_enemy.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_enemy.c` | `src/linuxdoom-1.10/p_enemy.ts` | Parcial | P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes. |
 | `linuxdoom-1.10/p_floor.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_inter.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_inter.h` | — | Pendiente |  |
@@ -90,7 +90,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_mobj.c` | `src/linuxdoom-1.10/p_mobj.ts` | Adaptado a web | 16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido. |
 | `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
 | `linuxdoom-1.10/p_plats.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_pspr.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_pspr.c` | `src/linuxdoom-1.10/p_pspr.ts` | Adaptado a web | 30 funciones originales: estados psprite, selección/munición, subida/bajada, disparos, flashes y BFG spray. 20 acciones reales enlazables; hitscan, daño y sonido mediante contexto obligatorio. |
 | `linuxdoom-1.10/p_pspr.h` | `src/linuxdoom-1.10/p_pspr.h.ts` | Traducido | Enums, flags y estructura pspdef_t. |
 | `linuxdoom-1.10/p_saveg.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_saveg.h` | — | Pendiente |  |

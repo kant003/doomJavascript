@@ -27,18 +27,8 @@ import { demoWad } from '../src/web/demo';
 
 import { createPlayer } from './helpers/player';
 
-function init() {
-    W_InitFile({name:'demo.wad',data:demoWad()});R_InitData();P_LoadMapData(W_GetNumForName('E1M1'));
-    P_InitThinkers();P_ResetLevelTime();P_ResetItemRespawnQueue();M_ClearRandom();I_LinkStateActions({},false);
-    const sounds:{origin:mobj_t;sound:sfxenum_t}[]=[],stopped:mobj_t[]=[],calls:string[]=[];
-    const missing=(name:string):never=>{throw new Error(`Test dependency not configured: ${name}`);};
-    const g:mobj_context_t={gameskill:skill_t.sk_medium,deathmatch:0,netgame:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},createPlayer),
-        playeringame:[false,false,false,false],consoleplayer:0,playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,ceilingline:null,linetarget:null,attackrange:0,
-        P_TryMove:()=>missing('P_TryMove'),P_CheckPosition:()=>missing('P_CheckPosition'),P_SlideMove:()=>missing('P_SlideMove'),P_AimLineAttack:()=>missing('P_AimLineAttack'),
-        S_StartSound:(origin,sound)=>sounds.push({origin,sound}),S_StopSound:origin=>stopped.push(origin),
-        G_PlayerReborn:()=>missing('G_PlayerReborn'),P_SetupPsprites:()=>missing('P_SetupPsprites'),ST_Start:()=>calls.push('status'),HU_Start:()=>calls.push('hud')};
-    P_InitMobjContext(g);return {g,sounds,stopped,calls};
-}
+import { createMobjWorld as init } from './helpers/mobj-world';
+
 function lampType():MT {return mobjinfo.findIndex(i=>i.doomednum===2028);}
 function list():mobj_t[]{const result:mobj_t[]=[];for(let a=m.sectors[0].thinglist;a;a=a.snext)result.push(a);return result;}
 function allowMove(g:mobj_context_t,targets:{x:number;y:number}[]=[]):void {

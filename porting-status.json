@@ -224,7 +224,7 @@
     },
     "linuxdoom-1.10/info.c": {
       "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes."
+      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes."
     },
     "linuxdoom-1.10/sounds.h": {
       "status": "partial",
@@ -253,6 +253,14 @@
     "linuxdoom-1.10/p_user.c": {
       "status": "adapted",
       "notes": "Cinco funciones originales: thrust, bob/altura, movimiento, muerte y ticker de jugador. Contexto obligatorio de psprites, sector especial y uso; control aún sin conectar al bucle web."
+    },
+    "linuxdoom-1.10/p_pspr.c": {
+      "status": "adapted",
+      "notes": "30 funciones originales: estados psprite, selección/munición, subida/bajada, disparos, flashes y BFG spray. 20 acciones reales enlazables; hitscan, daño y sonido mediante contexto obligatorio."
+    },
+    "linuxdoom-1.10/p_enemy.c": {
+      "status": "partial",
+      "notes": "P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes."
     }
   }
 }

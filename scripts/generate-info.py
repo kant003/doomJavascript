@@ -22,7 +22,7 @@ fields=re.findall(r'int\s+(\w+)\s*;',re.search(r'typedef struct\s*\{([^{}]+)\}\s
 actions=sorted(set(re.findall(r'\bA_\w+\b',statebody)))
 code='''import { spritenum_t, statenum_t } from './info.h';
 import type { state_t, mobjinfo_t } from './info.h';
-import type { actionf_p1 } from './d_think.h';
+import type { actionf_p1, actionf_p2 } from './d_think.h';
 import { sfxenum_t } from './sounds.h';
 import { mobjflag_t } from './p_mobj.h';
 import { FRACUNIT } from './m_fixed.h';
@@ -31,22 +31,23 @@ code+='export const sprnames = '+repr(names).replace("'",'"')+';\n'
 symbols=[None if row.split(',')[3].strip()=='NULL' else row.split(',')[3].strip() for row in rows]
 code+='export const stateActionSymbols: (string | null)[] = '+repr(symbols).replace("'",'"').replace('None','null')+';\n'
 code+='export const stateActionNames = '+repr(actions).replace("'",'"')+' as const;\n'
-code+='''const bindings = new Map<string, actionf_p1>();
-const pointers = new Map<string, actionf_p1>();
-function actionFor(name: string): actionf_p1 {
+code+='''export type stateaction_t = actionf_p1 | actionf_p2;
+const bindings = new Map<string, stateaction_t>();
+const pointers = new Map<string, actionf_p2>();
+function actionFor(name: string): actionf_p2 {
     let pointer = pointers.get(name);
     if (!pointer) {
-        pointer = (argument: unknown): void => {
+        pointer = (argument: unknown, secondArgument: unknown): void => {
             const action = bindings.get(name);
             if (!action) throw new Error(`State action is not linked: ${name}`);
-            action(argument);
+            (action as actionf_p2)(argument,secondArgument);
         };
         pointers.set(name,pointer);
     }
     return pointer;
 }
 // Linking incomplete actions is permitted only explicitly. Execution always fails for a missing symbol.
-export function I_LinkStateActions(actions: Readonly<Record<string,actionf_p1>>, requireComplete = true): void {
+export function I_LinkStateActions(actions: Readonly<Record<string,stateaction_t>>, requireComplete = true): void {
     const known = new Set<string>(stateActionNames);
     for (const name of Object.keys(actions)) if (!known.has(name)) throw new Error(`Unknown state action: ${name}`);
     if (requireComplete) for (const name of stateActionNames) if (!actions[name]) throw new Error(`Missing state action: ${name}`);
