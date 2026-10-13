@@ -92,15 +92,15 @@
     },
     "linuxdoom-1.10/v_video.c": {
       "status": "adapted",
-      "notes": "Punteros convertidos a offsets y Uint8Array; validaci\u00f3n binaria adicional; gamma literal."
+      "notes": "Punteros convertidos a offsets y Uint8Array; validación binaria adicional; gamma literal."
     },
     "linuxdoom-1.10/v_video.h": {
       "status": "adapted",
-      "notes": "Reexports y tipos de la implementaci\u00f3n web."
+      "notes": "Reexports y tipos de la implementación web."
     },
     "linuxdoom-1.10/w_wad.c": {
       "status": "adapted",
-      "notes": "Archivos en memoria; carga as\u00edncrona en web; reload expl\u00edcito; GC en lugar de Z_Zone; perfil devuelto como texto."
+      "notes": "Archivos en memoria; carga asíncrona en web; reload explícito; GC en lugar de Z_Zone; perfil devuelto como texto."
     },
     "linuxdoom-1.10/w_wad.h": {
       "status": "adapted",
@@ -120,7 +120,7 @@
     },
     "linuxdoom-1.10/i_video.c": {
       "status": "partial",
-      "notes": "Canvas y teclado web. Entrada de rat\u00f3n/joystick pendiente."
+      "notes": "Canvas y teclado web. Entrada de ratón/joystick pendiente."
     },
     "linuxdoom-1.10/i_video.h": {
       "status": "adapted",
@@ -144,15 +144,15 @@
     },
     "linuxdoom-1.10/d_think.h": {
       "status": "adapted",
-      "notes": "Puntero de la uni\u00f3n actionf_t como callable \u00fanico; referencias enlazadas y marcador -1."
+      "notes": "Puntero de la unión actionf_t como callable único; referencias enlazadas y marcador -1."
     },
     "linuxdoom-1.10/p_mobj.h": {
       "status": "translated",
-      "notes": "Flags y todos los campos de mobj_t; implementaci\u00f3n p_mobj.c pendiente."
+      "notes": "Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente."
     },
     "linuxdoom-1.10/d_player.h": {
       "status": "translated",
-      "notes": "Todos los campos de player_t, intermisi\u00f3n y enums."
+      "notes": "Todos los campos de player_t, intermisión y enums."
     },
     "linuxdoom-1.10/p_pspr.h": {
       "status": "translated",
@@ -160,7 +160,7 @@
     },
     "linuxdoom-1.10/r_defs.h": {
       "status": "adapted",
-      "notes": "Tipos de mapa/render; spans con base expl\u00edcita y visplanes con arrays acolchados."
+      "notes": "Tipos de mapa/render; spans con base explícita y visplanes con arrays acolchados."
     },
     "linuxdoom-1.10/r_state.h": {
       "status": "adapted",
@@ -168,15 +168,15 @@
     },
     "linuxdoom-1.10/r_data.c": {
       "status": "adapted",
-      "notes": "PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto expl\u00edcito; GC sustituye Z_Zone."
+      "notes": "PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone."
     },
     "linuxdoom-1.10/r_data.h": {
       "status": "adapted",
-      "notes": "Interfaz de recursos; precache recibe contexto de juego expl\u00edcito."
+      "notes": "Interfaz de recursos; precache recibe contexto de juego explícito."
     },
     "linuxdoom-1.10/p_setup.c": {
       "status": "partial",
-      "notes": "Todos los lectores geom\u00e9tricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes."
+      "notes": "Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes."
     },
     "linuxdoom-1.10/p_setup.h": {
       "status": "partial",
@@ -184,11 +184,11 @@
     },
     "linuxdoom-1.10/r_main.c": {
       "status": "adapted",
-      "notes": "Geometr\u00eda, proyecci\u00f3n, luz, R_Init/R_SetupFrame/R_RenderPlayerView; NetUpdate inyectado obligatoriamente en el frame de jugador."
+      "notes": "Geometría, proyección, luz, R_Init/R_SetupFrame/R_RenderPlayerView; NetUpdate inyectado obligatoriamente en el frame de jugador."
     },
     "linuxdoom-1.10/r_main.h": {
       "status": "adapted",
-      "notes": "Interfaz completa de geometr\u00eda y render; globals como view."
+      "notes": "Interfaz completa de geometría y render; globals como view."
     },
     "linuxdoom-1.10/r_bsp.c": {
       "status": "adapted",
@@ -200,7 +200,7 @@
     },
     "linuxdoom-1.10/r_plane.c": {
       "status": "adapted",
-      "notes": "Visplanes, spans de suelos/techos y cielo; buffers acolchados, l\u00edmites expl\u00edcitos y GC."
+      "notes": "Visplanes, spans de suelos/techos y cielo; buffers acolchados, límites explícitos y GC."
     },
     "linuxdoom-1.10/r_plane.h": {
       "status": "adapted",
@@ -208,7 +208,7 @@
     },
     "linuxdoom-1.10/r_segs.c": {
       "status": "adapted",
-      "notes": "Tiers opacos y masked midtextures con recorte y orden por profundidad; composite masked fuera del formato de cache cl\u00e1sico se rechaza."
+      "notes": "Tiers opacos y masked midtextures con recorte y orden por profundidad; composite masked fuera del formato de cache clásico se rechaza."
     },
     "linuxdoom-1.10/r_segs.h": {
       "status": "adapted",
@@ -216,19 +216,35 @@
     },
     "linuxdoom-1.10/r_things.c": {
       "status": "adapted",
-      "notes": "Frames/rotaciones, proyecci\u00f3n, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros."
+      "notes": "Frames/rotaciones, proyección, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros."
     },
     "linuxdoom-1.10/r_things.h": {
       "status": "adapted",
-      "notes": "Interfaz del renderer de sprites. Prototipos obsoletos sin implementaci\u00f3n en C no se a\u00f1aden como stubs."
+      "notes": "Interfaz del renderer de sprites. Prototipos obsoletos sin implementación en C no se añaden como stubs."
     },
     "linuxdoom-1.10/info.c": {
       "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan expl\u00edcitamente; sus implementaciones siguen pendientes."
+      "notes": "138 nombres, 967 estados y 137 actores copiados literalmente. Las 74 acciones se enlazan explícitamente; sus implementaciones siguen pendientes."
     },
     "linuxdoom-1.10/sounds.h": {
       "status": "partial",
-      "notes": "Enums de efectos/m\u00fasica para info.c; estructuras y tablas de audio pendientes."
+      "notes": "Enums de efectos/música para info.c; estructuras y tablas de audio pendientes."
+    },
+    "linuxdoom-1.10/p_tick.c": {
+      "status": "adapted",
+      "notes": "Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free."
+    },
+    "linuxdoom-1.10/p_tick.h": {
+      "status": "adapted",
+      "notes": "P_Ticker con contexto explícito de juego."
+    },
+    "linuxdoom-1.10/p_maputl.c": {
+      "status": "adapted",
+      "notes": "Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante."
+    },
+    "linuxdoom-1.10/p_local.h": {
+      "status": "partial",
+      "notes": "Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes."
     }
   }
 }

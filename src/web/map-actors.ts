@@ -9,8 +9,10 @@ import { FF_FRAMEMASK } from '../linuxdoom-1.10/p_pspr.h';
 import { FRACUNIT } from '../linuxdoom-1.10/m_fixed.h';
 import { ANG45 } from '../linuxdoom-1.10/tables.h';
 import { R_PointInSubsector } from '../linuxdoom-1.10/r_main';
+import { P_SetThingPosition } from '../linuxdoom-1.10/p_maputl';
 export function createStaticMapActors():mobj_t[]{
     for(const sector of mapstate.sectors)sector.thinglist=null;
+    mapstate.blocklinks.fill(null);
     const actors:mobj_t[]=[];
     for(const thing of mapstate.things){
         const type=mobjinfo.findIndex(info=>info.doomednum===thing.type);if(type<0)continue;
@@ -23,7 +25,7 @@ export function createStaticMapActors():mobj_t[]{
             floorz:sector.floorheight,ceilingz:sector.ceilingheight,radius:info.radius,height:info.height,momx:0,momy:0,momz:0,validcount:0,
             type:type as mobjtype_t,info,tics:state.tics,state,flags:info.flags,health:info.spawnhealth,movedir:0,movecount:0,target:null,
             reactiontime:info.reactiontime,threshold:0,player:null,lastlook:0,spawnpoint:{...thing},tracer:null};
-        if(!(actor.flags&mobjflag_t.MF_NOSECTOR)){actor.snext=sector.thinglist;if(actor.snext)actor.snext.sprev=actor;sector.thinglist=actor;}
+        P_SetThingPosition(actor);
         actors.push(actor);
     }return actors;
 }

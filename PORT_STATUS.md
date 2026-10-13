@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **24** · Parcial: **9** · Pendiente: **89**
+Traducido: **24** · Adaptado a web: **27** · Parcial: **10** · Pendiente: **85**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -84,9 +84,9 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_inter.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_inter.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_lights.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_local.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_local.h` | `src/linuxdoom-1.10/p_local.h.ts` | Parcial | Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes. |
 | `linuxdoom-1.10/p_map.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_maputl.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_maputl.c` | `src/linuxdoom-1.10/p_maputl.ts` | Adaptado a web | Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante. |
 | `linuxdoom-1.10/p_mobj.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
 | `linuxdoom-1.10/p_plats.c` | — | Pendiente |  |
@@ -101,8 +101,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_spec.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_switch.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_telept.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_tick.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_tick.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_tick.c` | `src/linuxdoom-1.10/p_tick.ts` | Adaptado a web | Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free. |
+| `linuxdoom-1.10/p_tick.h` | `src/linuxdoom-1.10/p_tick.h.ts` | Adaptado a web | P_Ticker con contexto explícito de juego. |
 | `linuxdoom-1.10/p_user.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_bsp.c` | `src/linuxdoom-1.10/r_bsp.ts` | Adaptado a web | Recorte angular, solidsegs/portales, BBox, BSP front-to-back y recogida de sprites por sector. |
 | `linuxdoom-1.10/r_bsp.h` | `src/linuxdoom-1.10/r_bsp.h.ts` | Adaptado a web | Interfaz de visibilidad; globals compartidos como bsp/wall/planes. |

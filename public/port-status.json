@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 24,
-    "partial": 9,
-    "pending": 89
+    "adapted": 27,
+    "partial": 10,
+    "pending": 85
   },
   "files": [
     {
@@ -677,10 +677,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_local.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_local.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_local.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Constantes y tipos de geometría/interceptos, utilidades espaciales y thinkers. Declaraciones del resto del gameplay pendientes.",
       "lines": 289,
       "sha256": "8d71f591ed5f26580042d991558c89d674b683f9cd1c2801ac7714de04b0185f"
     },
@@ -695,10 +695,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_maputl.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_maputl.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_maputl.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante.",
       "lines": 883,
       "sha256": "4d93e06d11160fb935e94750babbdcc9a4469d96f593764872db87cefd37c0a1"
     },
@@ -830,19 +830,19 @@
     },
     {
       "source": "linuxdoom-1.10/p_tick.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_tick.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_tick.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free.",
       "lines": 158,
       "sha256": "21a638b7b1ae4fcb6b6892a731cd27d20f44e2df12dd3325c8215ca4c9aee22f"
     },
     {
       "source": "linuxdoom-1.10/p_tick.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_tick.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_tick.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "P_Ticker con contexto explícito de juego.",
       "lines": 44,
       "sha256": "a0512fd19e760d5d43e477bfe4fabf686542bc21bc27daa87108cb703fc562a7"
     },
