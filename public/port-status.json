@@ -1,0 +1,1327 @@
+{
+  "upstream": "https://github.com/id-Software/DOOM",
+  "commit": "a77dfb96cb91780ca334d0d4cfd86957558007e0",
+  "completeEngine": false,
+  "counts": {
+    "translated": 21,
+    "adapted": 9,
+    "partial": 5,
+    "pending": 111
+  },
+  "files": [
+    {
+      "source": "ipx/DOOMNET.C",
+      "target": null,
+      "plannedTarget": "src/ipx/DOOMNET.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 73,
+      "sha256": "ea7a20590ebb0965fba6e303854f6a2efa4a6773a09e17a5fcb84dbca3aeafd1"
+    },
+    {
+      "source": "ipx/DOOMNET.H",
+      "target": null,
+      "plannedTarget": "src/ipx/DOOMNET.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 58,
+      "sha256": "0bd13d84e327d58526564e78692037fa5e90274d900526466d9d9819d7c0956a"
+    },
+    {
+      "source": "ipx/IPXNET.C",
+      "target": null,
+      "plannedTarget": "src/ipx/IPXNET.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 294,
+      "sha256": "93a8e2da63b84d5ac233792efe3f4f41b9ef521d32d9bad1ac104b2b6ed78462"
+    },
+    {
+      "source": "ipx/IPXNET.H",
+      "target": null,
+      "plannedTarget": "src/ipx/IPXNET.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 117,
+      "sha256": "4b63efda15b65281a309cacc45f953494d30d75a5d920aa32a5fe326a6465deb"
+    },
+    {
+      "source": "ipx/IPXSETUP.C",
+      "target": null,
+      "plannedTarget": "src/ipx/IPXSETUP.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 420,
+      "sha256": "3b648fe31298f97264ffb4cf0479f0863da9129313f5283a0b6d6ad5bda91def"
+    },
+    {
+      "source": "ipx/IPXSTR.H",
+      "target": null,
+      "plannedTarget": "src/ipx/IPXSTR.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 19,
+      "sha256": "62a84f19e61c6cd95370672d4e235d749d22ec20698b5fef71b51c9c5b7088c5"
+    },
+    {
+      "source": "ipx/IPX_FRCH.H",
+      "target": null,
+      "plannedTarget": "src/ipx/IPX_FRCH.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 21,
+      "sha256": "e496ac6780d6f38f998be0f8d92549fd08a79d37f8722aa1b06912fdaadfa7d5"
+    },
+    {
+      "source": "linuxdoom-1.10/am_map.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/am_map.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1349,
+      "sha256": "a439be31195ac73316978e770042813f51251e137758186aa5660856cb146d54"
+    },
+    {
+      "source": "linuxdoom-1.10/am_map.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/am_map.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 52,
+      "sha256": "75c3671cbc7f003e16cc50abe98fe824e595f1c3bf66c2c722e8597a015e40ed"
+    },
+    {
+      "source": "linuxdoom-1.10/d_englsh.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_englsh.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 701,
+      "sha256": "b018968e3aef65e0009d6ec676d40c8731b33e2882758640d3028c530c87a789"
+    },
+    {
+      "source": "linuxdoom-1.10/d_event.h",
+      "target": "src/linuxdoom-1.10/d_event.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/d_event.h.ts",
+      "status": "partial",
+      "notes": "Enums, flags y event_t; cola global de D_PostEvent pendiente.",
+      "lines": 122,
+      "sha256": "24ba8629e157f4f76c4da0821a9f1bf71c34c2aec5cbc1ee4ec5898751225d22"
+    },
+    {
+      "source": "linuxdoom-1.10/d_french.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_french.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 433,
+      "sha256": "018e635134bb064b6c559407221629bc27bc400769d9074dc742510ac7d88086"
+    },
+    {
+      "source": "linuxdoom-1.10/d_items.c",
+      "target": "src/linuxdoom-1.10/d_items.ts",
+      "plannedTarget": "src/linuxdoom-1.10/d_items.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 138,
+      "sha256": "76531d5366de1157cf3d8510ef749617cfc46b6e721845bda4324cd697028fe6"
+    },
+    {
+      "source": "linuxdoom-1.10/d_items.h",
+      "target": "src/linuxdoom-1.10/d_items.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/d_items.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 52,
+      "sha256": "322a73acb345703c9f00ae7528900daa3a49bd27c670d5acee4196c1ded74bda"
+    },
+    {
+      "source": "linuxdoom-1.10/d_main.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_main.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1171,
+      "sha256": "a100743fc5e53273e749ffbd3af13f5d995020093f4942b25f6370ab6275ee2a"
+    },
+    {
+      "source": "linuxdoom-1.10/d_main.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_main.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 64,
+      "sha256": "adb0988d417528bdb689f5249cc650360f5a81936c797346d8390b80af0c4ca9"
+    },
+    {
+      "source": "linuxdoom-1.10/d_net.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_net.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 767,
+      "sha256": "8f28965cb410bc918c7741c4e93e683292e8c9e18cbcc87e242f564863bb5f87"
+    },
+    {
+      "source": "linuxdoom-1.10/d_net.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_net.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 149,
+      "sha256": "54d77e10fe98e7ad640c711e7146f1440e4bd3f73e46d27905f9c19b8117ac3d"
+    },
+    {
+      "source": "linuxdoom-1.10/d_player.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_player.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 219,
+      "sha256": "9c9a342ab7c3661ab02d32890bd0d74ede94a0745ae0d622de83a9ae11046ffb"
+    },
+    {
+      "source": "linuxdoom-1.10/d_textur.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_textur.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 51,
+      "sha256": "fac8baf1195a1a1a00f872271c7e159ad8b66a3632385128403ed99f99cf5ba1"
+    },
+    {
+      "source": "linuxdoom-1.10/d_think.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/d_think.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 79,
+      "sha256": "a8d3d4943495c729cd33b67eff1b56d801f1cf8cd0db74fb5d63b613c4eabddc"
+    },
+    {
+      "source": "linuxdoom-1.10/d_ticcmd.h",
+      "target": "src/linuxdoom-1.10/d_ticcmd.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/d_ticcmd.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 53,
+      "sha256": "2f70caa7c187365850e467254d8b0a31c07ea304d59339c68fde63d05274d146"
+    },
+    {
+      "source": "linuxdoom-1.10/doomdata.h",
+      "target": "src/linuxdoom-1.10/doomdata.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/doomdata.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 222,
+      "sha256": "f0504fd3926491ee56c61c8e9c732f0bf7e74306cba482eb267beda5022accca"
+    },
+    {
+      "source": "linuxdoom-1.10/doomdef.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/doomdef.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 38,
+      "sha256": "ec38f30185ae4cd79e3ccfc1a1f22489afdadb5cf5aad2e1b2c46133613c2807"
+    },
+    {
+      "source": "linuxdoom-1.10/doomdef.h",
+      "target": "src/linuxdoom-1.10/doomdef.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/doomdef.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 338,
+      "sha256": "643daca966fb762fa86f39ce9a1779355117578527bf2e295163647f9ad0d74e"
+    },
+    {
+      "source": "linuxdoom-1.10/doomstat.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/doomstat.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 46,
+      "sha256": "12d068a8e82d2fa07baf608d8463d9a27dc0b609503d9ef76794de3c5edbf8d4"
+    },
+    {
+      "source": "linuxdoom-1.10/doomstat.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/doomstat.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 296,
+      "sha256": "c8b9eb311ec529a371c1c49dbd9a571ee07976dfd1bdc83d26b77ff6ba163355"
+    },
+    {
+      "source": "linuxdoom-1.10/doomtype.h",
+      "target": "src/linuxdoom-1.10/doomtype.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/doomtype.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 66,
+      "sha256": "e2b8da9ed44c6686a282af8e14a53b605ecc781d05ccd78579fcf57c720297e6"
+    },
+    {
+      "source": "linuxdoom-1.10/dstrings.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/dstrings.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 72,
+      "sha256": "41cff21632b61f06ce84e0148341925f195acae0ceaa729a34beddfc3e918187"
+    },
+    {
+      "source": "linuxdoom-1.10/dstrings.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/dstrings.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 66,
+      "sha256": "de1d24709df885ac93ddc5c1b86dbc2e0baad1027dde01ea09076d9e28778bc0"
+    },
+    {
+      "source": "linuxdoom-1.10/f_finale.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/f_finale.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 738,
+      "sha256": "c443ab18b6fa27df7033ac1ced0e86ab7c43c6e2cf2f8e428348d67d40a35670"
+    },
+    {
+      "source": "linuxdoom-1.10/f_finale.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/f_finale.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 53,
+      "sha256": "ee5cb17f104a894de9fed452dfad04df3e070a7bc70e65d9d336421f7dee9359"
+    },
+    {
+      "source": "linuxdoom-1.10/f_wipe.c",
+      "target": "src/linuxdoom-1.10/f_wipe.ts",
+      "plannedTarget": "src/linuxdoom-1.10/f_wipe.ts",
+      "status": "adapted",
+      "notes": "Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC.",
+      "lines": 302,
+      "sha256": "eafbc10e5a56ded32deb9e9cd2d25fae4b7ecea16c1a2dc0ed380c8f2d2b2a22"
+    },
+    {
+      "source": "linuxdoom-1.10/f_wipe.h",
+      "target": "src/linuxdoom-1.10/f_wipe.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/f_wipe.h.ts",
+      "status": "adapted",
+      "notes": "Resultado de ScreenWipe convertido a boolean.",
+      "lines": 71,
+      "sha256": "fff2fb466d978eb4d482464899302830a377e305b0d31c9524072ec569cfaff0"
+    },
+    {
+      "source": "linuxdoom-1.10/g_game.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/g_game.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1690,
+      "sha256": "bc8e2e0d76a70f8120174946641a82c46f0116a624f51c011b292e2ffcb78a29"
+    },
+    {
+      "source": "linuxdoom-1.10/g_game.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/g_game.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 79,
+      "sha256": "ab47e29d7506cda9a702073c451d6e533204e49a064a0ccc6e98ae4c5e9faa60"
+    },
+    {
+      "source": "linuxdoom-1.10/hu_lib.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/hu_lib.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 354,
+      "sha256": "2e0f06d46e0c581bdc59fc66791c9001d23cca0c0e25983e1f74ac9095e8f3f3"
+    },
+    {
+      "source": "linuxdoom-1.10/hu_lib.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/hu_lib.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 196,
+      "sha256": "611143caa98ef13992845fde571be9a9c3d944fa850ee2f2d8b0406aae9ed02e"
+    },
+    {
+      "source": "linuxdoom-1.10/hu_stuff.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/hu_stuff.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 759,
+      "sha256": "0273745e404b2d151eb231fd4146e88d4fccef87412ac937c87ba7253141db5a"
+    },
+    {
+      "source": "linuxdoom-1.10/hu_stuff.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/hu_stuff.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 66,
+      "sha256": "09a1c0ef0434b0b46e9ea3b43232898b7b939b07bf18f302458227948d98579c"
+    },
+    {
+      "source": "linuxdoom-1.10/i_main.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/i_main.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 45,
+      "sha256": "1d6b65a4f4857a28266c105b6d40f1b804c6b94a201c0808f9beafc48c4c4e06"
+    },
+    {
+      "source": "linuxdoom-1.10/i_net.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/i_net.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 348,
+      "sha256": "bc7637299d67665e8294e86b7089df57ccffcf067f6b0017eaab5b78d6a52fca"
+    },
+    {
+      "source": "linuxdoom-1.10/i_net.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/i_net.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 45,
+      "sha256": "0c32e01a687cda4e8db3f87ec38db53b7c4c9826e69a128f6dc7a2121a622f5a"
+    },
+    {
+      "source": "linuxdoom-1.10/i_sound.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/i_sound.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 985,
+      "sha256": "8a11322daa57ba407f7a0d85e55e5e60e971244f9d496f928823ef5e3a9d32d8"
+    },
+    {
+      "source": "linuxdoom-1.10/i_sound.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/i_sound.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 122,
+      "sha256": "7a4171979ac20b40c02969be19d404cbc77e4493aa69bb22c0eeaf1f9b8c519b"
+    },
+    {
+      "source": "linuxdoom-1.10/i_system.c",
+      "target": "src/linuxdoom-1.10/i_system.ts",
+      "plannedTarget": "src/linuxdoom-1.10/i_system.ts",
+      "status": "partial",
+      "notes": "Tiempo, memoria, errores y BaseTiccmd; I_Init/I_Quit con audio/red/guardado pendientes.",
+      "lines": 183,
+      "sha256": "19bd049d4c421a8893f6b262569400c2b068a7cee03f18dbd78999ee27a8b3a0"
+    },
+    {
+      "source": "linuxdoom-1.10/i_system.h",
+      "target": "src/linuxdoom-1.10/i_system.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/i_system.h.ts",
+      "status": "partial",
+      "notes": "Interfaz parcial de plataforma.",
+      "lines": 97,
+      "sha256": "426ccb2f2b29facaa80e0a43165bb62395ceda6dbb8ed27d0a3cfc99a91a6abc"
+    },
+    {
+      "source": "linuxdoom-1.10/i_video.c",
+      "target": "src/linuxdoom-1.10/i_video.ts",
+      "plannedTarget": "src/linuxdoom-1.10/i_video.ts",
+      "status": "partial",
+      "notes": "Canvas y teclado web. Entrada de ratón/joystick pendiente.",
+      "lines": 1050,
+      "sha256": "6d5c85ca7e5e97ee3ac0ebb3e97e3fcf9e3c1769e21568872001742b2bb7a041"
+    },
+    {
+      "source": "linuxdoom-1.10/i_video.h",
+      "target": "src/linuxdoom-1.10/i_video.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/i_video.h.ts",
+      "status": "adapted",
+      "notes": "Interfaz Canvas; eventos devueltos al llamador.",
+      "lines": 63,
+      "sha256": "d9af47ac4d55f1acb0dd1060b663b8d2c085688a39807b101a9ff082800b4e42"
+    },
+    {
+      "source": "linuxdoom-1.10/info.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/info.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 4670,
+      "sha256": "e09631527669ee528bdae20a47be79e1cb33972b39964c33ac4814e1701a0949"
+    },
+    {
+      "source": "linuxdoom-1.10/info.h",
+      "target": "src/linuxdoom-1.10/info.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/info.h.ts",
+      "status": "partial",
+      "notes": "Enums sprite/state/mobj traducidos; structs y tablas info.c pendientes.",
+      "lines": 1340,
+      "sha256": "3e68ee6cc13323e69cbcf208e9a0af7b13867bead49e66d765abefa5d914b0dd"
+    },
+    {
+      "source": "linuxdoom-1.10/m_argv.c",
+      "target": "src/linuxdoom-1.10/m_argv.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_argv.ts",
+      "status": "adapted",
+      "notes": "Argumentos suministrados por la web.",
+      "lines": 56,
+      "sha256": "f303d6d574b8d3aea6116d426db2e6b00de94b90c405c7b98ac4bb8dc3521dac"
+    },
+    {
+      "source": "linuxdoom-1.10/m_argv.h",
+      "target": "src/linuxdoom-1.10/m_argv.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_argv.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 42,
+      "sha256": "388205a8bda230f472caafac172a42621c72693f018e66c7c71389e4ea24c7b4"
+    },
+    {
+      "source": "linuxdoom-1.10/m_bbox.c",
+      "target": "src/linuxdoom-1.10/m_bbox.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_bbox.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 64,
+      "sha256": "98f3aea4f43d4d75fe452a25a65678fbd8368cfef3928b869767996e2165f42c"
+    },
+    {
+      "source": "linuxdoom-1.10/m_bbox.h",
+      "target": "src/linuxdoom-1.10/m_bbox.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_bbox.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 55,
+      "sha256": "fc041f774ff1f7b2b05d5bd8dd35a9496cf4dd4ca2a0a2df2420ac6f827b0b5d"
+    },
+    {
+      "source": "linuxdoom-1.10/m_cheat.c",
+      "target": "src/linuxdoom-1.10/m_cheat.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_cheat.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 101,
+      "sha256": "e4baaf3be54d0c06b72d6c4af48c62ecbdde23f052bd421f4fed27689815973e"
+    },
+    {
+      "source": "linuxdoom-1.10/m_cheat.h",
+      "target": "src/linuxdoom-1.10/m_cheat.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_cheat.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 58,
+      "sha256": "92f43c6df575a07bc394981f1beb1b901889f84bce67b557b8274f0379f0ae88"
+    },
+    {
+      "source": "linuxdoom-1.10/m_fixed.c",
+      "target": "src/linuxdoom-1.10/m_fixed.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_fixed.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 87,
+      "sha256": "a4472841bc8890c5d5a41b325ecf56d10d7026a7489967aa29100b5dee759fea"
+    },
+    {
+      "source": "linuxdoom-1.10/m_fixed.h",
+      "target": "src/linuxdoom-1.10/m_fixed.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_fixed.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 51,
+      "sha256": "67aa3925a905d448fb947fb7358093a39367f534c3e26e3f8b06228f553227ef"
+    },
+    {
+      "source": "linuxdoom-1.10/m_menu.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/m_menu.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1893,
+      "sha256": "62d58889f7dcbdef4a52efd081beb33fed85d7ed46c35e6d7d634652d0ef3e50"
+    },
+    {
+      "source": "linuxdoom-1.10/m_menu.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/m_menu.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 67,
+      "sha256": "ccfc1f2abe50cbb78e83d2ec35eb3812003945f2d668e69551b5b2d56bfc4dfa"
+    },
+    {
+      "source": "linuxdoom-1.10/m_misc.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/m_misc.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 534,
+      "sha256": "97f8771f7ad72e0fa852e9f6940de770872baa9fe425775025cacbd14dde86b3"
+    },
+    {
+      "source": "linuxdoom-1.10/m_misc.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/m_misc.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 65,
+      "sha256": "5cf237e545bd93d01a59f3696afa02073beedf8131ea23f30924fd5cc3891c7b"
+    },
+    {
+      "source": "linuxdoom-1.10/m_random.c",
+      "target": "src/linuxdoom-1.10/m_random.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_random.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 76,
+      "sha256": "8d89f5cfcbbd0170e46b55538c4c272b3cf5b5d7dce91023b8aa8d9b922b21ee"
+    },
+    {
+      "source": "linuxdoom-1.10/m_random.h",
+      "target": "src/linuxdoom-1.10/m_random.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_random.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 47,
+      "sha256": "31ec17387c9b7148f8e9762b71cccebaa199bffece76e1103bdb64f0ae615caa"
+    },
+    {
+      "source": "linuxdoom-1.10/m_swap.c",
+      "target": "src/linuxdoom-1.10/m_swap.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_swap.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 57,
+      "sha256": "3622bd59399d7c0b740014fe75f2c2e222e4940a76782755298050e640e2f4bb"
+    },
+    {
+      "source": "linuxdoom-1.10/m_swap.h",
+      "target": "src/linuxdoom-1.10/m_swap.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/m_swap.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 52,
+      "sha256": "04e76b9143f1d78a8f5cbb11b8d5022b2d5b0f18f644615384fa793f741ffd19"
+    },
+    {
+      "source": "linuxdoom-1.10/p_ceilng.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_ceilng.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 335,
+      "sha256": "0b4de846cef16d92f95275e70e568ffabef6d6ee1a2b60609604dce42f011907"
+    },
+    {
+      "source": "linuxdoom-1.10/p_doors.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_doors.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 764,
+      "sha256": "2e44a6051f27206971c7bf9629431db201e1dc3441d974119ec9d88655e5ec12"
+    },
+    {
+      "source": "linuxdoom-1.10/p_enemy.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_enemy.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 2008,
+      "sha256": "bfe1e3c039443d787e4a0dcb485720c9707f3381b69b00ad35f3e52796bfeec0"
+    },
+    {
+      "source": "linuxdoom-1.10/p_floor.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_floor.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 555,
+      "sha256": "c22ad7b7112d28c8b8c54a26ff611b98664a6d7a40d8d300680e6ca465468d47"
+    },
+    {
+      "source": "linuxdoom-1.10/p_inter.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_inter.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 918,
+      "sha256": "72e9bbabe560ef548c2f2522494786347d5c831b0e1f0ecb5cb29d8d8e682356"
+    },
+    {
+      "source": "linuxdoom-1.10/p_inter.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_inter.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 41,
+      "sha256": "348edaf0dbbac0b455e54823d3e8bdab72ac210bf22cd17cffc519596661fa2a"
+    },
+    {
+      "source": "linuxdoom-1.10/p_lights.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_lights.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 357,
+      "sha256": "0ade56b8514b3e11fd13af2be7a787531e4ffb6b84c49e489d678d42b5abfdca"
+    },
+    {
+      "source": "linuxdoom-1.10/p_local.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_local.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 289,
+      "sha256": "8d71f591ed5f26580042d991558c89d674b683f9cd1c2801ac7714de04b0185f"
+    },
+    {
+      "source": "linuxdoom-1.10/p_map.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_map.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1339,
+      "sha256": "752c7873c81fe6b10b77a08b7ef5716fe49c3103f6caa02097ed299e6e04736c"
+    },
+    {
+      "source": "linuxdoom-1.10/p_maputl.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_maputl.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 883,
+      "sha256": "4d93e06d11160fb935e94750babbdcc9a4469d96f593764872db87cefd37c0a1"
+    },
+    {
+      "source": "linuxdoom-1.10/p_mobj.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_mobj.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 988,
+      "sha256": "21a39bdbd746d6fba38660500203216052f0723b8e0ab033ce2a650ada2b403f"
+    },
+    {
+      "source": "linuxdoom-1.10/p_mobj.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_mobj.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 295,
+      "sha256": "85be6ea83fc4b5f95df666c68c8999f7fe5745a5f503d3a441afd66b5f7e5db0"
+    },
+    {
+      "source": "linuxdoom-1.10/p_plats.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_plats.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 314,
+      "sha256": "15f27dd1282ef9730ffce010b1fcaec1283a9cd37e143b863576a690aba514f6"
+    },
+    {
+      "source": "linuxdoom-1.10/p_pspr.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_pspr.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 879,
+      "sha256": "b47100f9c2c2c4f7913831c170bff55161af2d5d01f5467dbbc6be081c4f1af1"
+    },
+    {
+      "source": "linuxdoom-1.10/p_pspr.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_pspr.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 82,
+      "sha256": "21b95a0eb8b901287be5077b780b809e5e4e296393cb63c8e02970646a8f8e67"
+    },
+    {
+      "source": "linuxdoom-1.10/p_saveg.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_saveg.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 586,
+      "sha256": "e961f04355d44a8ef28332108d6a348639370eecfd084e3e90cb8e8c36d2d495"
+    },
+    {
+      "source": "linuxdoom-1.10/p_saveg.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_saveg.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 51,
+      "sha256": "31457a112b24c4bd91df919c9e2c81add41019194492d320f81f2d837ed00bac"
+    },
+    {
+      "source": "linuxdoom-1.10/p_setup.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_setup.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 708,
+      "sha256": "cc56c3ef5eb73aaec4db8be855fd3c192af19bf8f775478d002e9b2e9225872d"
+    },
+    {
+      "source": "linuxdoom-1.10/p_setup.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_setup.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 48,
+      "sha256": "ffffe92a94edde836ca5d2d5db311d003ce03e1dcfe542d948ee8094f1637be0"
+    },
+    {
+      "source": "linuxdoom-1.10/p_sight.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_sight.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 349,
+      "sha256": "81014a71e4155db6da0af21e6ecf14687daf18075fb75322b63bdc254ce11120"
+    },
+    {
+      "source": "linuxdoom-1.10/p_spec.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_spec.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1362,
+      "sha256": "1eed828498af033bd2322402a727e5b66913f5814e4d3fb002712fbcc8825cb1"
+    },
+    {
+      "source": "linuxdoom-1.10/p_spec.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_spec.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 645,
+      "sha256": "95d93e2e3b803126b0ecf6ea42de41d2bce7b2d09ea701e03992f0cc6dae22a3"
+    },
+    {
+      "source": "linuxdoom-1.10/p_switch.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_switch.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 654,
+      "sha256": "ac7effb3c4cfce1ecd8f7d25c93690c9b74cda99c639a47f76c4151a73010358"
+    },
+    {
+      "source": "linuxdoom-1.10/p_telept.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_telept.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 132,
+      "sha256": "b717afb76c138954ca4aef44de3c3c081f91039cb485385afe2fd334fe4802c6"
+    },
+    {
+      "source": "linuxdoom-1.10/p_tick.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_tick.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 158,
+      "sha256": "21a638b7b1ae4fcb6b6892a731cd27d20f44e2df12dd3325c8215ca4c9aee22f"
+    },
+    {
+      "source": "linuxdoom-1.10/p_tick.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_tick.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 44,
+      "sha256": "a0512fd19e760d5d43e477bfe4fabf686542bc21bc27daa87108cb703fc562a7"
+    },
+    {
+      "source": "linuxdoom-1.10/p_user.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/p_user.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 386,
+      "sha256": "ecb5bab44ab9326c9c0d14bd607bc49c669bf048eecda27f7dc4634023a6c4a4"
+    },
+    {
+      "source": "linuxdoom-1.10/r_bsp.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_bsp.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 580,
+      "sha256": "26f3459ca881d09fddfbcf829a4745dde4346597a55ccc8cb4882bc438295407"
+    },
+    {
+      "source": "linuxdoom-1.10/r_bsp.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_bsp.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 72,
+      "sha256": "08ca429757b65ac35798cf9f47ef9dea072e27a5b856fdf300c9fc2fcba5fac6"
+    },
+    {
+      "source": "linuxdoom-1.10/r_data.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_data.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 849,
+      "sha256": "0d0e83faec506d6bbf8d0a7aa5256b8e660f6deebc48c87d2c77bdb6ace4bf8d"
+    },
+    {
+      "source": "linuxdoom-1.10/r_data.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_data.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 62,
+      "sha256": "4dbb1515b2e1be1e2496018365ebd37507f001ae449a181a54a894a70141ed1b"
+    },
+    {
+      "source": "linuxdoom-1.10/r_defs.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_defs.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 490,
+      "sha256": "d8856503bea02282f5f338f3533885e87c6c430ce4f11511d6a04b5fc040db31"
+    },
+    {
+      "source": "linuxdoom-1.10/r_draw.c",
+      "target": "src/linuxdoom-1.10/r_draw.ts",
+      "plannedTarget": "src/linuxdoom-1.10/r_draw.ts",
+      "status": "adapted",
+      "notes": "Variables globales mutables agrupadas en draw; punteros a filas como offsets. Primitivas, no renderer BSP.",
+      "lines": 877,
+      "sha256": "b19edd950d3d56d2d1d6168677d6345c190f081baa8269bfac3d2f3920a36a96"
+    },
+    {
+      "source": "linuxdoom-1.10/r_draw.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_draw.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 115,
+      "sha256": "4ab1c0bbf7dba3712db71ba0ba7901184b2a35a8b6132db40bd0f6c87b74ccfe"
+    },
+    {
+      "source": "linuxdoom-1.10/r_local.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_local.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 53,
+      "sha256": "b92f15cbc8620b38de46512166244ba9f357de4fc8ef32be2f35088bc1cfd443"
+    },
+    {
+      "source": "linuxdoom-1.10/r_main.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_main.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 898,
+      "sha256": "2aae43cf807929a8758f71ed0205fc08017556541ba8df2ea9167c003d0dec5a"
+    },
+    {
+      "source": "linuxdoom-1.10/r_main.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_main.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 172,
+      "sha256": "9576bf120653af7127dcfd754f50e294b76be38bacb3b43f8686111a2dcd501b"
+    },
+    {
+      "source": "linuxdoom-1.10/r_plane.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_plane.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 453,
+      "sha256": "e20397d9218bec009b026911640635d91ecaed17cd256a4d9cfab51780d1336f"
+    },
+    {
+      "source": "linuxdoom-1.10/r_plane.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_plane.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 87,
+      "sha256": "abc99d0fc7845c8e9e73057b14a886b138046d5e432303c87fa5c34879f5903e"
+    },
+    {
+      "source": "linuxdoom-1.10/r_segs.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_segs.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 746,
+      "sha256": "cf89e394506dceb64ad442846a5722fb8a3990f924508e253eaec8f8411d2406"
+    },
+    {
+      "source": "linuxdoom-1.10/r_segs.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_segs.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 44,
+      "sha256": "9343a51c57d93f13098118cfbc23377487b4063ec0dbf447c6aee8a7d0fd68ce"
+    },
+    {
+      "source": "linuxdoom-1.10/r_sky.c",
+      "target": "src/linuxdoom-1.10/r_sky.ts",
+      "plannedTarget": "src/linuxdoom-1.10/r_sky.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 62,
+      "sha256": "6bfc7d79c51943afc1acc774e7c50295d0640838f5e28ec8b6d5bff561ddc7b8"
+    },
+    {
+      "source": "linuxdoom-1.10/r_sky.h",
+      "target": "src/linuxdoom-1.10/r_sky.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/r_sky.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 48,
+      "sha256": "2c4a650afa36997ccb8ff97b7e1a5a0b25c1090a17c9e39b3d66e1d53ea9391e"
+    },
+    {
+      "source": "linuxdoom-1.10/r_state.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_state.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 138,
+      "sha256": "35a0d8f2e6a8f88ff100625708e54a6f04d22506319bef1c08033293e3ca22bd"
+    },
+    {
+      "source": "linuxdoom-1.10/r_things.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_things.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 989,
+      "sha256": "b3ff03ba213782ed6488a9e0fb0afa0a0ee1f5cfbff8ce498c7133e93e01e0e3"
+    },
+    {
+      "source": "linuxdoom-1.10/r_things.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/r_things.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 76,
+      "sha256": "7e7a985f29f971e7e5c14c93c79f8d3462f4a42f5544d4c298a90df00561cf50"
+    },
+    {
+      "source": "linuxdoom-1.10/s_sound.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/s_sound.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 879,
+      "sha256": "4feb68dcba87262903b3c5e1aed3db05fb554c56040c58bac6af97d8920ef2c5"
+    },
+    {
+      "source": "linuxdoom-1.10/s_sound.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/s_sound.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 109,
+      "sha256": "d747126bc8105ef540dee2f6f7e9f17db047dabb2c03a740ddc1bb9f98746b83"
+    },
+    {
+      "source": "linuxdoom-1.10/sounds.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/sounds.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 228,
+      "sha256": "d489534e93fdb20cad1757f6625913bddf10646ab3b21badbeafdc6cecc027d2"
+    },
+    {
+      "source": "linuxdoom-1.10/sounds.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/sounds.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 297,
+      "sha256": "fa5a6c19c689eeb6e4a2df08b1d4efe5c445b3d0cb4081dc3a7d28fdadfd39f8"
+    },
+    {
+      "source": "linuxdoom-1.10/st_lib.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/st_lib.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 293,
+      "sha256": "da10b839e317054a44108bf2401ec7c1c6a8eb9371ba45e42446037a69efba6b"
+    },
+    {
+      "source": "linuxdoom-1.10/st_lib.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/st_lib.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 226,
+      "sha256": "8ae86cf219785672579e6dd75ce3a5abae2e9991c44af647d59f6bec384307c2"
+    },
+    {
+      "source": "linuxdoom-1.10/st_stuff.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/st_stuff.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1471,
+      "sha256": "aaff5a9391d93d4d459a4a98594d67da410e88b360e3bdc20e96cb2bcba5f0d9"
+    },
+    {
+      "source": "linuxdoom-1.10/st_stuff.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/st_stuff.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 86,
+      "sha256": "0e2aad8828e13314e754c370da0c8cb61f08006c349fb1587ad28ea789ba4d85"
+    },
+    {
+      "source": "linuxdoom-1.10/tables.c",
+      "target": "src/linuxdoom-1.10/tables.ts",
+      "plannedTarget": "src/linuxdoom-1.10/tables.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 2130,
+      "sha256": "db8759f4311654c63785dcffb8f73a00a61cfe2713e4284c238dea420b6e5f89"
+    },
+    {
+      "source": "linuxdoom-1.10/tables.h",
+      "target": "src/linuxdoom-1.10/tables.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/tables.h.ts",
+      "status": "translated",
+      "notes": "",
+      "lines": 100,
+      "sha256": "54e366ed33a0bd65e5cad6c5b6f7df77573909e5974b8af296fdb1503c77fcf2"
+    },
+    {
+      "source": "linuxdoom-1.10/v_video.c",
+      "target": "src/linuxdoom-1.10/v_video.ts",
+      "plannedTarget": "src/linuxdoom-1.10/v_video.ts",
+      "status": "adapted",
+      "notes": "Punteros convertidos a offsets y Uint8Array; validación binaria adicional; gamma literal.",
+      "lines": 493,
+      "sha256": "52fb89efb1e6de3842c197b32009d620dcd1578f7111a7502abe6110a925e5eb"
+    },
+    {
+      "source": "linuxdoom-1.10/v_video.h",
+      "target": "src/linuxdoom-1.10/v_video.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/v_video.h.ts",
+      "status": "adapted",
+      "notes": "Reexports y tipos de la implementación web.",
+      "lines": 119,
+      "sha256": "728500c3b693d1baff1a43c5df6d0c6d55d1ec343247becd7db33c1be747635b"
+    },
+    {
+      "source": "linuxdoom-1.10/w_wad.c",
+      "target": "src/linuxdoom-1.10/w_wad.ts",
+      "plannedTarget": "src/linuxdoom-1.10/w_wad.ts",
+      "status": "adapted",
+      "notes": "Archivos en memoria; carga asíncrona en web; reload explícito; GC en lugar de Z_Zone; perfil devuelto como texto.",
+      "lines": 577,
+      "sha256": "a193860a2a1f671a680999aaa93ca294f90c9b1d6b5ba33152c0aa92000074a9"
+    },
+    {
+      "source": "linuxdoom-1.10/w_wad.h",
+      "target": "src/linuxdoom-1.10/w_wad.h.ts",
+      "plannedTarget": "src/linuxdoom-1.10/w_wad.h.ts",
+      "status": "adapted",
+      "notes": "WadFile sustituye al nombre de archivo del sistema.",
+      "lines": 89,
+      "sha256": "1c5f7a0f6ba41f1f6ce22440fb020596d0ea7b16742f9f2a044e9bc7d66e8abb"
+    },
+    {
+      "source": "linuxdoom-1.10/wi_stuff.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/wi_stuff.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 1850,
+      "sha256": "d894ead3416d3d21eb9c197b0644882637725b0339ef28a4fd9afa0a43ff9581"
+    },
+    {
+      "source": "linuxdoom-1.10/wi_stuff.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/wi_stuff.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 54,
+      "sha256": "57ab19c222d6e54158b3fff8ea6ea23d23e7646925aab830b06cf8cfc1e84f5e"
+    },
+    {
+      "source": "linuxdoom-1.10/z_zone.c",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/z_zone.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 467,
+      "sha256": "80174204a0a2c96e89ceb059e0922238046106be4fd5116f1c0a6a530df9010b"
+    },
+    {
+      "source": "linuxdoom-1.10/z_zone.h",
+      "target": null,
+      "plannedTarget": "src/linuxdoom-1.10/z_zone.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 86,
+      "sha256": "46498575b14b5f5538d0d93f3d7c8325941b76f0e36b435bb895ecaac6f54cca"
+    },
+    {
+      "source": "sersrc/DOOMNET.C",
+      "target": null,
+      "plannedTarget": "src/sersrc/DOOMNET.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 126,
+      "sha256": "b5dfa0466c739d1d3e1357d915cd40dfe1afec9c9b9f7ca8e2a1d01afdd67bc0"
+    },
+    {
+      "source": "sersrc/DOOMNET.H",
+      "target": null,
+      "plannedTarget": "src/sersrc/DOOMNET.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 60,
+      "sha256": "d89a81b55354e038b7f42a8322ef0d8ea8dc18a1531ec4e62de95dab543b6ce0"
+    },
+    {
+      "source": "sersrc/PORT.C",
+      "target": null,
+      "plannedTarget": "src/sersrc/PORT.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 428,
+      "sha256": "58c7831e20742b5e6c267a7bdd4d687d9bdc80ba6ec5f1495cb8ba3d61bd8686"
+    },
+    {
+      "source": "sersrc/SERSETUP.C",
+      "target": null,
+      "plannedTarget": "src/sersrc/SERSETUP.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 680,
+      "sha256": "351e650748f204f6142cd643544387aed6616db894fc639f5fee58175e846c58"
+    },
+    {
+      "source": "sersrc/SERSETUP.H",
+      "target": null,
+      "plannedTarget": "src/sersrc/SERSETUP.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 102,
+      "sha256": "7e71ba2e3c097fdd8a13b8bc9b110d674b88d9ddcf107f6bfa09761194217d26"
+    },
+    {
+      "source": "sersrc/SERSTR.H",
+      "target": null,
+      "plannedTarget": "src/sersrc/SERSTR.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 21,
+      "sha256": "a4260138489acfb6fb86d2c529336bfc64bd625ed53824edf75dd64bef447b74"
+    },
+    {
+      "source": "sersrc/SER_FRCH.H",
+      "target": null,
+      "plannedTarget": "src/sersrc/SER_FRCH.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 25,
+      "sha256": "73328cc4089d05d0c2edd051558c35a5dc2c3de402bf163ebfd01586dbe254e6"
+    },
+    {
+      "source": "sndserv/linux.c",
+      "target": null,
+      "plannedTarget": "src/sndserv/linux.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 118,
+      "sha256": "6640cfe32c9074aa7bb0a18bb28340f4a0dacc1d5c2857cc70b2d6f74a656062"
+    },
+    {
+      "source": "sndserv/sounds.c",
+      "target": null,
+      "plannedTarget": "src/sndserv/sounds.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 239,
+      "sha256": "d3ed920057aa908ddd08573f97ab27bee1a8a8703b81b49ce9b89af70cbf98b9"
+    },
+    {
+      "source": "sndserv/sounds.h",
+      "target": null,
+      "plannedTarget": "src/sndserv/sounds.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 241,
+      "sha256": "4e3537b9218829cab091e2e1d1a2b7a6d0f4507fe5d8052b567a3fd66ee2098f"
+    },
+    {
+      "source": "sndserv/soundsrv.c",
+      "target": null,
+      "plannedTarget": "src/sndserv/soundsrv.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 740,
+      "sha256": "f942d60788d5be6de8262d4d14088e6039659628b05137f8622718ad0e377d91"
+    },
+    {
+      "source": "sndserv/soundsrv.h",
+      "target": null,
+      "plannedTarget": "src/sndserv/soundsrv.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 58,
+      "sha256": "358dffe5bf9d35365c310ef6ece949903e9ffa18c56c7d1bba97e1f566d7b42f"
+    },
+    {
+      "source": "sndserv/soundst.h",
+      "target": null,
+      "plannedTarget": "src/sndserv/soundst.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 312,
+      "sha256": "b35dddde3c87657035bd4f9f0b6affedfbbce57589fc7638c1396662b712a5ed"
+    },
+    {
+      "source": "sndserv/wadread.c",
+      "target": null,
+      "plannedTarget": "src/sndserv/wadread.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 256,
+      "sha256": "4ac0ef00b7021810d4b278b7224ee0b4af55c42f1f8c77d468d84ef5070e3804"
+    },
+    {
+      "source": "sndserv/wadread.h",
+      "target": null,
+      "plannedTarget": "src/sndserv/wadread.h.ts",
+      "status": "pending",
+      "notes": "",
+      "lines": 62,
+      "sha256": "285c18b00d948c910f25704f4651154fc14b9a45d97467c311bb2ff0080d03b9"
+    }
+  ]
+}

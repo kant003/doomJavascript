@@ -1,0 +1,146 @@
+{
+  "upstream": "https://github.com/id-Software/DOOM",
+  "commit": "a77dfb96cb91780ca334d0d4cfd86957558007e0",
+  "modules": {
+    "linuxdoom-1.10/m_fixed.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_fixed.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_random.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_random.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_bbox.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_bbox.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_swap.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_swap.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_argv.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_cheat.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_cheat.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/tables.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/tables.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/doomdef.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/doomtype.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/doomdata.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/d_ticcmd.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/d_items.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/d_items.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/r_sky.c": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/r_sky.h": {
+      "status": "translated",
+      "notes": ""
+    },
+    "linuxdoom-1.10/m_argv.c": {
+      "status": "adapted",
+      "notes": "Argumentos suministrados por la web."
+    },
+    "linuxdoom-1.10/v_video.c": {
+      "status": "adapted",
+      "notes": "Punteros convertidos a offsets y Uint8Array; validaci\u00f3n binaria adicional; gamma literal."
+    },
+    "linuxdoom-1.10/v_video.h": {
+      "status": "adapted",
+      "notes": "Reexports y tipos de la implementaci\u00f3n web."
+    },
+    "linuxdoom-1.10/w_wad.c": {
+      "status": "adapted",
+      "notes": "Archivos en memoria; carga as\u00edncrona en web; reload expl\u00edcito; GC en lugar de Z_Zone; perfil devuelto como texto."
+    },
+    "linuxdoom-1.10/w_wad.h": {
+      "status": "adapted",
+      "notes": "WadFile sustituye al nombre de archivo del sistema."
+    },
+    "linuxdoom-1.10/f_wipe.c": {
+      "status": "adapted",
+      "notes": "Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC."
+    },
+    "linuxdoom-1.10/f_wipe.h": {
+      "status": "adapted",
+      "notes": "Resultado de ScreenWipe convertido a boolean."
+    },
+    "linuxdoom-1.10/r_draw.c": {
+      "status": "adapted",
+      "notes": "Variables globales mutables agrupadas en draw; punteros a filas como offsets. Primitivas, no renderer BSP."
+    },
+    "linuxdoom-1.10/i_video.c": {
+      "status": "partial",
+      "notes": "Canvas y teclado web. Entrada de rat\u00f3n/joystick pendiente."
+    },
+    "linuxdoom-1.10/i_video.h": {
+      "status": "adapted",
+      "notes": "Interfaz Canvas; eventos devueltos al llamador."
+    },
+    "linuxdoom-1.10/info.h": {
+      "status": "partial",
+      "notes": "Enums sprite/state/mobj traducidos; structs y tablas info.c pendientes."
+    },
+    "linuxdoom-1.10/d_event.h": {
+      "status": "partial",
+      "notes": "Enums, flags y event_t; cola global de D_PostEvent pendiente."
+    },
+    "linuxdoom-1.10/i_system.c": {
+      "status": "partial",
+      "notes": "Tiempo, memoria, errores y BaseTiccmd; I_Init/I_Quit con audio/red/guardado pendientes."
+    },
+    "linuxdoom-1.10/i_system.h": {
+      "status": "partial",
+      "notes": "Interfaz parcial de plataforma."
+    }
+  }
+}

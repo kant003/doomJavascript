@@ -1,0 +1,6 @@
+node_modules/
+dist/
+original/.git/
+*.wad
+*.WAD
+.DS_Store
