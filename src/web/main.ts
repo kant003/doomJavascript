@@ -7,7 +7,10 @@ import { listMaps, loadMapPreview, drawMapPreview } from './map-preview';
 import { demoWad } from './demo';
 import { R_InitData, R_GetColumn, texturestate } from '../linuxdoom-1.10/r_data';
 import { P_LoadMapData } from '../linuxdoom-1.10/p_setup';
-import { R_PointInSubsector } from '../linuxdoom-1.10/r_main';
+import { R_PointInSubsector, R_InitLightTables, R_SetViewSize, R_ExecuteSetViewSize } from '../linuxdoom-1.10/r_main';
+import { WorldPreview } from './world-preview';
+import { sky, R_InitSkyMap } from '../linuxdoom-1.10/r_sky';
+import { R_CheckTextureNumForName, R_FlatNumForName } from '../linuxdoom-1.10/r_data';
 import { R_InitBuffer, R_DrawColumn, draw } from '../linuxdoom-1.10/r_draw';
 import { FRACUNIT } from '../linuxdoom-1.10/m_fixed.h';
 import type { WadFile } from '../linuxdoom-1.10/w_wad.h';
@@ -25,6 +28,8 @@ let resourcesReady = false;
 let loaded = false, animating = false, loadGeneration = 0;
 let lastView = new Uint8Array(320 * 200), animation = 0;
 V_Init(); I_InitGraphics(canvas);
+const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, error => report(error instanceof Error ? error.message : String(error),true));
+
 function report(message: string, error = false): void { status.textContent = message; status.classList.toggle('error', error); }
 function safely(action: () => void): void { try { action(); } catch (error) { report(error instanceof Error ? error.message : String(error), true); } }
 function stopWipe(): void {
@@ -37,11 +42,33 @@ function initResources(): void {
     R_InitData(); resourcesReady = true;
     textureSelect.replaceChildren(...texturestate.textures.map((texture,i) => new Option(texture.name,String(i))));
     textureSelect.disabled = texturestate.numtextures === 0;
+    if (texturestate.numtextures > 1) textureSelect.value = '1';
 }
 function render(): void {
-    stopWipe();
+    stopWipe(); worldPreview.stop();
+    element('camera-help').hidden = viewSelect.value !== 'world'; element('camera-buttons').hidden = viewSelect.value !== 'world'; element('camera-reset').hidden = viewSelect.value !== 'world';
+    wipeButton.disabled = viewSelect.value === 'world';
     if (!loaded) return;
-    if (viewSelect.value === 'map' || viewSelect.value === 'level') {
+    if (viewSelect.value === 'world') {
+        if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos');
+        initResources();
+        const index = Number(mapSelect.value), level = P_LoadMapData(index);
+        const player = level.things.find(thing => thing.type === 1);
+        if (!player) throw new Error('No se ha encontrado el inicio del jugador 1');
+        R_InitLightTables(); R_SetViewSize(11,0); R_ExecuteSetViewSize(); R_InitSkyMap();
+        sky.skyflatnum = W_CheckNumForName('F_SKY1') >= 0 ? R_FlatNumForName('F_SKY1') : -1;
+        const name = mapSelect.selectedOptions[0].textContent ?? '';
+        const episode = /^E(\d)M/.exec(name);
+        const texture = name.startsWith('MAP') ? Number(name.slice(3)) < 12 ? 'SKY1' : Number(name.slice(3)) < 21 ? 'SKY2' : 'SKY3' : `SKY${episode?.[1] === '4' ? '4' : episode?.[1] ?? '1'}`;
+        sky.skytexture = Math.max(0,R_CheckTextureNumForName(texture));
+        const subsector = R_PointInSubsector(player.x*FRACUNIT,player.y*FRACUNIT);
+        if (!subsector.sector) throw new Error('Inicio sin sector');
+        const camera = {x:player.x*FRACUNIT,y:player.y*FRACUNIT,z:subsector.sector.floorheight+41*FRACUNIT,angle:Math.floor(player.angle/360*0x100000000)>>>0};
+        screens[0].fill(0); 
+        worldPreview.start(camera);
+        label.textContent = `${name} / VISTA 3D`;
+        element('frame-state').textContent = 'Paredes, suelos y techos · cámara libre';
+    } else if (viewSelect.value === 'map' || viewSelect.value === 'level') {
         if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos de DOOM');
         const map = loadMapPreview(Number(mapSelect.value));
         let diagnostic = '';
@@ -83,7 +110,7 @@ function render(): void {
     lastView = screens[0].slice(); I_FinishUpdate();
 }
 function load(files: WadFile[], synthetic: boolean): void {
-    stopWipe();
+    stopWipe(); worldPreview.stop();
     W_InitMultipleFiles(files);
     resourcesReady = false; textureSelect.disabled = true; textureSelect.replaceChildren(new Option('Selecciona la vista de texturas',''));
     loaded = true;
@@ -117,6 +144,10 @@ input.addEventListener('change', async () => {
 demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: demoWad() }], true); }));
 viewSelect.addEventListener('change', () => safely(render)); mapSelect.addEventListener('change', () => safely(render));
 textureSelect.addEventListener('change', () => safely(render));
+element('camera-left').addEventListener('click', () => safely(() => worldPreview.nudge(97)));
+element('camera-forward').addEventListener('click', () => safely(() => worldPreview.nudge(119)));
+element('camera-right').addEventListener('click', () => safely(() => worldPreview.nudge(100)));
+element('camera-reset').addEventListener('click', () => safely(() => worldPreview.reset()));
 element<HTMLButtonElement>('gamma').addEventListener('click', () => {
     V_SetGamma(usegamma + 1); element('gamma').textContent = `Gamma: ${usegamma}`; I_FinishUpdate();
 });
@@ -143,5 +174,5 @@ wipeButton.addEventListener('click', () => safely(() => {
     };
     animation = requestAnimationFrame(step);
 }));
-window.addEventListener('pagehide', () => { stopWipe(); I_ShutdownGraphics(); });
+window.addEventListener('pagehide', () => { worldPreview.stop(); stopWipe(); I_ShutdownGraphics(); });
 safely(() => load([{ name: 'test.wad', data: demoWad() }], true));

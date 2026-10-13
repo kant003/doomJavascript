@@ -164,7 +164,7 @@
     },
     "linuxdoom-1.10/r_state.h": {
       "status": "partial",
-      "notes": "Estado compartido de mapa; globals de vista, sprites y render pendientes."
+      "notes": "Mapa compartido; vista/proyecci\u00f3n/planes/walls definidos en m\u00f3dulos convertidos. Definiciones de sprites pendientes."
     },
     "linuxdoom-1.10/r_data.c": {
       "status": "adapted",
@@ -184,7 +184,35 @@
     },
     "linuxdoom-1.10/r_main.c": {
       "status": "partial",
-      "notes": "R_PointOnSide, R_PointOnSegSide y R_PointInSubsector; render y estado de vista pendientes."
+      "notes": "Geometr\u00eda, proyecci\u00f3n, escalas, iluminaci\u00f3n, tama\u00f1o diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes."
+    },
+    "linuxdoom-1.10/r_main.h": {
+      "status": "partial",
+      "notes": "Constantes e interfaz de geometr\u00eda/vista; ciclo completo de render jugable pendiente."
+    },
+    "linuxdoom-1.10/r_bsp.c": {
+      "status": "partial",
+      "notes": "Recorte angular, rangos s\u00f3lidos/portales, BBox y BSP front-to-back; R_Subsector a\u00fan no llama a R_AddSprites."
+    },
+    "linuxdoom-1.10/r_bsp.h": {
+      "status": "partial",
+      "notes": "Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes."
+    },
+    "linuxdoom-1.10/r_plane.c": {
+      "status": "adapted",
+      "notes": "Visplanes, spans de suelos/techos y cielo; buffers acolchados, l\u00edmites expl\u00edcitos y GC."
+    },
+    "linuxdoom-1.10/r_plane.h": {
+      "status": "adapted",
+      "notes": "Interfaz de visplanes/planes; globals agrupados en planes."
+    },
+    "linuxdoom-1.10/r_segs.c": {
+      "status": "partial",
+      "notes": "R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente."
+    },
+    "linuxdoom-1.10/r_segs.h": {
+      "status": "partial",
+      "notes": "Interfaz de paredes; dibujo transparente pendiente de r_things.c."
     }
   }
 }

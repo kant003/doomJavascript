@@ -45,11 +45,11 @@ function pnames(names:string[]):Uint8Array {
     names.forEach((n,i)=>data.set(new TextEncoder().encode(n),4+i*8));return data;
 }
 test('Render resources initialize original identity translations, dimensions and names',()=>{
-    init();assert.equal(t.numtextures,1);assert.equal(t.numflats,1);assert.equal(t.numspritelumps,0);
+    init();assert.equal(t.numtextures,2);assert.equal(t.numflats,1);assert.equal(t.numspritelumps,0);
     assert.equal(t.textureheight[0],128*FRACUNIT);assert.equal(t.texturewidthmask[0],127);
-    assert.equal(R_CheckTextureNumForName('testwall'),0);assert.equal(R_CheckTextureNumForName('-'),0);
+    assert.equal(R_CheckTextureNumForName('testwall'),1);assert.equal(R_CheckTextureNumForName('-'),0);
     assert.throws(()=>R_TextureNumForName('MISSING'));assert.equal(R_FlatNumForName('TESTFLAT'),0);
-    assert.deepEqual([...t.texturetranslation],[0,0]);assert.deepEqual([...t.flattranslation],[0,0]);
+    assert.deepEqual([...t.texturetranslation],[0,1,0]);assert.deepEqual([...t.flattranslation],[0,0]);
     assert.equal(t.colormaps.length,34*256);assert.equal(R_GetColumn(0,128)[0],R_GetColumn(0,0)[0]);
 });
 test('Single patch at lump zero is retrievable and non-power-of-two widths preserve original mask',()=>{
@@ -81,7 +81,7 @@ test('Complete map readers scale signed coordinates and retain reference identit
     init();const level=P_LoadMapData(W_GetNumForName('E1M1'));
     assert.equal(level.numvertexes,4);assert.equal(level.numsegs,4);assert.equal(level.numsectors,1);assert.equal(level.numsubsectors,1);
     assert.equal(level.vertexes[0].x,-128*FRACUNIT);assert.equal(level.sectors[0].ceilingheight,128*FRACUNIT);
-    assert.strictEqual(level.lines[0].v1,level.vertexes[0]);assert.strictEqual(level.segs[0].linedef,level.lines[0]);
+    assert.strictEqual(level.lines[0].v1,level.vertexes[1]);assert.strictEqual(level.segs[0].linedef,level.lines[0]);
     assert.strictEqual(level.segs[0].sidedef,level.sides[0]);assert.strictEqual(level.sides[0].sector,level.sectors[0]);
     assert.strictEqual(level.subsectors[0].sector,level.sectors[0]);assert.equal(level.lines[0].slopetype,slopetype_t.ST_HORIZONTAL);
     assert.equal(level.sectors[0].linecount,4);assert.equal(level.sectors[0].soundorg.x,0);assert.equal(level.sectors[0].soundorg.y,0);
@@ -114,7 +114,7 @@ function twoLeaves(cyclic=false):Uint8Array {
 test('Original BSP classification traverses the root to the correct leaf',()=>{
     init();W_InitFile({name:'bsp.wad',data:twoLeaves()});P_LoadMapData(W_GetNumForName('E1M1'));
     assert.strictEqual(R_PointInSubsector(64*FRACUNIT,0),m.subsectors[0]);assert.strictEqual(R_PointInSubsector(-64*FRACUNIT,0),m.subsectors[1]);
-    assert.equal(R_PointOnSide(0,0,m.nodes[0]),1);assert.equal(R_PointOnSegSide(0,0,m.segs[0]),1);
+    assert.equal(R_PointOnSide(0,0,m.nodes[0]),1);assert.equal(R_PointOnSegSide(0,0,m.segs[0]),0);
 });
 test('Cyclic BSP and out-of-range leaves are rejected before traversal',()=>{
     init();W_InitFile({name:'cyclic.wad',data:twoLeaves(true)});assert.throws(()=>P_LoadMapData(W_GetNumForName('E1M1')),/Cyclic BSP/);

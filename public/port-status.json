@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 24,
-    "adapted": 13,
-    "partial": 9,
-    "pending": 100
+    "adapted": 15,
+    "partial": 14,
+    "pending": 93
   },
   "files": [
     {
@@ -857,19 +857,19 @@
     },
     {
       "source": "linuxdoom-1.10/r_bsp.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_bsp.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_bsp.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Recorte angular, rangos sólidos/portales, BBox y BSP front-to-back; R_Subsector aún no llama a R_AddSprites.",
       "lines": 580,
       "sha256": "26f3459ca881d09fddfbcf829a4745dde4346597a55ccc8cb4882bc438295407"
     },
     {
       "source": "linuxdoom-1.10/r_bsp.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_bsp.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_bsp.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes.",
       "lines": 72,
       "sha256": "08ca429757b65ac35798cf9f47ef9dea072e27a5b856fdf300c9fc2fcba5fac6"
     },
@@ -932,52 +932,52 @@
       "target": "src/linuxdoom-1.10/r_main.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_main.ts",
       "status": "partial",
-      "notes": "R_PointOnSide, R_PointOnSegSide y R_PointInSubsector; render y estado de vista pendientes.",
+      "notes": "Geometría, proyección, escalas, iluminación, tamaño diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes.",
       "lines": 898,
       "sha256": "2aae43cf807929a8758f71ed0205fc08017556541ba8df2ea9167c003d0dec5a"
     },
     {
       "source": "linuxdoom-1.10/r_main.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_main.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_main.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Constantes e interfaz de geometría/vista; ciclo completo de render jugable pendiente.",
       "lines": 172,
       "sha256": "9576bf120653af7127dcfd754f50e294b76be38bacb3b43f8686111a2dcd501b"
     },
     {
       "source": "linuxdoom-1.10/r_plane.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_plane.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_plane.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Visplanes, spans de suelos/techos y cielo; buffers acolchados, límites explícitos y GC.",
       "lines": 453,
       "sha256": "e20397d9218bec009b026911640635d91ecaed17cd256a4d9cfab51780d1336f"
     },
     {
       "source": "linuxdoom-1.10/r_plane.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_plane.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_plane.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Interfaz de visplanes/planes; globals agrupados en planes.",
       "lines": 87,
       "sha256": "abc99d0fc7845c8e9e73057b14a886b138046d5e432303c87fa5c34879f5903e"
     },
     {
       "source": "linuxdoom-1.10/r_segs.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_segs.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_segs.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente.",
       "lines": 746,
       "sha256": "cf89e394506dceb64ad442846a5722fb8a3990f924508e253eaec8f8411d2406"
     },
     {
       "source": "linuxdoom-1.10/r_segs.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_segs.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_segs.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Interfaz de paredes; dibujo transparente pendiente de r_things.c.",
       "lines": 44,
       "sha256": "9343a51c57d93f13098118cfbc23377487b4063ec0dbf447c6aee8a7d0fd68ce"
     },
@@ -1004,7 +1004,7 @@
       "target": "src/linuxdoom-1.10/r_state.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_state.h.ts",
       "status": "partial",
-      "notes": "Estado compartido de mapa; globals de vista, sprites y render pendientes.",
+      "notes": "Mapa compartido; vista/proyección/planes/walls definidos en módulos convertidos. Definiciones de sprites pendientes.",
       "lines": 138,
       "sha256": "35a0d8f2e6a8f88ff100625708e54a6f04d22506319bef1c08033293e3ca22bd"
     },

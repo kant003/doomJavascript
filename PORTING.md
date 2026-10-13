@@ -75,4 +75,20 @@ No considerar completado el port hasta que el navegador pueda arrancar un IWAD c
 - Los campos de info.h, p_mobj.h y d_player.h ya están presentes; esto no implementa sus tablas de acciones ni la simulación.
 - El WAD sintético incluye ahora PNAMES/TEXTURE1, una textura, un flat, COLORMAP y un mapa clásico completo de un sector. No contiene datos comerciales.
 
-La siguiente etapa debe completar tablas de actores/estados, el estado de vista y los módulos del renderizador BSP (`r_main`, `r_bsp`, `r_segs`, `r_plane`, `r_things`) antes de presentar una vista 3D como render original.
+La siguiente etapa debe completar tablas de actores/estados, el render de sprites y superficies transparentes (`r_things` y R_RenderMaskedSegRange), además del ciclo de juego.
+
+## Tercera etapa: renderer del mundo y cámara de inspección
+
+- `r_main.c` incorpora R_AddPointToBox, R_PointToAngle/2, R_PointToDist, R_ScaleFromGlobalAngle, las tablas de proyección, zlight/scalelight, cambios diferidos de vista y R_SetupFrame. Los ángulos se reducen a BAM unsigned de 32 bits en cada frontera; las divisiones enteras conservan truncamiento de C.
+- R_PointToDist devuelve 0 para el mismo punto, donde la fuente original intenta acceder fuera de tantoangle tras FixedDiv(0,0). Los demás cálculos conservan LUTs y punto fijo.
+- `r_bsp.c` conserva backface culling, clipangle, columnas visibles, unión de solidsegs, portales, pruebas de BBox y recorrido front-to-back. Un stack explícito evita desbordar la pila de JS, y los rangos sólidos son dinámicos en lugar de permitir overflow del array fijo de 32 entradas. R_Subsector no recoge sprites todavía.
+- `r_segs.c` conserva la distancia/escala de pared, offset y pegging de texturas, contraste horizontal/vertical, marcado de visplanes, tiers superior/inferior, reserva de openings y siluetas para sprites. Los spans guardados se representan mediante buffer/base. El step de una columna aislada se inicializa a 0 en vez de reutilizar un valor residual. R_RenderMaskedSegRange todavía no está implementado.
+- `r_plane.c` implementa el dibujo de flats y cielo con R_MapPlane/R_MakeSpans, visplanes compartidos/divididos y sus caches. Los pads de C se modelan mediante 322 bytes por top/bottom; x lógico se accede en x+1. R_CheckPlane también comprueba MAXVISPLANES para evitar overflow.
+- R_InitPointToAngle/R_InitTables/R_InitPlanes son vacíos porque también lo son en la versión C con los bloques deshabilitados; no sustituyen funciones pendientes.
+- `R_RenderWorldView` es una frontera de inspección nueva: configura una cámara, limpia clipping, recorre BSP y dibuja planes. No se presenta como R_RenderPlayerView completo, y omite sprites, psprites, transparencias y NetUpdate.
+- `src/web/world-preview.ts` mueve una cámara libre a 35 pasos/s mediante I_StartTic y los LUTs de seno/coseno. No sustituye P_PlayerThink ni implementa colisiones. Se limpia el framebuffer antes de cada vista para que salir fuera de la geometría no conserve píxeles del frame anterior.
+- La vista web usa detalle alto y pantalla completa. El bug documentado de R_DrawSpanLow sigue pendiente de decidir antes de habilitar detalle bajo al usuario.
+- El WAD sintético se ha corregido para usar pared visible en textura 1 (0 es NoTexture) y orientar lines/segs hacia el interior. Mantiene la misma geometría de cuatro vértices y un sector.
+- Se prueba render repetible en varios octantes, luz fija, clipping contra un mapa independiente de cobertura, visplanes con padding y tiers de un portal. No se ha comprobado todavía equivalencia de framebuffer con un binario C ni con un WAD comercial.
+
+El motor completo sigue pendiente. El siguiente trabajo debe incorporar tablas de estados/actores, sprites y superficies transparentes antes de comenzar la simulación del jugador y enemigos.

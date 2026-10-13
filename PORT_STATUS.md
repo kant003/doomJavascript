@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **13** · Parcial: **9** · Pendiente: **100**
+Traducido: **24** · Adaptado a web: **15** · Parcial: **14** · Pendiente: **93**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -104,23 +104,23 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_tick.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_tick.h` | — | Pendiente |  |
 | `linuxdoom-1.10/p_user.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_bsp.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_bsp.h` | — | Pendiente |  |
+| `linuxdoom-1.10/r_bsp.c` | `src/linuxdoom-1.10/r_bsp.ts` | Parcial | Recorte angular, rangos sólidos/portales, BBox y BSP front-to-back; R_Subsector aún no llama a R_AddSprites. |
+| `linuxdoom-1.10/r_bsp.h` | `src/linuxdoom-1.10/r_bsp.h.ts` | Parcial | Interfaz de visibilidad del mundo; globals obsoletos sin uso y sprites pendientes. |
 | `linuxdoom-1.10/r_data.c` | `src/linuxdoom-1.10/r_data.ts` | Adaptado a web | PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone. |
 | `linuxdoom-1.10/r_data.h` | `src/linuxdoom-1.10/r_data.h.ts` | Adaptado a web | Interfaz de recursos; precache recibe contexto de juego explícito. |
 | `linuxdoom-1.10/r_defs.h` | `src/linuxdoom-1.10/r_defs.h.ts` | Adaptado a web | Tipos de mapa/render; spans con base explícita y visplanes con arrays acolchados. |
 | `linuxdoom-1.10/r_draw.c` | `src/linuxdoom-1.10/r_draw.ts` | Adaptado a web | Variables globales mutables agrupadas en draw; punteros a filas como offsets. Primitivas, no renderer BSP. |
 | `linuxdoom-1.10/r_draw.h` | — | Pendiente |  |
 | `linuxdoom-1.10/r_local.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_main.c` | `src/linuxdoom-1.10/r_main.ts` | Parcial | R_PointOnSide, R_PointOnSegSide y R_PointInSubsector; render y estado de vista pendientes. |
-| `linuxdoom-1.10/r_main.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_plane.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_plane.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_segs.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_segs.h` | — | Pendiente |  |
+| `linuxdoom-1.10/r_main.c` | `src/linuxdoom-1.10/r_main.ts` | Parcial | Geometría, proyección, escalas, iluminación, tamaño diferido y R_SetupFrame; preview del mundo sin sprites/NetUpdate. R_Init/R_RenderPlayerView completos pendientes. |
+| `linuxdoom-1.10/r_main.h` | `src/linuxdoom-1.10/r_main.h.ts` | Parcial | Constantes e interfaz de geometría/vista; ciclo completo de render jugable pendiente. |
+| `linuxdoom-1.10/r_plane.c` | `src/linuxdoom-1.10/r_plane.ts` | Adaptado a web | Visplanes, spans de suelos/techos y cielo; buffers acolchados, límites explícitos y GC. |
+| `linuxdoom-1.10/r_plane.h` | `src/linuxdoom-1.10/r_plane.h.ts` | Adaptado a web | Interfaz de visplanes/planes; globals agrupados en planes. |
+| `linuxdoom-1.10/r_segs.c` | `src/linuxdoom-1.10/r_segs.ts` | Parcial | R_StoreWallRange, R_RenderSegLoop, tiers opacos y clipping de sprites guardado; R_RenderMaskedSegRange pendiente. |
+| `linuxdoom-1.10/r_segs.h` | `src/linuxdoom-1.10/r_segs.h.ts` | Parcial | Interfaz de paredes; dibujo transparente pendiente de r_things.c. |
 | `linuxdoom-1.10/r_sky.c` | `src/linuxdoom-1.10/r_sky.ts` | Traducido |  |
 | `linuxdoom-1.10/r_sky.h` | `src/linuxdoom-1.10/r_sky.h.ts` | Traducido |  |
-| `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Parcial | Estado compartido de mapa; globals de vista, sprites y render pendientes. |
+| `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Parcial | Mapa compartido; vista/proyección/planes/walls definidos en módulos convertidos. Definiciones de sprites pendientes. |
 | `linuxdoom-1.10/r_things.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_things.h` | — | Pendiente |  |
 | `linuxdoom-1.10/s_sound.c` | — | Pendiente |  |
