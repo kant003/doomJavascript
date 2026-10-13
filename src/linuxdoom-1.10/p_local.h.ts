@@ -10,6 +10,7 @@ export const FLOATSPEED = 4 * FRACUNIT, VIEWHEIGHT = 41 * FRACUNIT;
 export const GRAVITY = FRACUNIT, MAXMOVE = 30 * FRACUNIT, MELEERANGE = 64 * FRACUNIT;
 export const MISSILERANGE = 32 * 64 * FRACUNIT;
 export const USERANGE = 64 * FRACUNIT;
+export const MAXHEALTH = 100, BASETHRESHOLD = 100;
 export const ONFLOORZ = -0x80000000, ONCEILINGZ = 0x7fffffff, ITEMQUESIZE = 128;
 export const PT_ADDLINES = 1, PT_ADDTHINGS = 2, PT_EARLYOUT = 4;
 export interface divline_t { x: number; y: number; dx: number; dy: number }

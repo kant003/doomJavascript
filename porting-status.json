@@ -224,7 +224,7 @@
     },
     "linuxdoom-1.10/info.c": {
       "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes."
+      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 29 acciones reales convertidas; 45 símbolos restantes pendientes."
     },
     "linuxdoom-1.10/sounds.h": {
       "status": "partial",
@@ -260,7 +260,7 @@
     },
     "linuxdoom-1.10/p_enemy.c": {
       "status": "partial",
-      "notes": "P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes."
+      "notes": "Ruido, tres acciones de recarga y seis acciones de dolor/muerte/explosión convertidas. Chase, percepción, movimiento, ataques y resto de comportamiento de enemigos pendientes."
     },
     "linuxdoom-1.10/p_map.c": {
       "status": "adapted",
@@ -269,6 +269,18 @@
     "linuxdoom-1.10/p_sight.c": {
       "status": "adapted",
       "notes": "Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado."
+    },
+    "linuxdoom-1.10/p_inter.c": {
+      "status": "adapted",
+      "notes": "Nueve funciones originales: ammo/weapon/body/armor/card/power, pickups, muerte y daño. Contexto obligatorio de estado, sonido, automapa y tactile. Integrado en pruebas con colisiones/armas reales; chase y audio siguen pendientes."
+    },
+    "linuxdoom-1.10/p_inter.h": {
+      "status": "translated",
+      "notes": "Declaración original de P_GivePower."
+    },
+    "linuxdoom-1.10/d_englsh.h": {
+      "status": "translated",
+      "notes": "285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py."
     }
   }
 }

@@ -3,10 +3,10 @@
   "commit": "a77dfb96cb91780ca334d0d4cfd86957558007e0",
   "completeEngine": false,
   "counts": {
-    "translated": 24,
-    "adapted": 32,
+    "translated": 26,
+    "adapted": 33,
     "partial": 11,
-    "pending": 79
+    "pending": 76
   },
   "files": [
     {
@@ -92,10 +92,10 @@
     },
     {
       "source": "linuxdoom-1.10/d_englsh.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/d_englsh.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/d_englsh.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "translated",
+      "notes": "285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py.",
       "lines": 701,
       "sha256": "b018968e3aef65e0009d6ec676d40c8731b33e2882758640d3028c530c87a789"
     },
@@ -455,7 +455,7 @@
       "target": "src/linuxdoom-1.10/info.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.ts",
       "status": "partial",
-      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes.",
+      "notes": "138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 29 acciones reales convertidas; 45 símbolos restantes pendientes.",
       "lines": 4670,
       "sha256": "e09631527669ee528bdae20a47be79e1cb33972b39964c33ac4814e1701a0949"
     },
@@ -635,7 +635,7 @@
       "target": "src/linuxdoom-1.10/p_enemy.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_enemy.ts",
       "status": "partial",
-      "notes": "P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes.",
+      "notes": "Ruido, tres acciones de recarga y seis acciones de dolor/muerte/explosión convertidas. Chase, percepción, movimiento, ataques y resto de comportamiento de enemigos pendientes.",
       "lines": 2008,
       "sha256": "bfe1e3c039443d787e4a0dcb485720c9707f3381b69b00ad35f3e52796bfeec0"
     },
@@ -650,19 +650,19 @@
     },
     {
       "source": "linuxdoom-1.10/p_inter.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_inter.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_inter.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Nueve funciones originales: ammo/weapon/body/armor/card/power, pickups, muerte y daño. Contexto obligatorio de estado, sonido, automapa y tactile. Integrado en pruebas con colisiones/armas reales; chase y audio siguen pendientes.",
       "lines": 918,
       "sha256": "72e9bbabe560ef548c2f2522494786347d5c831b0e1f0ecb5cb29d8d8e682356"
     },
     {
       "source": "linuxdoom-1.10/p_inter.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_inter.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_inter.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "translated",
+      "notes": "Declaración original de P_GivePower.",
       "lines": 41,
       "sha256": "348edaf0dbbac0b455e54823d3e8bdab72ac210bf22cd17cffc519596661fa2a"
     },

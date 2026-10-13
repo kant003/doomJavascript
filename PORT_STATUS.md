@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **24** · Adaptado a web: **32** · Parcial: **11** · Pendiente: **79**
+Traducido: **26** · Adaptado a web: **33** · Parcial: **11** · Pendiente: **76**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -19,7 +19,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `ipx/IPX_FRCH.H` | — | Pendiente |  |
 | `linuxdoom-1.10/am_map.c` | — | Pendiente |  |
 | `linuxdoom-1.10/am_map.h` | — | Pendiente |  |
-| `linuxdoom-1.10/d_englsh.h` | — | Pendiente |  |
+| `linuxdoom-1.10/d_englsh.h` | `src/linuxdoom-1.10/d_englsh.h.ts` | Traducido | 285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py. |
 | `linuxdoom-1.10/d_event.h` | `src/linuxdoom-1.10/d_event.h.ts` | Parcial | Enums, flags y event_t; cola global de D_PostEvent pendiente. |
 | `linuxdoom-1.10/d_french.h` | — | Pendiente |  |
 | `linuxdoom-1.10/d_items.c` | `src/linuxdoom-1.10/d_items.ts` | Traducido |  |
@@ -59,7 +59,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/i_system.h` | `src/linuxdoom-1.10/i_system.h.ts` | Parcial | Interfaz parcial de plataforma. |
 | `linuxdoom-1.10/i_video.c` | `src/linuxdoom-1.10/i_video.ts` | Parcial | Canvas y teclado web. Entrada de ratón/joystick pendiente. |
 | `linuxdoom-1.10/i_video.h` | `src/linuxdoom-1.10/i_video.h.ts` | Adaptado a web | Interfaz Canvas; eventos devueltos al llamador. |
-| `linuxdoom-1.10/info.c` | `src/linuxdoom-1.10/info.ts` | Parcial | 138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 23 acciones de armas/recarga convertidas; 51 símbolos restantes pendientes. |
+| `linuxdoom-1.10/info.c` | `src/linuxdoom-1.10/info.ts` | Parcial | 138 nombres, 967 estados y 137 actores literales. Enlace explícito de acciones de uno/dos argumentos. 29 acciones reales convertidas; 45 símbolos restantes pendientes. |
 | `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Enums/structs completos; tablas en info.ts. Acciones originales sin implementar y runtime reexports evitados para no inicializar enums en un ciclo. |
 | `linuxdoom-1.10/m_argv.c` | `src/linuxdoom-1.10/m_argv.ts` | Adaptado a web | Argumentos suministrados por la web. |
 | `linuxdoom-1.10/m_argv.h` | `src/linuxdoom-1.10/m_argv.h.ts` | Traducido |  |
@@ -79,10 +79,10 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/m_swap.h` | `src/linuxdoom-1.10/m_swap.h.ts` | Traducido |  |
 | `linuxdoom-1.10/p_ceilng.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_doors.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_enemy.c` | `src/linuxdoom-1.10/p_enemy.ts` | Parcial | P_RecursiveSound/P_NoiseAlert y tres acciones de recarga de la escopeta doble convertidas. Percepción, movimiento, combate y resto de acciones de enemigos pendientes. |
+| `linuxdoom-1.10/p_enemy.c` | `src/linuxdoom-1.10/p_enemy.ts` | Parcial | Ruido, tres acciones de recarga y seis acciones de dolor/muerte/explosión convertidas. Chase, percepción, movimiento, ataques y resto de comportamiento de enemigos pendientes. |
 | `linuxdoom-1.10/p_floor.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_inter.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_inter.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_inter.c` | `src/linuxdoom-1.10/p_inter.ts` | Adaptado a web | Nueve funciones originales: ammo/weapon/body/armor/card/power, pickups, muerte y daño. Contexto obligatorio de estado, sonido, automapa y tactile. Integrado en pruebas con colisiones/armas reales; chase y audio siguen pendientes. |
+| `linuxdoom-1.10/p_inter.h` | `src/linuxdoom-1.10/p_inter.h.ts` | Traducido | Declaración original de P_GivePower. |
 | `linuxdoom-1.10/p_lights.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_local.h` | `src/linuxdoom-1.10/p_local.h.ts` | Parcial | Constantes de movimiento/spawn, tipos y utilidades espaciales, thinkers. Gameplay restante y reexports de actores pendientes; p_mobj se importa directamente para evitar ciclos de inicialización. |
 | `linuxdoom-1.10/p_map.c` | `src/linuxdoom-1.10/p_map.ts` | Adaptado a web | 20 funciones: colisiones, telefrag, sliding, alturas/sectores, autoaim/hitscan, use y radius. Contexto obligatorio para daño, pickups, especiales y sonido; guard MAXSPECIALCROSS. |
