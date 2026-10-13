@@ -40,8 +40,30 @@ export function demoWad(): Uint8Array {
     const lines = new Uint8Array(56), lv = new DataView(lines.buffer);
     for (let i = 0; i < 4; i++) { lv.setInt16(i * 14, i, true); lv.setInt16(i * 14 + 2, (i + 1) % 4, true); lv.setInt16(i * 14 + 4, 1, true); lv.setInt16(i * 14 + 12, -1, true); }
     const things = new Uint8Array(10); new DataView(things.buffer).setInt16(6, 1, true);
+    const names = new Uint8Array(12);new DataView(names.buffer).setInt32(0,1,true);names.set(new TextEncoder().encode('WALLPAT'),4);
+    const texture = new Uint8Array(40), tv = new DataView(texture.buffer);
+    tv.setInt32(0,1,true);tv.setInt32(4,8,true);texture.set(new TextEncoder().encode('TESTWALL'),8);
+    tv.setInt16(20,128,true);tv.setInt16(22,128,true);tv.setInt16(28,1,true);
+    const flat = Uint8Array.from({length:4096},(_,i)=>((i&63)>>3)^((i>>6)>>3)?96:144);
+    const colormap = Uint8Array.from({length:34*256},(_,i)=>Math.max(0,Math.round((i&255)*(1-Math.min(i>>8,31)/32))));
+    const side = new Uint8Array(30);for(const p of [4,12]) side.set(new TextEncoder().encode('-'),p);
+    side.set(new TextEncoder().encode('TESTWALL'),20);
+    const sector = new Uint8Array(26), sv = new DataView(sector.buffer);sv.setInt16(2,128,true);
+    sector.set(new TextEncoder().encode('TESTFLAT'),4);sector.set(new TextEncoder().encode('TESTFLAT'),12);sv.setInt16(20,192,true);
+    const segs = new Uint8Array(48), gv = new DataView(segs.buffer);
+    for(let i=0;i<4;i++){gv.setInt16(i*12,i,true);gv.setInt16(i*12+2,(i+1)%4,true);gv.setUint16(i*12+4,i*16384,true);gv.setInt16(i*12+6,i,true);}
+    const subsector = new Uint8Array(4);new DataView(subsector.buffer).setInt16(0,4,true);
+    // A 2×2 BLOCKMAP; all cells refer to a shared list of the four boundary lines.
+    const blockmap = new Uint8Array(28), bv = new DataView(blockmap.buffer);
+    [-128,-128,2,2,8,8,8,8,0,0,1,2,3,-1].forEach((word,i)=>bv.setInt16(i*2,word,true));
     return makeWad([
-        { name: 'PLAYPAL', data: palette }, { name: 'TITLEPIC', data: patch(320, 200) }, { name: 'E1M1', data: new Uint8Array() },
-        { name: 'THINGS', data: things }, { name: 'LINEDEFS', data: lines }, { name: 'SIDEDEFS', data: new Uint8Array() }, { name: 'VERTEXES', data: vertices }
+        { name: 'PLAYPAL', data: palette }, { name: 'TITLEPIC', data: patch(320, 200) },
+        { name: 'PNAMES',data:names },{ name:'TEXTURE1',data:texture },{ name:'WALLPAT',data:patch(128,128) },
+        { name:'F_START',data:new Uint8Array() },{ name:'TESTFLAT',data:flat },{ name:'F_END',data:new Uint8Array() },
+        { name:'S_START',data:new Uint8Array() },{ name:'S_END',data:new Uint8Array() },{ name:'COLORMAP',data:colormap },
+        { name: 'E1M1', data: new Uint8Array() },{ name: 'THINGS', data: things },
+        { name: 'LINEDEFS', data: lines }, { name: 'SIDEDEFS', data: side }, { name: 'VERTEXES', data: vertices },
+        { name:'SEGS',data:segs },{ name:'SSECTORS',data:subsector },{ name:'NODES',data:new Uint8Array() },
+        { name:'SECTORS',data:sector },{ name:'REJECT',data:new Uint8Array(1) },{ name:'BLOCKMAP',data:blockmap }
     ]);
 }

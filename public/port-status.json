@@ -3,10 +3,10 @@
   "commit": "a77dfb96cb91780ca334d0d4cfd86957558007e0",
   "completeEngine": false,
   "counts": {
-    "translated": 21,
-    "adapted": 9,
-    "partial": 5,
-    "pending": 111
+    "translated": 24,
+    "adapted": 13,
+    "partial": 9,
+    "pending": 100
   },
   "files": [
     {
@@ -173,10 +173,10 @@
     },
     {
       "source": "linuxdoom-1.10/d_player.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/d_player.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/d_player.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "translated",
+      "notes": "Todos los campos de player_t, intermisión y enums.",
       "lines": 219,
       "sha256": "9c9a342ab7c3661ab02d32890bd0d74ede94a0745ae0d622de83a9ae11046ffb"
     },
@@ -191,10 +191,10 @@
     },
     {
       "source": "linuxdoom-1.10/d_think.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/d_think.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/d_think.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Puntero de la unión actionf_t como callable único; referencias enlazadas y marcador -1.",
       "lines": 79,
       "sha256": "a8d3d4943495c729cd33b67eff1b56d801f1cf8cd0db74fb5d63b613c4eabddc"
     },
@@ -464,7 +464,7 @@
       "target": "src/linuxdoom-1.10/info.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/info.h.ts",
       "status": "partial",
-      "notes": "Enums sprite/state/mobj traducidos; structs y tablas info.c pendientes.",
+      "notes": "Todos los enums y structs state_t/mobjinfo_t; tablas y declaraciones de info.c pendientes.",
       "lines": 1340,
       "sha256": "3e68ee6cc13323e69cbcf208e9a0af7b13867bead49e66d765abefa5d914b0dd"
     },
@@ -713,10 +713,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_mobj.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_mobj.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_mobj.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "translated",
+      "notes": "Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente.",
       "lines": 295,
       "sha256": "85be6ea83fc4b5f95df666c68c8999f7fe5745a5f503d3a441afd66b5f7e5db0"
     },
@@ -740,10 +740,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_pspr.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_pspr.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_pspr.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "translated",
+      "notes": "Enums, flags y estructura pspdef_t.",
       "lines": 82,
       "sha256": "21b95a0eb8b901287be5077b780b809e5e4e296393cb63c8e02970646a8f8e67"
     },
@@ -767,19 +767,19 @@
     },
     {
       "source": "linuxdoom-1.10/p_setup.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_setup.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_setup.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes.",
       "lines": 708,
       "sha256": "cc56c3ef5eb73aaec4db8be855fd3c192af19bf8f775478d002e9b2e9225872d"
     },
     {
       "source": "linuxdoom-1.10/p_setup.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_setup.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_setup.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Interfaz de lectores; ciclo completo de nivel pendiente.",
       "lines": 48,
       "sha256": "ffffe92a94edde836ca5d2d5db311d003ce03e1dcfe542d948ee8094f1637be0"
     },
@@ -875,28 +875,28 @@
     },
     {
       "source": "linuxdoom-1.10/r_data.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_data.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_data.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone.",
       "lines": 849,
       "sha256": "0d0e83faec506d6bbf8d0a7aa5256b8e660f6deebc48c87d2c77bdb6ace4bf8d"
     },
     {
       "source": "linuxdoom-1.10/r_data.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_data.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_data.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Interfaz de recursos; precache recibe contexto de juego explícito.",
       "lines": 62,
       "sha256": "4dbb1515b2e1be1e2496018365ebd37507f001ae449a181a54a894a70141ed1b"
     },
     {
       "source": "linuxdoom-1.10/r_defs.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_defs.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_defs.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Tipos de mapa/render; spans con base explícita y visplanes con arrays acolchados.",
       "lines": 490,
       "sha256": "d8856503bea02282f5f338f3533885e87c6c430ce4f11511d6a04b5fc040db31"
     },
@@ -929,10 +929,10 @@
     },
     {
       "source": "linuxdoom-1.10/r_main.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_main.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_main.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "R_PointOnSide, R_PointOnSegSide y R_PointInSubsector; render y estado de vista pendientes.",
       "lines": 898,
       "sha256": "2aae43cf807929a8758f71ed0205fc08017556541ba8df2ea9167c003d0dec5a"
     },
@@ -1001,10 +1001,10 @@
     },
     {
       "source": "linuxdoom-1.10/r_state.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/r_state.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/r_state.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Estado compartido de mapa; globals de vista, sprites y render pendientes.",
       "lines": 138,
       "sha256": "35a0d8f2e6a8f88ff100625708e54a6f04d22506319bef1c08033293e3ca22bd"
     },

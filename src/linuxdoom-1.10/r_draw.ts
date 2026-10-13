@@ -10,7 +10,7 @@ export const draw = {
     centery: 84, gamemode: GameMode_t.shareware,
     ylookup: new Int32Array(832), columnofs: new Int32Array(1120),
     dc_colormap: new Uint8Array(256), dc_x: 0, dc_yl: 0, dc_yh: -1, dc_iscale: 0, dc_texturemid: 0,
-    dc_source: new Uint8Array(128), dc_translation: new Uint8Array(256), translationtables: new Uint8Array(768),
+    dc_source: new Uint8Array(128) as Uint8Array, dc_translation: new Uint8Array(256), translationtables: new Uint8Array(768),
     colormaps: new Uint8Array(256 * 32), fuzzpos: 0,
     ds_y: 0, ds_x1: 0, ds_x2: -1, ds_colormap: new Uint8Array(256),
     ds_xfrac: 0, ds_yfrac: 0, ds_xstep: 0, ds_ystep: 0, ds_source: new Uint8Array(4096),

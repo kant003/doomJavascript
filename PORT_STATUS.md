@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **21** · Adaptado a web: **9** · Parcial: **5** · Pendiente: **111**
+Traducido: **24** · Adaptado a web: **13** · Parcial: **9** · Pendiente: **100**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -28,9 +28,9 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/d_main.h` | — | Pendiente |  |
 | `linuxdoom-1.10/d_net.c` | — | Pendiente |  |
 | `linuxdoom-1.10/d_net.h` | — | Pendiente |  |
-| `linuxdoom-1.10/d_player.h` | — | Pendiente |  |
+| `linuxdoom-1.10/d_player.h` | `src/linuxdoom-1.10/d_player.h.ts` | Traducido | Todos los campos de player_t, intermisión y enums. |
 | `linuxdoom-1.10/d_textur.h` | — | Pendiente |  |
-| `linuxdoom-1.10/d_think.h` | — | Pendiente |  |
+| `linuxdoom-1.10/d_think.h` | `src/linuxdoom-1.10/d_think.h.ts` | Adaptado a web | Puntero de la unión actionf_t como callable único; referencias enlazadas y marcador -1. |
 | `linuxdoom-1.10/d_ticcmd.h` | `src/linuxdoom-1.10/d_ticcmd.h.ts` | Traducido |  |
 | `linuxdoom-1.10/doomdata.h` | `src/linuxdoom-1.10/doomdata.h.ts` | Traducido |  |
 | `linuxdoom-1.10/doomdef.c` | — | Pendiente |  |
@@ -60,7 +60,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/i_video.c` | `src/linuxdoom-1.10/i_video.ts` | Parcial | Canvas y teclado web. Entrada de ratón/joystick pendiente. |
 | `linuxdoom-1.10/i_video.h` | `src/linuxdoom-1.10/i_video.h.ts` | Adaptado a web | Interfaz Canvas; eventos devueltos al llamador. |
 | `linuxdoom-1.10/info.c` | — | Pendiente |  |
-| `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Enums sprite/state/mobj traducidos; structs y tablas info.c pendientes. |
+| `linuxdoom-1.10/info.h` | `src/linuxdoom-1.10/info.h.ts` | Parcial | Todos los enums y structs state_t/mobjinfo_t; tablas y declaraciones de info.c pendientes. |
 | `linuxdoom-1.10/m_argv.c` | `src/linuxdoom-1.10/m_argv.ts` | Adaptado a web | Argumentos suministrados por la web. |
 | `linuxdoom-1.10/m_argv.h` | `src/linuxdoom-1.10/m_argv.h.ts` | Traducido |  |
 | `linuxdoom-1.10/m_bbox.c` | `src/linuxdoom-1.10/m_bbox.ts` | Traducido |  |
@@ -88,14 +88,14 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_map.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_maputl.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_mobj.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_mobj.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
 | `linuxdoom-1.10/p_plats.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_pspr.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_pspr.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_pspr.h` | `src/linuxdoom-1.10/p_pspr.h.ts` | Traducido | Enums, flags y estructura pspdef_t. |
 | `linuxdoom-1.10/p_saveg.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_saveg.h` | — | Pendiente |  |
-| `linuxdoom-1.10/p_setup.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_setup.h` | — | Pendiente |  |
+| `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes. |
+| `linuxdoom-1.10/p_setup.h` | `src/linuxdoom-1.10/p_setup.h.ts` | Parcial | Interfaz de lectores; ciclo completo de nivel pendiente. |
 | `linuxdoom-1.10/p_sight.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_spec.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_spec.h` | — | Pendiente |  |
@@ -106,13 +106,13 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_user.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_bsp.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_bsp.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_data.c` | — | Pendiente |  |
-| `linuxdoom-1.10/r_data.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_defs.h` | — | Pendiente |  |
+| `linuxdoom-1.10/r_data.c` | `src/linuxdoom-1.10/r_data.ts` | Adaptado a web | PNAMES/TEXTURE1/2, composiciones, flats, sprites, COLORMAP y precache con contexto explícito; GC sustituye Z_Zone. |
+| `linuxdoom-1.10/r_data.h` | `src/linuxdoom-1.10/r_data.h.ts` | Adaptado a web | Interfaz de recursos; precache recibe contexto de juego explícito. |
+| `linuxdoom-1.10/r_defs.h` | `src/linuxdoom-1.10/r_defs.h.ts` | Adaptado a web | Tipos de mapa/render; spans con base explícita y visplanes con arrays acolchados. |
 | `linuxdoom-1.10/r_draw.c` | `src/linuxdoom-1.10/r_draw.ts` | Adaptado a web | Variables globales mutables agrupadas en draw; punteros a filas como offsets. Primitivas, no renderer BSP. |
 | `linuxdoom-1.10/r_draw.h` | — | Pendiente |  |
 | `linuxdoom-1.10/r_local.h` | — | Pendiente |  |
-| `linuxdoom-1.10/r_main.c` | — | Pendiente |  |
+| `linuxdoom-1.10/r_main.c` | `src/linuxdoom-1.10/r_main.ts` | Parcial | R_PointOnSide, R_PointOnSegSide y R_PointInSubsector; render y estado de vista pendientes. |
 | `linuxdoom-1.10/r_main.h` | — | Pendiente |  |
 | `linuxdoom-1.10/r_plane.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_plane.h` | — | Pendiente |  |
@@ -120,7 +120,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/r_segs.h` | — | Pendiente |  |
 | `linuxdoom-1.10/r_sky.c` | `src/linuxdoom-1.10/r_sky.ts` | Traducido |  |
 | `linuxdoom-1.10/r_sky.h` | `src/linuxdoom-1.10/r_sky.h.ts` | Traducido |  |
-| `linuxdoom-1.10/r_state.h` | — | Pendiente |  |
+| `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Parcial | Estado compartido de mapa; globals de vista, sprites y render pendientes. |
 | `linuxdoom-1.10/r_things.c` | — | Pendiente |  |
 | `linuxdoom-1.10/r_things.h` | — | Pendiente |  |
 | `linuxdoom-1.10/s_sound.c` | — | Pendiente |  |

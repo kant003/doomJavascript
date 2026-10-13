@@ -1275,3 +1275,30 @@ export enum mobjtype_t {
     NUMMOBJTYPES
 
  }
+import type { actionf_t } from './d_think.h';
+export interface state_t { sprite: spritenum_t; frame: number; tics: number; action: actionf_t; nextstate: statenum_t; misc1: number; misc2: number }
+export interface mobjinfo_t {
+    doomednum: number;
+    spawnstate: number;
+    spawnhealth: number;
+    seestate: number;
+    seesound: number;
+    reactiontime: number;
+    attacksound: number;
+    painstate: number;
+    painchance: number;
+    painsound: number;
+    meleestate: number;
+    missilestate: number;
+    deathstate: number;
+    xdeathstate: number;
+    deathsound: number;
+    speed: number;
+    radius: number;
+    height: number;
+    mass: number;
+    damage: number;
+    activesound: number;
+    flags: number;
+    raisestate: number;
+}

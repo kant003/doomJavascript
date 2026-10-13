@@ -51,7 +51,6 @@ export interface mapthing_t { x: number; y: number; angle: number; type: number;
 write('d_event.h.ts', declarations('d_event.h') + '''
 export interface event_t { type: evtype_t; data1: number; data2: number; data3: number }
 ''', 'd_event.h')
-write('info.h.ts', declarations('info.h'), 'info.h')
 text=(source/'tables.c').read_text()
 code='import { SLOPERANGE } from "./tables.h";\n'
 for name,kind in [('finetangent','Int32Array'),('finesine','Int32Array'),('tantoangle','Uint32Array')]:

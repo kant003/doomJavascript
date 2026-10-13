@@ -4,7 +4,7 @@
 
 El resultado final debe ser la implementación de Linux DOOM 1.10 en TypeScript nativo, ejecutada en el navegador. Conservar nombres de archivos, funciones, constantes, tablas, orden de actualización y algoritmos. Mantener `original/` sin cambios y comparar cada módulo con la fuente fijada. IPX, serie y sndserv también están inventariados; sus APIs de plataforma necesitarán equivalentes web y no pueden copiarse literalmente.
 
-Esta entrega implementa la primera etapa. La web es un banco de pruebas de recursos y vídeo. La imagen de título o la visualización de un mapa no constituyen un motor jugable.
+Esta entrega implementa recursos gráficos y geometría interna del nivel. La web es un banco de pruebas de recursos y vídeo. La imagen de título o la visualización de un mapa no constituyen un motor jugable.
 
 ## Correspondencia de archivos
 
@@ -59,3 +59,20 @@ Al terminar un módulo, declarar su estado en `porting-status.json`, añadir val
 ## Criterio de finalización
 
 No considerar completado el port hasta que el navegador pueda arrancar un IWAD compatible, mostrar menús, iniciar mapas, ejecutar render y simulación originales, mover al jugador, disparar, interactuar, procesar enemigos/sectores, completar niveles y gestionar audio/guardados/demos dentro del alcance documentado. Toda diferencia de plataforma debe estar descrita y todas las partes originales deben estar convertidas o tener un equivalente explícito verificado.
+
+## Segunda etapa: recursos y datos del nivel
+
+- `r_data.c` conserva el lookup de columnas, composición en orden de patches, máscara de anchura original (también para anchuras que no sean potencia de dos), offsets, alturas 16.16 y tablas de traducción. Los globals se agrupan en `texturestate`.
+- `R_DrawColumnInCache` conserva incluso el comportamiento original de recorte superior: reduce el conteo sin avanzar el puntero a píxeles del post. Se comprueba explícitamente con pruebas.
+- Diferencias de validación: un hueco sin patch es un error explícito, no una salida con tablas parcialmente inicializadas; `R_GetColumn` admite el lump 0 (el original comprueba `> 0` y puede acceder a un composite ausente). Se rechazan offsets que no caben en los límites clásicos en lugar de truncarlos silenciosamente. `R_InitData` restaura su estado anterior si falla.
+- `R_PrecacheLevel` recibe un contexto obligatorio con sectores, lados, IDs de sprites activos, definiciones de sprites, cielo y flag de demo. El recorrido de thinkers real depende todavía de `p_mobj.c`/`r_things.c`. Los contadores conservan las sumas originales, incluso cuando varias texturas referencian un mismo patch.
+- `p_setup.c` implementa P_LoadVertexes/Sectors/SideDefs/LineDefs/Subsectors/Nodes/Segs/BlockMap/Things y P_GroupLines. `P_LoadMapData` es una frontera web nueva que sigue el orden de lectores de P_SetupLevel. No sustituye P_SetupLevel ni llama a actores, sonido o especiales pendientes.
+- `P_LoadThings` requiere gamemode y una función de spawn suministrada por el llamador. La utilidad de inspección lee los registros sin spawn. Se conserva el `break` original al encontrar un monstruo DOOM II en modo DOOM I.
+- Los lectores usan referencias compartidas: un seg apunta al mismo linedef/sidedef/sector que los demás módulos. Los arrays contiguos de C pasan a arrays de objetos, y BLOCKMAP conserva la subvista a su propio buffer.
+- Validación adicional: tamaños exactos de registros, referencias dentro de rango, terminadores de BLOCKMAP, tamaño mínimo de REJECT, orden clásico de lumps y ausencia de ciclos BSP. La carga completa de datos es atómica respecto a `mapstate`.
+- `r_main.c` está parcialmente convertido: clasificación de lados, clasificación respecto a segs y búsqueda de subsector. Se mantiene la lógica original de signos y FixedMul. El recorrido incorpora protección contra ciclos/índices corruptos.
+- `r_defs.h` modela spans de clipping como buffer/base y acolcha los arrays de visplanes. No hay aún algoritmos de r_plane.c que utilicen estos tipos.
+- Los campos de info.h, p_mobj.h y d_player.h ya están presentes; esto no implementa sus tablas de acciones ni la simulación.
+- El WAD sintético incluye ahora PNAMES/TEXTURE1, una textura, un flat, COLORMAP y un mapa clásico completo de un sector. No contiene datos comerciales.
+
+La siguiente etapa debe completar tablas de actores/estados, el estado de vista y los módulos del renderizador BSP (`r_main`, `r_bsp`, `r_segs`, `r_plane`, `r_things`) antes de presentar una vista 3D como render original.
