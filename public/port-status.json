@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 42,
-    "partial": 10,
-    "pending": 68
+    "adapted": 45,
+    "partial": 8,
+    "pending": 67
   },
   "files": [
     {
@@ -796,8 +796,8 @@
       "source": "linuxdoom-1.10/p_spec.c",
       "target": "src/linuxdoom-1.10/p_spec.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.ts",
-      "status": "partial",
-      "notes": "11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido.",
+      "status": "adapted",
+      "notes": "18 funciones originales: helpers, dispatch de cruce/disparo, daño/secretos, donut, animaciones, scrollers, botones y setup/ticker. Estado de juego/salidas mediante contexto explícito.",
       "lines": 1362,
       "sha256": "1eed828498af033bd2322402a727e5b66913f5814e4d3fb002712fbcc8825cb1"
     },
@@ -805,17 +805,17 @@
       "source": "linuxdoom-1.10/p_spec.h",
       "target": "src/linuxdoom-1.10/p_spec.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.h.ts",
-      "status": "partial",
-      "notes": "Enums, structs y constantes originales de movers e iluminación. Botones/interruptores y demás especiales pendientes.",
+      "status": "adapted",
+      "notes": "Enums, structs y constantes de movers, iluminación, switches y botones. Declaraciones sliding sin implementación activa en el C original excluidas.",
       "lines": 645,
       "sha256": "95d93e2e3b803126b0ecf6ea42de41d2bce7b2d09ea701e03992f0cc6dae22a3"
     },
     {
       "source": "linuxdoom-1.10/p_switch.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_switch.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_switch.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Cuatro funciones originales y 40 pares de texturas: inicialización por modo, botones, cambios de textura y dispatch completo de uso. Eventos de sectores reales; salidas mediante contexto.",
       "lines": 654,
       "sha256": "ac7effb3c4cfce1ecd8f7d25c93690c9b74cda99c639a47f76c4151a73010358"
     },

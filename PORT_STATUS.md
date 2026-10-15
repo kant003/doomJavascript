@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **42** · Parcial: **10** · Pendiente: **68**
+Traducido: **26** · Adaptado a web: **45** · Parcial: **8** · Pendiente: **67**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -97,9 +97,9 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes. |
 | `linuxdoom-1.10/p_setup.h` | `src/linuxdoom-1.10/p_setup.h.ts` | Parcial | Interfaz de lectores; ciclo completo de nivel pendiente. |
 | `linuxdoom-1.10/p_sight.c` | `src/linuxdoom-1.10/p_sight.ts` | Adaptado a web | Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado. |
-| `linuxdoom-1.10/p_spec.c` | `src/linuxdoom-1.10/p_spec.ts` | Parcial | 11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido. |
-| `linuxdoom-1.10/p_spec.h` | `src/linuxdoom-1.10/p_spec.h.ts` | Parcial | Enums, structs y constantes originales de movers e iluminación. Botones/interruptores y demás especiales pendientes. |
-| `linuxdoom-1.10/p_switch.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_spec.c` | `src/linuxdoom-1.10/p_spec.ts` | Adaptado a web | 18 funciones originales: helpers, dispatch de cruce/disparo, daño/secretos, donut, animaciones, scrollers, botones y setup/ticker. Estado de juego/salidas mediante contexto explícito. |
+| `linuxdoom-1.10/p_spec.h` | `src/linuxdoom-1.10/p_spec.h.ts` | Adaptado a web | Enums, structs y constantes de movers, iluminación, switches y botones. Declaraciones sliding sin implementación activa en el C original excluidas. |
+| `linuxdoom-1.10/p_switch.c` | `src/linuxdoom-1.10/p_switch.ts` | Adaptado a web | Cuatro funciones originales y 40 pares de texturas: inicialización por modo, botones, cambios de textura y dispatch completo de uso. Eventos de sectores reales; salidas mediante contexto. |
 | `linuxdoom-1.10/p_telept.c` | `src/linuxdoom-1.10/p_telept.ts` | Adaptado a web | EV_Teleport completo: destino por sector/thinker, P_TeleportMove real, telefrag, niebla, ángulo y bloqueo temporal del jugador. Sonido mediante contexto de plataforma. |
 | `linuxdoom-1.10/p_tick.c` | `src/linuxdoom-1.10/p_tick.ts` | Adaptado a web | Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free. |
 | `linuxdoom-1.10/p_tick.h` | `src/linuxdoom-1.10/p_tick.h.ts` | Adaptado a web | P_Ticker con contexto explícito de juego. |

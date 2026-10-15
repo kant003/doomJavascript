@@ -1,9 +1,9 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Partial header: sector movers and lighting; switch declarations pending.
+// Sector effects; unused sliding-door declarations remain excluded.
 export enum vldoor_e {normal,close30ThenOpen,close,open,raiseIn5Mins,blazeRaise,blazeOpen,blazeClose}
 export enum floor_e {lowerFloor,lowerFloorToLowest,turboLower,raiseFloor,raiseFloorToNearest,raiseToTexture,lowerAndChange,raiseFloor24,raiseFloor24AndChange,raiseFloorCrush,raiseFloorTurbo,donutRaise,raiseFloor512}
 import type { thinker_t } from './d_think.h';
-import type { sector_t } from './r_defs.h';
+import type { sector_t,line_t,degenmobj_t } from './r_defs.h';
 import { FRACUNIT } from './m_fixed.h';
 export enum plat_e {up,down,waiting,in_stasis}
 export enum plattype_e {perpetualRaise,downWaitUpStay,raiseAndChange,raiseToNearestAndChange,blazeDWUS}
@@ -20,3 +20,7 @@ export interface lightflash_t extends fireflicker_t {maxtime:number;mintime:numb
 export interface strobe_t extends fireflicker_t {darktime:number;brighttime:number}
 export interface glow_t {thinker:thinker_t;sector:sector_t;minlight:number;maxlight:number;direction:number}
 export const GLOWSPEED=8,STROBEBRIGHT=5,FASTDARK=15,SLOWDARK=35;
+export interface switchlist_t {name1:string;name2:string;episode:number}
+export enum bwhere_e {top,middle,bottom}
+export interface button_t {line:line_t|null;where:bwhere_e;btexture:number;btimer:number;soundorg:degenmobj_t|null}
+export const MAXSWITCHES=50,MAXBUTTONS=16,BUTTONTIME=35,MO_TELEPORTMAN=14;

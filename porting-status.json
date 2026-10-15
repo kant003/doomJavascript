@@ -283,8 +283,8 @@
       "notes": "285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py."
     },
     "linuxdoom-1.10/p_spec.h": {
-      "status": "partial",
-      "notes": "Enums, structs y constantes originales de movers e iluminación. Botones/interruptores y demás especiales pendientes."
+      "status": "adapted",
+      "notes": "Enums, structs y constantes de movers, iluminación, switches y botones. Declaraciones sliding sin implementación activa en el C original excluidas."
     },
     "linuxdoom-1.10/p_floor.c": {
       "status": "adapted",
@@ -303,8 +303,8 @@
       "notes": "Seis funciones activas: puertas verticales, locks, activación por tag/manual y timers. Código sliding deshabilitado en C no incluido."
     },
     "linuxdoom-1.10/p_spec.c": {
-      "status": "partial",
-      "notes": "11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido."
+      "status": "adapted",
+      "notes": "18 funciones originales: helpers, dispatch de cruce/disparo, daño/secretos, donut, animaciones, scrollers, botones y setup/ticker. Estado de juego/salidas mediante contexto explícito."
     },
     "linuxdoom-1.10/p_lights.c": {
       "status": "adapted",
@@ -313,6 +313,10 @@
     "linuxdoom-1.10/p_telept.c": {
       "status": "adapted",
       "notes": "EV_Teleport completo: destino por sector/thinker, P_TeleportMove real, telefrag, niebla, ángulo y bloqueo temporal del jugador. Sonido mediante contexto de plataforma."
+    },
+    "linuxdoom-1.10/p_switch.c": {
+      "status": "adapted",
+      "notes": "Cuatro funciones originales y 40 pares de texturas: inicialización por modo, botones, cambios de textura y dispatch completo de uso. Eventos de sectores reales; salidas mediante contexto."
     }
   }
 }
