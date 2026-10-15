@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Partial header: sector mover enums, structures and constants; lighting/switch declarations pending.
+// Partial header: sector movers and lighting; switch declarations pending.
 export enum vldoor_e {normal,close30ThenOpen,close,open,raiseIn5Mins,blazeRaise,blazeOpen,blazeClose}
 export enum floor_e {lowerFloor,lowerFloorToLowest,turboLower,raiseFloor,raiseFloorToNearest,raiseToTexture,lowerAndChange,raiseFloor24,raiseFloor24AndChange,raiseFloorCrush,raiseFloorTurbo,donutRaise,raiseFloor512}
 import type { thinker_t } from './d_think.h';
@@ -15,3 +15,8 @@ export interface ceiling_t {thinker:thinker_t;type:ceiling_e;sector:sector_t;bot
 export interface vldoor_t {thinker:thinker_t;type:vldoor_e;sector:sector_t;topheight:number;speed:number;direction:number;topwait:number;topcountdown:number}
 export interface plat_t {thinker:thinker_t;sector:sector_t;speed:number;low:number;high:number;wait:number;count:number;status:plat_e;oldstatus:plat_e;crush:boolean;tag:number;type:plattype_e}
 export const PLATWAIT=3,PLATSPEED=FRACUNIT,MAXPLATS=30,VDOORSPEED=FRACUNIT*2,VDOORWAIT=150,CEILSPEED=FRACUNIT,CEILWAIT=150,MAXCEILINGS=30,FLOORSPEED=FRACUNIT;
+export interface fireflicker_t {thinker:thinker_t;sector:sector_t;count:number;maxlight:number;minlight:number}
+export interface lightflash_t extends fireflicker_t {maxtime:number;mintime:number}
+export interface strobe_t extends fireflicker_t {darktime:number;brighttime:number}
+export interface glow_t {thinker:thinker_t;sector:sector_t;minlight:number;maxlight:number;direction:number}
+export const GLOWSPEED=8,STROBEBRIGHT=5,FASTDARK=15,SLOWDARK=35;

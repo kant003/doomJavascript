@@ -284,7 +284,7 @@
     },
     "linuxdoom-1.10/p_spec.h": {
       "status": "partial",
-      "notes": "Enums, structs y constantes originales de suelos, techos, puertas y plataformas. Declaraciones de iluminación, botones/interruptores y demás especiales pendientes."
+      "notes": "Enums, structs y constantes originales de movers e iluminación. Botones/interruptores y demás especiales pendientes."
     },
     "linuxdoom-1.10/p_floor.c": {
       "status": "adapted",
@@ -305,6 +305,14 @@
     "linuxdoom-1.10/p_spec.c": {
       "status": "partial",
       "notes": "11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido."
+    },
+    "linuxdoom-1.10/p_lights.c": {
+      "status": "adapted",
+      "notes": "11 funciones originales: fuego, flashes, strobes, glow y eventos de luz por tag. Thinkers reales y RNG original; bright compartido entre sectores preservado."
+    },
+    "linuxdoom-1.10/p_telept.c": {
+      "status": "adapted",
+      "notes": "EV_Teleport completo: destino por sector/thinker, P_TeleportMove real, telefrag, niebla, ángulo y bloqueo temporal del jugador. Sonido mediante contexto de plataforma."
     }
   }
 }

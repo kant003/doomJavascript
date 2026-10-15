@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 40,
+    "adapted": 42,
     "partial": 10,
-    "pending": 70
+    "pending": 68
   },
   "files": [
     {
@@ -668,10 +668,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_lights.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_lights.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_lights.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "11 funciones originales: fuego, flashes, strobes, glow y eventos de luz por tag. Thinkers reales y RNG original; bright compartido entre sectores preservado.",
       "lines": 357,
       "sha256": "0ade56b8514b3e11fd13af2be7a787531e4ffb6b84c49e489d678d42b5abfdca"
     },
@@ -806,7 +806,7 @@
       "target": "src/linuxdoom-1.10/p_spec.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.h.ts",
       "status": "partial",
-      "notes": "Enums, structs y constantes originales de suelos, techos, puertas y plataformas. Declaraciones de iluminación, botones/interruptores y demás especiales pendientes.",
+      "notes": "Enums, structs y constantes originales de movers e iluminación. Botones/interruptores y demás especiales pendientes.",
       "lines": 645,
       "sha256": "95d93e2e3b803126b0ecf6ea42de41d2bce7b2d09ea701e03992f0cc6dae22a3"
     },
@@ -821,10 +821,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_telept.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_telept.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_telept.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "EV_Teleport completo: destino por sector/thinker, P_TeleportMove real, telefrag, niebla, ángulo y bloqueo temporal del jugador. Sonido mediante contexto de plataforma.",
       "lines": 132,
       "sha256": "b717afb76c138954ca4aef44de3c3c081f91039cb485385afe2fd334fe4802c6"
     },
