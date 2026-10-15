@@ -1,3 +1,4 @@
+import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import './style.css';
 import { WebAudioBackend } from './audio';
 import { I_InstallSoundBackend,I_InitSound,I_ShutdownSound } from '../linuxdoom-1.10/i_sound';
@@ -67,12 +68,22 @@ const browserGame=new BrowserGame(session=>{
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){
         element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
-        const score=(value:number,total:number)=>`${value} / ${total} · ${Math.trunc(100*value/Math.max(1,total))}%`;
-        element('result-kills').textContent=score(result.kills,result.maxkills);element('result-items').textContent=score(result.items,result.maxitems);element('result-secrets').textContent=score(result.secrets,result.maxsecrets);
-        const seconds=Math.trunc(result.tics/35);element('result-time').textContent=`${Math.trunc(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
+        const wi=session.intermission;
+        const score=(value:number,total:number,count:number)=>`${value} / ${total} · ${count<0?'—':`${count}%`}`;
+        element('result-kills').textContent=score(result.kills,result.maxkills,wi?.kills??Math.trunc(100*result.kills/Math.max(1,result.maxkills)));
+        element('result-items').textContent=score(result.items,result.maxitems,wi?.items??Math.trunc(100*result.items/Math.max(1,result.maxitems)));
+        element('result-secrets').textContent=score(result.secrets,result.maxsecrets,wi?.secret??Math.trunc(100*result.secrets/Math.max(1,result.maxsecrets)));
+        const time=(seconds:number)=>seconds<0?'—':`${Math.trunc(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
+        element('result-time').textContent=time(wi?.time??Math.trunc(result.tics/35));
+        element('result-par').textContent=wi?time(wi.par):'—';
         const next=session.nextMapName,finale=session.state.gamestate===GS.GS_FINALE;
+        const counting=!!wi&&wi.state===WI.StatCount&&wi.sp_state!==10;
+        const entering=!!wi&&wi.state!==WI.StatCount;
+        element('intermission-help').textContent=counting?'F o Espacio: completar el recuento.':finale&&result.terminal?'Fin. Puedes reiniciar o elegir otro mapa.':!result.terminal&&!session.nextAvailable?'Falta el mapa de destino.':entering?(result.terminal?'Preparando el final…':'Preparando el siguiente mapa…'):'F o Espacio: avanzar.';
         element('next-map').textContent=result.terminal?'Puedes reiniciar o elegir otro mapa.':session.nextAvailable?`${finale?'Fin de tramo. ':''}Siguiente mapa: ${next}`:`El mapa ${next} no está cargado. Selecciona un WAD que lo incluya para jugarlo.`;
-        const button=element<HTMLButtonElement>('next-level');button.hidden=result.terminal&&finale;button.disabled=!result.terminal&&!session.nextAvailable;button.textContent=result.terminal?'Finalizar':`Continuar a ${next}`;
+        const button=element<HTMLButtonElement>('next-level');button.hidden=result.terminal&&finale;
+        button.disabled=(!counting&&!result.terminal&&!session.nextAvailable)||wi?.state===WI.NoState;
+        button.textContent=counting?'Completar recuento':result.terminal?'Finalizar':entering?`Entrar en ${next}`:`Continuar a ${next}`;
         if(focusCompletion){focusCompletion=false;summary.scrollIntoView({block:'nearest'});summary.focus({preventScroll:true});}
     }
     if(gameHud.textContent!==text)gameHud.textContent=text;
@@ -204,6 +215,7 @@ element('game-start').addEventListener('click',async()=>{
     try {await audio.resume();if(generation!==gameStartGeneration)return;playing=true;render();canvas.focus();}
     catch(error){if(generation!==gameStartGeneration)return;playing=false;browserGame.stop();report(error instanceof Error?error.message:String(error),true);}
 });
+summary.addEventListener('keydown',event=>{if(event.target===summary&&!event.repeat&&[' ','f','F','Control'].includes(event.key)){event.preventDefault();browserGame.continueLevel();}});
 element('next-level').addEventListener('click',()=>safely(()=>{browserGame.continueLevel();canvas.focus();}));
 element('game-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;playing=false;render();}));
 element('game-pause').addEventListener('click',()=>{browserGame.togglePause();canvas.focus();});

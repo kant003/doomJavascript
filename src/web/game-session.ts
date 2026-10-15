@@ -2,6 +2,9 @@
 import { G_CreatePlayer,G_InitGameContext,G_PlayerReborn,G_InitCompletionContext,G_CreateIntermission,G_ExitLevel,G_SecretExitLevel,G_DoCompleted,G_WorldDone,G_DoWorldDone,type completion_context_t } from '../linuxdoom-1.10/g_game';
 import { GameMode_t,skill_t,gamestate_t as GS } from '../linuxdoom-1.10/doomdef.h';
 import { gameaction_t as GA } from '../linuxdoom-1.10/d_event.h';
+import { WI_InitContext,WI_Start,WI_Ticker,WI_GetState } from '../linuxdoom-1.10/wi_stuff';
+import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
+import { buttoncode_t as BT } from '../linuxdoom-1.10/d_event.h';
 import { leveltime } from '../linuxdoom-1.10/p_tick';
 import { playerstate_t as PST } from '../linuxdoom-1.10/d_player.h';
 import type { ticcmd_t } from '../linuxdoom-1.10/d_ticcmd.h';
@@ -34,6 +37,9 @@ export function detectGameMode(mapname:string):GameMode_t {
 export class GameSession {
     readonly state:session_state_t;
     result:level_result_t|null=null;
+    private advanceTics=0;
+    private intermissionEnded=false;
+    get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?WI_GetState():null;}
     get completed():boolean {return this.state.gamestate!==GS.GS_LEVEL;}
     get mapname():string {return this.state.gamemode===GameMode_t.commercial?`MAP${String(this.state.gamemap).padStart(2,'0')}`:`E${this.state.gameepisode}M${this.state.gamemap}`;}
     get nextMapName():string|null {
@@ -52,13 +58,15 @@ export class GameSession {
             P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
             ST_Start:presentation.resetStatus,HU_Start:presentation.resetMessages,AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
             P_UseSpecialLine,EV_DoDoor,EV_DoFloor,G_ExitLevel,G_SecretExitLevel,
-            WI_Start:()=>presentation.onExit(this.state.secretexit),F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
+            WI_Start:info=>{WI_Start(info);presentation.onExit(this.state.secretexit);},F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
             StopLevelSounds:()=>S_Init(snd_SfxVolume,snd_MusicVolume)};
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
-        const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;
+        const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
+        WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,
+            G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
         G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
@@ -79,13 +87,28 @@ export class GameSession {
     }
     continueLevel():boolean {
         if(!this.completed||!this.result)return false;
-        if(this.result.terminal){if(this.state.gamestate===GS.GS_INTERMISSION)G_WorldDone();return false;}
-        if(!this.nextAvailable)return false;
-        if(this.state.gamestate===GS.GS_FINALE){G_DoWorldDone();return true;}
-        G_WorldDone();if(this.state.gameaction===GA.ga_worlddone){G_DoWorldDone();return true;}return false;
+        if(this.state.gamestate===GS.GS_INTERMISSION){
+            const wi=WI_GetState();
+            if(wi.state===WI.StatCount&&wi.sp_state!==10){this.advanceTics=2;return true;}
+            if(!this.result.terminal&&!this.nextAvailable)return false;
+            if(wi.state!==WI.NoState){this.advanceTics=2;return true;}return false;
+        }
+        if(this.result.terminal||!this.nextAvailable)return false;
+        G_DoWorldDone();return true;
     }
     step(command:ticcmd_t):void {
-        this.finishIfRequested();if(this.completed)return;
+        this.finishIfRequested();
+        if(this.state.gamestate===GS.GS_INTERMISSION){
+            Object.assign(this.player.cmd,command);
+            // A DOM click becomes a release/press pair on simulation tics, so it
+            // observes the same native edge detection as F or Space.
+            if(this.advanceTics)this.player.cmd.buttons=this.advanceTics--===2?0:BT.BT_USE;
+            if(!this.intermissionEnded)WI_Ticker();
+            this.state.gametic=(this.state.gametic+1)|0;
+            if(this.state.gameaction===GA.ga_worlddone)G_DoWorldDone();
+            S_UpdateSounds(this.player.mo!);return;
+        }
+        if(this.completed)return;
         if(this.player.playerstate===PST.PST_REBORN){this.start(false);return;}
         Object.assign(this.player.cmd,command);
         P_Ticker({paused:false,netgame:false,menuactive:false,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,

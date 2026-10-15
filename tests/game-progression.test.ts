@@ -15,6 +15,13 @@ import { R_RenderPlayerView } from '../src/linuxdoom-1.10/r_main';
 import { screens } from '../src/linuxdoom-1.10/v_video';
 const cmd=(buttons=0)=>({forwardmove:0,sidemove:0,angleturn:0,buttons,consistancy:0,chatchar:0});
 const marker=(name:string)=>W_AddFile({name:'route.wad',data:makeWad([{name,data:new Uint8Array()}])});
+// Two distinct confirmations, then the native 4-second location / 10-tic transition.
+function continueThroughIntermission(session:ReturnType<typeof createHeadlessGame>['session']){
+ assert.equal(session.continueLevel(),true);session.step(cmd());session.step(cmd());
+ assert.equal(session.continueLevel(),true);session.step(cmd());session.step(cmd());
+ for(let i=0;i<150&&session.completed;i++)session.step(cmd());
+ assert.equal(session.completed,false);
+}
 test('FinishLevel removes keys, powers, invisibility and palette effects while retaining inventory and scores',()=>{
  const {session}=createHeadlessGame(),p=session.player;p.health=p.mo!.health=70;p.armorpoints=42;p.ammo[0]=37;p.cards.fill(true);p.powers.fill(20);p.mo!.flags|=MF.MF_SHADOW;
  p.extralight=2;p.fixedcolormap=1;p.damagecount=8;p.bonuscount=9;p.killcount=3;p.frags[0]=2;
@@ -26,7 +33,7 @@ test('Normal exits enqueue completion and commercial secret exits fall back when
 });
 test('Original Doom progression handles normal routes, secret maps and all four secret returns',()=>{
  for(const [episode,map,secret,next] of [[1,1,false,1],[1,3,true,8],[2,5,true,8],[3,6,true,8],[4,2,true,8],[1,9,false,3],[2,9,false,5],[3,9,false,6],[4,9,false,2]] as const){
-  const {session}=createHeadlessGame(),s=session.state;s.gameepisode=episode;s.gamemap=map;s.secretexit=secret;G_DoCompleted();assert.equal(s.wminfo.next,next,`${episode}/${map}`);assert.equal(s.wminfo.last,map-1);assert.equal(s.wminfo.epsd,episode-1);assert.equal(s.gamestate,GS.GS_INTERMISSION);
+  const {session}=createHeadlessGame(),s=session.state;s.gameepisode=episode;s.gamemode=episode===4?MODE.retail:MODE.shareware;s.gamemap=map;s.secretexit=secret;G_DoCompleted();assert.equal(s.wminfo.next,next,`${episode}/${map}`);assert.equal(s.wminfo.last,map-1);assert.equal(s.wminfo.epsd,episode-1);assert.equal(s.gamestate,GS.GS_INTERMISSION);
   if(map===9)assert.ok(s.players.every(p=>p.didsecret));
  }
 });
@@ -58,28 +65,52 @@ test('WorldDone invokes commercial finales at story boundaries and marks the vis
 test('A native use trace completes the test room and the next map retains player inventory',()=>{
  const {session}=createHeadlessGame(true),p=session.player;p.health=p.mo!.health=75;p.armorpoints=42;p.ammo[0]=37;p.weaponowned[WP.wp_shotgun]=true;p.cards[0]=true;p.powers[PW.pw_ironfeet]=100;
  session.step(cmd());session.step(cmd(BT.BT_USE));assert.equal(session.completed,true);assert.equal(session.result!.mapname,'E1M1');assert.equal(session.nextMapName,'E1M2');assert.equal(session.nextAvailable,true);const old=p.mo;
- assert.equal(session.continueLevel(),true);assert.equal(session.mapname,'E1M2');assert.equal(session.completed,false);assert.equal(session.result,null);assert.strictEqual(session.player,p);assert.notStrictEqual(p.mo,old);
+ continueThroughIntermission(session);assert.equal(session.mapname,'E1M2');assert.equal(session.completed,false);assert.equal(session.result,null);assert.strictEqual(session.player,p);assert.notStrictEqual(p.mo,old);
  assert.deepEqual([p.health,p.armorpoints,p.ammo[0]],[75,42,37]);assert.equal(p.weaponowned[WP.wp_shotgun],true);assert.equal(p.cards[0],false);assert.equal(p.powers[PW.pw_ironfeet],0);assert.equal(leveltime,0);assert.equal(session.player.killcount,0);
  R_RenderPlayerView(p,()=>{});assert.ok(screens[0].some(v=>v!==0));
 });
 test('Missing destination keeps the intermission intact, with no clock or inventory mutation',()=>{
  const {session}=createHeadlessGame();session.state.G_ExitLevel();session.step(cmd());assert.equal(session.nextAvailable,false);const p=session.player,mo=p.mo,time=leveltime;
- assert.equal(session.continueLevel(),false);session.step({...cmd(),forwardmove:50});assert.strictEqual(session.player.mo,mo);assert.equal(leveltime,time);assert.equal(session.mapname,'E1M1');assert.ok(session.completed);
+ assert.equal(session.continueLevel(),true);session.step(cmd());session.step(cmd());assert.equal(session.continueLevel(),false);session.step({...cmd(),forwardmove:50});assert.strictEqual(session.player.mo,mo);assert.equal(leveltime,time);assert.equal(session.mapname,'E1M1');assert.ok(session.completed);
 });
 test('The second synthetic exit reports the missing third map instead of inventing a level',()=>{
- const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));session.continueLevel();session.step(cmd());session.step(cmd(BT.BT_USE));assert.equal(session.result!.mapname,'E1M2');assert.equal(session.nextMapName,'E1M3');assert.equal(session.nextAvailable,false);assert.equal(session.continueLevel(),false);
+ const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));continueThroughIntermission(session);session.step(cmd());session.step(cmd(BT.BT_USE));assert.equal(session.result!.mapname,'E1M2');assert.equal(session.nextMapName,'E1M3');assert.equal(session.nextAvailable,false);session.continueLevel();session.step(cmd());session.step(cmd());assert.equal(session.continueLevel(),false);
 });
 test('Episode finale ends the session with a terminal result rather than looking for E1M9',()=>{
  const {session}=createHeadlessGame();session.state.gamemap=8;session.state.G_ExitLevel();session.step(cmd());assert.equal(session.state.gamestate,GS.GS_FINALE);assert.equal(session.result!.terminal,true);assert.equal(session.nextMapName,null);assert.equal(session.continueLevel(),false);
 });
 test('Continuing preserves cosmetic/gameplay RNG instead of reseeding a new game',()=>{
- const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));const before=[rndindex,prndindex];assert.ok(before.some(v=>v>0));session.continueLevel();assert.ok(prndindex>=before[1]);assert.equal(rndindex,before[0]);
+ const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));const before=[rndindex,prndindex];assert.ok(before.some(v=>v>0));continueThroughIntermission(session);assert.ok(prndindex>=before[1]);assert.equal(rndindex,(before[0]+2)&255); // barexp and sgcock consume the two cosmetic RNG draws.
 });
 test('A dead player carried through an exit is reborn before the destination spawns',()=>{
  const {session}=createHeadlessGame(true);session.state.G_ExitLevel();session.step(cmd());session.player.playerstate=PST.PST_DEAD;session.player.health=session.player.mo!.health=0;
- assert.equal(session.continueLevel(),true);assert.equal(session.player.health,100);assert.equal(session.player.ammo[0],50);assert.equal(session.player.playerstate,PST.PST_LIVE);
+ continueThroughIntermission(session);assert.equal(session.player.health,100);assert.equal(session.player.ammo[0],50);assert.equal(session.player.playerstate,PST.PST_LIVE);
 });
 test('WorldDone loads the native destination and restores level state/view flags',()=>{
  const {session}=createHeadlessGame(true),s=session.state;s.wminfo.next=1;s.gameaction=GA.ga_worlddone;s.viewactive=false;G_DoWorldDone();
  assert.equal(session.mapname,'E1M2');assert.equal(s.gamestate,GS.GS_LEVEL);assert.equal(s.gameaction,GA.ga_nothing);assert.equal(s.viewactive,true);assert.equal(leveltime,0);assert.equal(m.things[0].type,1);
+});
+
+test('Intermission commands advance its clock and sounds without running actors or the level clock',()=>{
+ const {session,device}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));
+ const mo=session.player.mo!,x=mo.x,y=mo.y,time=leveltime,gametic=session.state.gametic,sounds=device.starts;
+ session.step(cmd());session.step(cmd(BT.BT_ATTACK));assert.equal(session.intermission!.sp_state,10);assert.ok(device.starts>sounds);
+ for(let i=0;i<100;i++)session.step({...cmd(BT.BT_ATTACK),forwardmove:50,angleturn:640});
+ assert.deepEqual([mo.x,mo.y,leveltime],[x,y,time]);assert.equal(session.state.gametic,gametic+102);assert.equal(session.intermission!.sp_state,10);assert.equal(session.mapname,'E1M1');
+ session.step(cmd());session.step(cmd(BT.BT_USE));assert.equal(session.intermission!.cnt,140);
+ for(let i=0;i<149;i++)session.step(cmd());assert.equal(session.mapname,'E1M1');session.step(cmd());assert.equal(session.mapname,'E1M2');assert.equal(leveltime,0);
+});
+test('Keyboard progression to a missing map stops after the final transition without repeated loading',()=>{
+ const {session}=createHeadlessGame();session.state.G_ExitLevel();session.step(cmd());
+ session.step(cmd(BT.BT_ATTACK));session.step(cmd());session.step(cmd(BT.BT_USE));
+ for(let i=0;i<200;i++)session.step(cmd());
+ assert.equal(session.mapname,'E1M1');assert.equal(session.intermission!.cnt,0);assert.equal(session.completed,true);assert.equal(session.state.gameaction,GA.ga_nothing);
+ const before=session.intermission!.bcnt;session.step(cmd());assert.equal(session.intermission!.bcnt,before);
+});
+test('MAP30 finishes counting before requesting the terminal commercial finale',()=>{
+ const {session}=createHeadlessGame();session.state.gamemode=MODE.commercial;session.state.gamemap=30;session.state.G_ExitLevel();session.step(cmd());
+ assert.equal(session.state.gamestate,GS.GS_INTERMISSION);assert.equal(session.result!.terminal,true);
+ session.continueLevel();session.step(cmd());session.step(cmd());session.continueLevel();session.step(cmd());session.step(cmd());
+ assert.equal(session.intermission!.cnt,10);for(let i=0;i<10;i++)session.step(cmd());
+ assert.equal(session.state.gamestate,GS.GS_FINALE);assert.equal(session.mapname,'MAP30');assert.equal(session.continueLevel(),false);
 });

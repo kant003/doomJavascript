@@ -341,6 +341,14 @@
     "linuxdoom-1.10/g_game.c": {
       "status": "partial",
       "notes": "Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes."
+    },
+    "linuxdoom-1.10/wi_stuff.c": {
+      "status": "partial",
+      "notes": "Diez funciones originales de intermisión single-player: contadores, pausas, aceleración por flanco y transiciones Doom/Doom II. Presentación HTML; gráficos, animación, música y multijugador pendientes."
+    },
+    "linuxdoom-1.10/wi_stuff.h": {
+      "status": "partial",
+      "notes": "Enum original de estados. WI_Start/WI_Ticker implementados; WI_Drawer pendiente."
     }
   }
 }
