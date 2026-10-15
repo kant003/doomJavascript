@@ -81,7 +81,7 @@ test('Single-player setup rejects deathmatch explicitly before trying to create 
 test('Browser commands preserve cancellation, walking/running, firing, use and weapon selection',()=>{
  const keys=(s:string)=>new Set([...s].map(c=>c.charCodeAt(0)));assert.equal(buildGameCommand(keys('ws')).forwardmove,0);assert.equal(buildGameCommand(keys('w')).forwardmove,25);
  const running=keys('w');running.add(KEY_RSHIFT);assert.equal(buildGameCommand(running).forwardmove,50);assert.equal(buildGameCommand(keys('q')).sidemove,-24);
- const input=buildGameCommand(keys(' f3'));assert.ok(input.buttons&BT.BT_ATTACK);assert.ok(input.buttons&BT.BT_USE);assert.ok(input.buttons&BT.BT_CHANGE);assert.equal((input.buttons&BT.BT_WEAPONMASK)>>BT.BT_WEAPONSHIFT,2);
+ const input=buildGameCommand(keys(' f3'));assert.ok(input.buttons&BT.BT_ATTACK);assert.ok(input.buttons&BT.BT_USE);assert.ok(input.buttons&BT.BT_CHANGE);assert.equal((input.buttons&BT.BT_WEAPONMASK)>>BT.BT_WEAPONSHIFT,2);assert.equal((buildGameCommand(keys('23')).buttons&BT.BT_WEAPONMASK)>>BT.BT_WEAPONSHIFT,1);
 });
 
 test('Short key taps survive until one tic and held keys continue without repeating use edges',()=>{

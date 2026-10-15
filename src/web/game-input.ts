@@ -6,7 +6,7 @@ export function buildGameCommand(keys:ReadonlySet<number>):ticcmd_t {
     const key=(text:string)=>keys.has(text.charCodeAt(0)),run=keys.has(KEY_RSHIFT),speed=run?50:25,side=run?40:24;
     let buttons=keys.has(KEY_RCTRL)||key(' ')?BT.BT_ATTACK:0;
     if(key('f'))buttons|=BT.BT_USE;
-    for(let i=1;i<=7;i++)if(key(String(i)))buttons|=BT.BT_CHANGE|((i-1)<<BT.BT_WEAPONSHIFT);
+    for(let i=1;i<=7;i++)if(key(String(i))){buttons|=BT.BT_CHANGE|((i-1)<<BT.BT_WEAPONSHIFT);break;}
     return {forwardmove:(Number(key('w')||keys.has(KEY_UPARROW))-Number(key('s')||keys.has(KEY_DOWNARROW)))*speed,
         sidemove:(Number(key('e'))-Number(key('q')))*side,
         angleturn:(Number(key('a')||keys.has(KEY_LEFTARROW))-Number(key('d')||keys.has(KEY_RIGHTARROW)))*640,
