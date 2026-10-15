@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **36** · Parcial: **9** · Pendiente: **75**
+Traducido: **26** · Adaptado a web: **40** · Parcial: **10** · Pendiente: **70**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -77,10 +77,10 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/m_random.h` | `src/linuxdoom-1.10/m_random.h.ts` | Traducido |  |
 | `linuxdoom-1.10/m_swap.c` | `src/linuxdoom-1.10/m_swap.ts` | Traducido |  |
 | `linuxdoom-1.10/m_swap.h` | `src/linuxdoom-1.10/m_swap.h.ts` | Traducido |  |
-| `linuxdoom-1.10/p_ceilng.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_doors.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_ceilng.c` | `src/linuxdoom-1.10/p_ceilng.ts` | Adaptado a web | Seis funciones: techos/trituradoras, registro activo, pausa y reactivación. Límite/overflow silencioso original de 30 techos conservado. |
+| `linuxdoom-1.10/p_doors.c` | `src/linuxdoom-1.10/p_doors.ts` | Adaptado a web | Seis funciones activas: puertas verticales, locks, activación por tag/manual y timers. Código sliding deshabilitado en C no incluido. |
 | `linuxdoom-1.10/p_enemy.c` | `src/linuxdoom-1.10/p_enemy.ts` | Adaptado a web | 64 funciones originales: percepción/chase, ataques, arch-vile, mancubus, lost souls, jefes y brain. 54 acciones reales; contexto obligatorio de juego, sonido, eventos de sectores y salida. |
-| `linuxdoom-1.10/p_floor.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_floor.c` | `src/linuxdoom-1.10/p_floor.ts` | Adaptado a web | Cuatro funciones: movimiento de planos, suelos, tipos y escaleras. P_ChangeSector/thinkers reales; sonido mediante contexto obligatorio. |
 | `linuxdoom-1.10/p_inter.c` | `src/linuxdoom-1.10/p_inter.ts` | Adaptado a web | Nueve funciones originales: ammo/weapon/body/armor/card/power, pickups, muerte y daño. Contexto obligatorio de estado, sonido, automapa y tactile. Integrado en pruebas con colisiones/armas reales; chase y audio siguen pendientes. |
 | `linuxdoom-1.10/p_inter.h` | `src/linuxdoom-1.10/p_inter.h.ts` | Traducido | Declaración original de P_GivePower. |
 | `linuxdoom-1.10/p_lights.c` | — | Pendiente |  |
@@ -89,7 +89,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_maputl.c` | `src/linuxdoom-1.10/p_maputl.ts` | Adaptado a web | Todas las funciones activas: geometría fija, listas sector/BLOCKMAP, interceptos y recorrido de 64 bloques. Overflow MAXINTERCEPTS lanza error; estado compartido no reentrante. |
 | `linuxdoom-1.10/p_mobj.c` | `src/linuxdoom-1.10/p_mobj.ts` | Adaptado a web | 16 funciones activas: estados, XY/Z, thinkers, spawn jugador/mapa/efectos/proyectiles y respawn. Contexto obligatorio para collision/audio/armas/UI aún pendientes; guard de cadenas cero-tic y tipo inválido. |
 | `linuxdoom-1.10/p_mobj.h` | `src/linuxdoom-1.10/p_mobj.h.ts` | Traducido | Flags y todos los campos de mobj_t; implementación p_mobj.c pendiente. |
-| `linuxdoom-1.10/p_plats.c` | — | Pendiente |  |
+| `linuxdoom-1.10/p_plats.c` | `src/linuxdoom-1.10/p_plats.ts` | Adaptado a web | Seis funciones: plataformas, espera, inversión, pausa/reactivación y registro de 30 slots con errores originales. |
 | `linuxdoom-1.10/p_pspr.c` | `src/linuxdoom-1.10/p_pspr.ts` | Adaptado a web | 30 funciones originales: estados psprite, selección/munición, subida/bajada, disparos, flashes y BFG spray. 20 acciones reales enlazables; hitscan, daño y sonido mediante contexto obligatorio. |
 | `linuxdoom-1.10/p_pspr.h` | `src/linuxdoom-1.10/p_pspr.h.ts` | Traducido | Enums, flags y estructura pspdef_t. |
 | `linuxdoom-1.10/p_saveg.c` | — | Pendiente |  |
@@ -97,8 +97,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes. |
 | `linuxdoom-1.10/p_setup.h` | `src/linuxdoom-1.10/p_setup.h.ts` | Parcial | Interfaz de lectores; ciclo completo de nivel pendiente. |
 | `linuxdoom-1.10/p_sight.c` | `src/linuxdoom-1.10/p_sight.ts` | Adaptado a web | Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado. |
-| `linuxdoom-1.10/p_spec.c` | — | Pendiente |  |
-| `linuxdoom-1.10/p_spec.h` | `src/linuxdoom-1.10/p_spec.h.ts` | Parcial | Enums originales vldoor_e y floor_e para eventos de jefes. Resto de declaraciones y sistemas de sectores pendientes. |
+| `linuxdoom-1.10/p_spec.c` | `src/linuxdoom-1.10/p_spec.ts` | Parcial | 11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido. |
+| `linuxdoom-1.10/p_spec.h` | `src/linuxdoom-1.10/p_spec.h.ts` | Parcial | Enums, structs y constantes originales de suelos, techos, puertas y plataformas. Declaraciones de iluminación, botones/interruptores y demás especiales pendientes. |
 | `linuxdoom-1.10/p_switch.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_telept.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_tick.c` | `src/linuxdoom-1.10/p_tick.ts` | Adaptado a web | Lista circular, eliminación diferida y orden original del ticker. Dependencias de doomstat/p_user/p_spec inyectadas obligatoriamente; GC sustituye Z_Free. |

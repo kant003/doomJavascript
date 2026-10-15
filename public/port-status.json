@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 36,
-    "partial": 9,
-    "pending": 75
+    "adapted": 40,
+    "partial": 10,
+    "pending": 70
   },
   "files": [
     {
@@ -614,19 +614,19 @@
     },
     {
       "source": "linuxdoom-1.10/p_ceilng.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_ceilng.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_ceilng.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Seis funciones: techos/trituradoras, registro activo, pausa y reactivación. Límite/overflow silencioso original de 30 techos conservado.",
       "lines": 335,
       "sha256": "0b4de846cef16d92f95275e70e568ffabef6d6ee1a2b60609604dce42f011907"
     },
     {
       "source": "linuxdoom-1.10/p_doors.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_doors.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_doors.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Seis funciones activas: puertas verticales, locks, activación por tag/manual y timers. Código sliding deshabilitado en C no incluido.",
       "lines": 764,
       "sha256": "2e44a6051f27206971c7bf9629431db201e1dc3441d974119ec9d88655e5ec12"
     },
@@ -641,10 +641,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_floor.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_floor.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_floor.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Cuatro funciones: movimiento de planos, suelos, tipos y escaleras. P_ChangeSector/thinkers reales; sonido mediante contexto obligatorio.",
       "lines": 555,
       "sha256": "c22ad7b7112d28c8b8c54a26ff611b98664a6d7a40d8d300680e6ca465468d47"
     },
@@ -722,10 +722,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_plats.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_plats.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_plats.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Seis funciones: plataformas, espera, inversión, pausa/reactivación y registro de 30 slots con errores originales.",
       "lines": 314,
       "sha256": "15f27dd1282ef9730ffce010b1fcaec1283a9cd37e143b863576a690aba514f6"
     },
@@ -794,10 +794,10 @@
     },
     {
       "source": "linuxdoom-1.10/p_spec.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/p_spec.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido.",
       "lines": 1362,
       "sha256": "1eed828498af033bd2322402a727e5b66913f5814e4d3fb002712fbcc8825cb1"
     },
@@ -806,7 +806,7 @@
       "target": "src/linuxdoom-1.10/p_spec.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_spec.h.ts",
       "status": "partial",
-      "notes": "Enums originales vldoor_e y floor_e para eventos de jefes. Resto de declaraciones y sistemas de sectores pendientes.",
+      "notes": "Enums, structs y constantes originales de suelos, techos, puertas y plataformas. Declaraciones de iluminación, botones/interruptores y demás especiales pendientes.",
       "lines": 645,
       "sha256": "95d93e2e3b803126b0ecf6ea42de41d2bce7b2d09ea701e03992f0cc6dae22a3"
     },

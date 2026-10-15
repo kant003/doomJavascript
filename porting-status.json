@@ -284,7 +284,27 @@
     },
     "linuxdoom-1.10/p_spec.h": {
       "status": "partial",
-      "notes": "Enums originales vldoor_e y floor_e para eventos de jefes. Resto de declaraciones y sistemas de sectores pendientes."
+      "notes": "Enums, structs y constantes originales de suelos, techos, puertas y plataformas. Declaraciones de iluminación, botones/interruptores y demás especiales pendientes."
+    },
+    "linuxdoom-1.10/p_floor.c": {
+      "status": "adapted",
+      "notes": "Cuatro funciones: movimiento de planos, suelos, tipos y escaleras. P_ChangeSector/thinkers reales; sonido mediante contexto obligatorio."
+    },
+    "linuxdoom-1.10/p_ceilng.c": {
+      "status": "adapted",
+      "notes": "Seis funciones: techos/trituradoras, registro activo, pausa y reactivación. Límite/overflow silencioso original de 30 techos conservado."
+    },
+    "linuxdoom-1.10/p_plats.c": {
+      "status": "adapted",
+      "notes": "Seis funciones: plataformas, espera, inversión, pausa/reactivación y registro de 30 slots con errores originales."
+    },
+    "linuxdoom-1.10/p_doors.c": {
+      "status": "adapted",
+      "notes": "Seis funciones activas: puertas verticales, locks, activación por tag/manual y timers. Código sliding deshabilitado en C no incluido."
+    },
+    "linuxdoom-1.10/p_spec.c": {
+      "status": "partial",
+      "notes": "11 helpers originales de lados, adyacencia, alturas, tags y luz mínima. Dispatch de líneas, animaciones y setup/ticker de especiales pendientes; helpers explícitos de ownership/sonido."
     }
   }
 }
