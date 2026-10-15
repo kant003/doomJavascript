@@ -4,7 +4,13 @@ import re,runpy
 root=Path(__file__).resolve().parent.parent
 h=runpy.run_path(str(root/'scripts/generate-tables.py'))
 source=root/'original/linuxdoom-1.10'
-h['write']('sounds.h.ts',h['declarations']('sounds.h'),'sounds.h')
+h['write']('sounds.h.ts',h['declarations']('sounds.h')+'''
+export interface sfxinfo_t {
+    name:string;singularity:boolean;priority:number;link:sfxinfo_t|null;
+    pitch:number;volume:number;data:Uint8Array|null;usefulness:number;lumpnum:number;
+}
+export interface musicinfo_t {name:string|null;lumpnum:number;data:Uint8Array|null;handle:number}
+''','sounds.h')
 raw=(source/'info.c').read_text()
 text=re.sub(r'//[^\n]*|/\*.*?\*/','',raw,flags=re.S)
 def body(name):return re.search(r'\b'+name+r'\[[^\]\n]+\]\s*=\s*\{(.*?)\};',text,re.S)[1]

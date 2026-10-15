@@ -1,4 +1,8 @@
 import './style.css';
+import { WebAudioBackend } from './audio';
+import { I_InstallSoundBackend,I_InitSound,I_ShutdownSound } from '../linuxdoom-1.10/i_sound';
+import { S_Init,S_StartSound,S_StopSound,S_SetSfxVolume } from '../linuxdoom-1.10/s_sound';
+import { S_sfx } from '../linuxdoom-1.10/sounds';
 import { V_Init, V_DrawPatch, V_PatchHeader, V_SetGamma, usegamma, screens } from '../linuxdoom-1.10/v_video';
 import { I_InitGraphics, I_SetPalette, I_FinishUpdate, I_ShutdownGraphics } from '../linuxdoom-1.10/i_video';
 import { W_InitMultipleFiles, W_CacheLumpName, W_CheckNumForName, W_NumLumps } from '../linuxdoom-1.10/w_wad';
@@ -28,6 +32,19 @@ const status = element<HTMLParagraphElement>('status'), mapSelect = element<HTML
 const viewSelect = element<HTMLSelectElement>('view'), label = element('display-label');
 const wipeButton = element<HTMLButtonElement>('wipe'), demoButton = element<HTMLButtonElement>('demo');
 const textureSelect = element<HTMLSelectElement>('textures');
+const soundSelect=element<HTMLSelectElement>('sounds'),soundPlay=element<HTMLButtonElement>('sound-play');
+const soundStop=element<HTMLButtonElement>('sound-stop'),soundStatus=element('sound-status'),soundVolume=element<HTMLInputElement>('sound-volume');
+const audio=new WebAudioBackend();I_InstallSoundBackend(audio);
+let soundGeneration=0,syntheticAudio=false;
+function soundLevel():number {return Math.round(Number(soundVolume.value)*127/15);}
+function loadSounds(synthetic:boolean):void {
+    soundGeneration++;syntheticAudio=synthetic;I_InitSound();S_Init(soundLevel(),0);
+    const available=S_sfx.map((sfx,id)=>({sfx,id})).filter(({sfx,id})=>id>0&&W_CheckNumForName(`ds${(sfx.link??sfx).name}`)>=0);
+    soundSelect.replaceChildren(...available.map(({sfx,id})=>new Option(sfx.name,String(id))));
+    soundSelect.disabled=soundPlay.disabled=soundStop.disabled=!available.length;
+    if(!available.length)soundSelect.add(new Option('Sin efectos disponibles',''));
+    soundStatus.textContent=synthetic?'Los datos de prueba incluyen un tono sintético, no el disparo original.':available.length?`${available.length} efectos disponibles. Pulsa Probar sonido para escucharlos.`:'Este WAD no contiene efectos identificados en las tablas del motor.';
+}
 let resourcesReady = false;
 let loaded = false, animating = false, loadGeneration = 0;
 let lastView = new Uint8Array(320 * 200), animation = 0;
@@ -116,7 +133,7 @@ function render(): void {
 }
 function load(files: WadFile[], synthetic: boolean): void {
     stopWipe(); worldPreview.stop();
-    W_InitMultipleFiles(files);
+    W_InitMultipleFiles(files);loadSounds(synthetic);
     resourcesReady = false; textureSelect.disabled = true; textureSelect.replaceChildren(new Option('Selecciona la vista de texturas',''));
     loaded = true;
     if (W_CheckNumForName('PLAYPAL') < 0) {
@@ -179,5 +196,16 @@ wipeButton.addEventListener('click', () => safely(() => {
     };
     animation = requestAnimationFrame(step);
 }));
+soundPlay.addEventListener('click',async()=>{
+    const generation=++soundGeneration,id=Number(soundSelect.value);
+    try {
+        await audio.resume();if(generation!==soundGeneration)return;
+        S_SetSfxVolume(soundLevel());S_StartSound(null,id);
+        soundStatus.textContent=syntheticAudio?'Tono sintético reproducido.':`Reproduciendo ${S_sfx[id].name}.`;
+    }catch(error){if(generation===soundGeneration)soundStatus.textContent=error instanceof Error?error.message:String(error);}
+});
+soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soundStatus.textContent='Reproducción detenida.';});
+soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
+window.addEventListener('pagehide',()=>{soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); stopWipe(); I_ShutdownGraphics(); });
 safely(() => load([{ name: 'test.wad', data: demoWad() }], true));

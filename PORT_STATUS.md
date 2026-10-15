@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **45** · Parcial: **8** · Pendiente: **67**
+Traducido: **26** · Adaptado a web: **47** · Parcial: **11** · Pendiente: **62**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -53,8 +53,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/i_main.c` | — | Pendiente |  |
 | `linuxdoom-1.10/i_net.c` | — | Pendiente |  |
 | `linuxdoom-1.10/i_net.h` | — | Pendiente |  |
-| `linuxdoom-1.10/i_sound.c` | — | Pendiente |  |
-| `linuxdoom-1.10/i_sound.h` | — | Pendiente |  |
+| `linuxdoom-1.10/i_sound.c` | `src/linuxdoom-1.10/i_sound.ts` | Parcial | Ocho funciones originales de I/O de efectos adaptadas a backend Web Audio con handles reales; decoder DMX, caché por lump y ganancias estéreo. Mixer OSS/SNDSERV y música sin convertir. |
+| `linuxdoom-1.10/i_sound.h` | `src/linuxdoom-1.10/i_sound.h.ts` | Parcial | Contrato tipado del backend de efectos y muestras PCM; música pendiente. |
 | `linuxdoom-1.10/i_system.c` | `src/linuxdoom-1.10/i_system.ts` | Parcial | Tiempo, memoria, errores y BaseTiccmd; I_Init/I_Quit con audio/red/guardado pendientes. |
 | `linuxdoom-1.10/i_system.h` | `src/linuxdoom-1.10/i_system.h.ts` | Parcial | Interfaz parcial de plataforma. |
 | `linuxdoom-1.10/i_video.c` | `src/linuxdoom-1.10/i_video.ts` | Parcial | Canvas y teclado web. Entrada de ratón/joystick pendiente. |
@@ -123,10 +123,10 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/r_state.h` | `src/linuxdoom-1.10/r_state.h.ts` | Adaptado a web | Mapa, texturas, sprites, vista, planes y paredes exportados mediante objetos compartidos. |
 | `linuxdoom-1.10/r_things.c` | `src/linuxdoom-1.10/r_things.ts` | Adaptado a web | Frames/rotaciones, proyección, posts, profundidad, sombras/traducciones y psprites; arrays y spans sustituyen punteros. |
 | `linuxdoom-1.10/r_things.h` | `src/linuxdoom-1.10/r_things.h.ts` | Adaptado a web | Interfaz del renderer de sprites. Prototipos obsoletos sin implementación en C no se añaden como stubs. |
-| `linuxdoom-1.10/s_sound.c` | — | Pendiente |  |
-| `linuxdoom-1.10/s_sound.h` | — | Pendiente |  |
-| `linuxdoom-1.10/sounds.c` | — | Pendiente |  |
-| `linuxdoom-1.10/sounds.h` | `src/linuxdoom-1.10/sounds.h.ts` | Parcial | Enums de efectos/música para info.c; estructuras y tablas de audio pendientes. |
+| `linuxdoom-1.10/s_sound.c` | `src/linuxdoom-1.10/s_sound.ts` | Parcial | 10 funciones del gestor de efectos: init, volumen, canales, prioridades, origen, atenuación, estéreo y actualización. S_SetMusicVolume almacena el ajuste; inicio de nivel y transporte de música pendientes. |
+| `linuxdoom-1.10/s_sound.h` | `src/linuxdoom-1.10/s_sound.h.ts` | Parcial | Tipos de origen/listener y parámetros mutables para la API de efectos. Interfaz de música pendiente. |
+| `linuxdoom-1.10/sounds.c` | `src/linuxdoom-1.10/sounds.ts` | Adaptado a web | 109 descriptores de efectos y 68 de música, incluido dummy. Nombres, singularity, priority y enlace chgun→pistol literales; regenerable con generate-sounds.py. |
+| `linuxdoom-1.10/sounds.h` | `src/linuxdoom-1.10/sounds.h.ts` | Adaptado a web | Enums originales de efectos/música y descriptores sfxinfo_t/musicinfo_t; punteros data/link adaptados a referencias TS. |
 | `linuxdoom-1.10/st_lib.c` | — | Pendiente |  |
 | `linuxdoom-1.10/st_lib.h` | — | Pendiente |  |
 | `linuxdoom-1.10/st_stuff.c` | — | Pendiente |  |

@@ -204,3 +204,9 @@ export enum sfxenum_t {
     sfx_radio,
     NUMSFX
  }
+
+export interface sfxinfo_t {
+    name:string;singularity:boolean;priority:number;link:sfxinfo_t|null;
+    pitch:number;volume:number;data:Uint8Array|null;usefulness:number;lumpnum:number;
+}
+export interface musicinfo_t {name:string|null;lumpnum:number;data:Uint8Array|null;handle:number}

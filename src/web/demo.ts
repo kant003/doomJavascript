@@ -28,6 +28,13 @@ export function makeWad(lumps: { name: string; data: Uint8Array }[], id = 'PWAD'
     });
     return bytes;
 }
+// Short authored tone encoded as the same DMX PCM format used by WAD effects.
+export function demoSound(): Uint8Array {
+    const rate=11025,count=2205,bytes=new Uint8Array(count+8),v=new DataView(bytes.buffer);
+    v.setUint16(0,3,true);v.setUint16(2,rate,true);v.setUint32(4,count,true);
+    for(let i=0;i<count;i++)bytes[i+8]=Math.round(128+65*Math.sin(2*Math.PI*660*i/rate)*(1-i/count));
+    return bytes;
+}
 export function demoWad(): Uint8Array {
     const palette = new Uint8Array(768);
     for (let i = 0; i < 256; i++) {
@@ -62,6 +69,7 @@ export function demoWad(): Uint8Array {
     const blockmap = new Uint8Array(28), bv = new DataView(blockmap.buffer);
     [-128,-128,2,2,8,8,8,8,0,0,1,2,3,-1].forEach((word,i)=>bv.setInt16(i*2,word,true));
     return makeWad([
+        {name:'DSPISTOL',data:demoSound()},
         { name: 'PLAYPAL', data: palette }, { name: 'TITLEPIC', data: patch(320, 200) },
         { name: 'PNAMES',data:names },{ name:'TEXTURE1',data:texture },{ name:'WALLPAT',data:patch(128,128) },
         { name:'F_START',data:new Uint8Array() },{ name:'TESTFLAT',data:flat },{ name:'F_END',data:new Uint8Array() },

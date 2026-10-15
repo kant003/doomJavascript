@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 45,
-    "partial": 8,
-    "pending": 67
+    "adapted": 47,
+    "partial": 11,
+    "pending": 62
   },
   "files": [
     {
@@ -398,19 +398,19 @@
     },
     {
       "source": "linuxdoom-1.10/i_sound.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/i_sound.ts",
       "plannedTarget": "src/linuxdoom-1.10/i_sound.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Ocho funciones originales de I/O de efectos adaptadas a backend Web Audio con handles reales; decoder DMX, caché por lump y ganancias estéreo. Mixer OSS/SNDSERV y música sin convertir.",
       "lines": 985,
       "sha256": "8a11322daa57ba407f7a0d85e55e5e60e971244f9d496f928823ef5e3a9d32d8"
     },
     {
       "source": "linuxdoom-1.10/i_sound.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/i_sound.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/i_sound.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Contrato tipado del backend de efectos y muestras PCM; música pendiente.",
       "lines": 122,
       "sha256": "7a4171979ac20b40c02969be19d404cbc77e4493aa69bb22c0eeaf1f9b8c519b"
     },
@@ -1028,28 +1028,28 @@
     },
     {
       "source": "linuxdoom-1.10/s_sound.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/s_sound.ts",
       "plannedTarget": "src/linuxdoom-1.10/s_sound.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "10 funciones del gestor de efectos: init, volumen, canales, prioridades, origen, atenuación, estéreo y actualización. S_SetMusicVolume almacena el ajuste; inicio de nivel y transporte de música pendientes.",
       "lines": 879,
       "sha256": "4feb68dcba87262903b3c5e1aed3db05fb554c56040c58bac6af97d8920ef2c5"
     },
     {
       "source": "linuxdoom-1.10/s_sound.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/s_sound.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/s_sound.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Tipos de origen/listener y parámetros mutables para la API de efectos. Interfaz de música pendiente.",
       "lines": 109,
       "sha256": "d747126bc8105ef540dee2f6f7e9f17db047dabb2c03a740ddc1bb9f98746b83"
     },
     {
       "source": "linuxdoom-1.10/sounds.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/sounds.ts",
       "plannedTarget": "src/linuxdoom-1.10/sounds.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "109 descriptores de efectos y 68 de música, incluido dummy. Nombres, singularity, priority y enlace chgun→pistol literales; regenerable con generate-sounds.py.",
       "lines": 228,
       "sha256": "d489534e93fdb20cad1757f6625913bddf10646ab3b21badbeafdc6cecc027d2"
     },
@@ -1057,8 +1057,8 @@
       "source": "linuxdoom-1.10/sounds.h",
       "target": "src/linuxdoom-1.10/sounds.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/sounds.h.ts",
-      "status": "partial",
-      "notes": "Enums de efectos/música para info.c; estructuras y tablas de audio pendientes.",
+      "status": "adapted",
+      "notes": "Enums originales de efectos/música y descriptores sfxinfo_t/musicinfo_t; punteros data/link adaptados a referencias TS.",
       "lines": 297,
       "sha256": "fa5a6c19c689eeb6e4a2df08b1d4efe5c445b3d0cb4081dc3a7d28fdadfd39f8"
     },

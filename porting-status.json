@@ -227,8 +227,8 @@
       "notes": "138 nombres, 967 estados, 137 actores literales. Las 74 acciones tienen implementación y se enlazan explícitamente con identidad y firmas de uno/dos argumentos."
     },
     "linuxdoom-1.10/sounds.h": {
-      "status": "partial",
-      "notes": "Enums de efectos/música para info.c; estructuras y tablas de audio pendientes."
+      "status": "adapted",
+      "notes": "Enums originales de efectos/música y descriptores sfxinfo_t/musicinfo_t; punteros data/link adaptados a referencias TS."
     },
     "linuxdoom-1.10/p_tick.c": {
       "status": "adapted",
@@ -317,6 +317,26 @@
     "linuxdoom-1.10/p_switch.c": {
       "status": "adapted",
       "notes": "Cuatro funciones originales y 40 pares de texturas: inicialización por modo, botones, cambios de textura y dispatch completo de uso. Eventos de sectores reales; salidas mediante contexto."
+    },
+    "linuxdoom-1.10/sounds.c": {
+      "status": "adapted",
+      "notes": "109 descriptores de efectos y 68 de música, incluido dummy. Nombres, singularity, priority y enlace chgun→pistol literales; regenerable con generate-sounds.py."
+    },
+    "linuxdoom-1.10/s_sound.c": {
+      "status": "partial",
+      "notes": "10 funciones del gestor de efectos: init, volumen, canales, prioridades, origen, atenuación, estéreo y actualización. S_SetMusicVolume almacena el ajuste; inicio de nivel y transporte de música pendientes."
+    },
+    "linuxdoom-1.10/s_sound.h": {
+      "status": "partial",
+      "notes": "Tipos de origen/listener y parámetros mutables para la API de efectos. Interfaz de música pendiente."
+    },
+    "linuxdoom-1.10/i_sound.c": {
+      "status": "partial",
+      "notes": "Ocho funciones originales de I/O de efectos adaptadas a backend Web Audio con handles reales; decoder DMX, caché por lump y ganancias estéreo. Mixer OSS/SNDSERV y música sin convertir."
+    },
+    "linuxdoom-1.10/i_sound.h": {
+      "status": "partial",
+      "notes": "Contrato tipado del backend de efectos y muestras PCM; música pendiente."
     }
   }
 }
