@@ -176,7 +176,7 @@
     },
     "linuxdoom-1.10/p_setup.c": {
       "status": "partial",
-      "notes": "Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes."
+      "notes": "Lectores geométricos, P_GroupLines, THINGS, P_Init y P_SetupLevel con actores/especiales reales para un jugador. Deathmatch, precache e inicio de música pendientes; parada de efectos mediante contexto."
     },
     "linuxdoom-1.10/p_setup.h": {
       "status": "partial",
@@ -337,6 +337,10 @@
     "linuxdoom-1.10/i_sound.h": {
       "status": "partial",
       "notes": "Contrato tipado del backend de efectos y muestras PCM; música pendiente."
+    },
+    "linuxdoom-1.10/g_game.c": {
+      "status": "partial",
+      "notes": "G_PlayerReborn original con conservación de frags/contadores y valores iniciales de vida/armas/ammo. Almacenamiento player_t explícito y contexto; resto de game loop, demos, guardado y flujo entre niveles pendiente."
     }
   }
 }

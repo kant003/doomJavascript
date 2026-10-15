@@ -1,6 +1,6 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// p_setup.c: map readers and P_GroupLines. Gameplay setup/spawning remains pending.
-import { W_CacheLumpNum, lumpinfo } from './w_wad';
+// Map readers, validated geometry and single-player level setup.
+import { W_CacheLumpNum, W_GetNumForName, lumpinfo } from './w_wad';
 import { R_FlatNumForName, R_TextureNumForName, texturestate } from './r_data';
 import { FRACBITS, FRACUNIT } from './m_fixed.h';
 import { FixedDiv } from './m_fixed';
@@ -183,3 +183,33 @@ export function P_LoadMapData(lumpnum: number): typeof s {
         return s;
     } catch (error) { Object.assign(s, previous); throw error; }
 }
+
+// Gameplay setup adaptation: geometry keeps its validated loader; presentation/audio are explicit.
+import { MAXPLAYERS,skill_t } from './doomdef.h';
+import type { player_t } from './d_player.h';
+import { P_InitThinkers,P_ResetLevelTime } from './p_tick';
+import { P_ResetItemRespawnQueue,P_SpawnMapThing } from './p_mobj';
+import { P_SpawnSpecials,P_InitPicAnims } from './p_spec';
+import { P_InitSwitchList } from './p_switch';
+import { R_InitSprites } from './r_things';
+import { sprnames } from './info';
+export interface setup_context_t {
+    gamemode:GameMode_t;deathmatch:number;players:player_t[];consoleplayer:number;
+    totalkills:number;totalitems:number;totalsecret:number;playerstarts:mapthing_t[];deathmatchstarts:mapthing_t[];
+    wminfo:{maxfrags:number;partime:number};StopLevelSounds():void;
+}
+let setupContext:setup_context_t|null=null;
+export function P_InitSetupContext(context:setup_context_t):void {setupContext=context;}
+export function P_SetupLevel(episode:number,map:number,_playermask:number,_skill:skill_t):void {
+    const g=setupContext;if(!g)throw new Error('P_SetupLevel: setup context is not linked');
+    if(g.deathmatch)throw new Error('Deathmatch level setup is not implemented');
+    const lumpname=g.gamemode===GameMode_t.commercial?`MAP${String(map).padStart(2,'0')}`:`E${episode}M${map}`;
+    const lumpnum=W_GetNumForName(lumpname);
+    g.totalkills=g.totalitems=g.totalsecret=g.wminfo.maxfrags=0;g.wminfo.partime=180;
+    for(let i=0;i<MAXPLAYERS;i++)g.players[i].killcount=g.players[i].secretcount=g.players[i].itemcount=0;
+    g.players[g.consoleplayer].viewz=1;g.StopLevelSounds();P_InitThinkers();P_ResetLevelTime();
+    P_LoadMapData(lumpnum);g.playerstarts.length=g.deathmatchstarts.length=0;
+    P_LoadThings(lumpnum+ML_THINGS,g.gamemode,P_SpawnMapThing);
+    P_ResetItemRespawnQueue();P_SpawnSpecials();
+}
+export function P_Init():void {P_InitSwitchList();P_InitPicAnims();R_InitSprites(sprnames);}

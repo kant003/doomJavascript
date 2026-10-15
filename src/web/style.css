@@ -2,3 +2,5 @@
 #camera-help{font:11px/1.7 monospace;color:#969e88;margin:10px 0 3px}.camera-buttons{display:flex;gap:6px}.camera-buttons button{flex:1;font-size:11px;padding:9px 5px}[hidden]{display:none!important}
 
 .audio-panel{display:grid;grid-template-columns:minmax(160px,2fr) minmax(100px,1fr) auto;gap:12px 20px;align-items:end;border:1px solid #404233;border-top:0;padding:20px 24px;background:#191c16}.audio-panel label{display:block;font:10px monospace;color:#969e88;margin-bottom:8px}.audio-panel input{width:100%;accent-color:#a4ad67}.audio-panel .button-row{margin:0}.audio-panel .status{grid-column:1/-1;min-height:0;margin:0;padding:0;border:0;font-size:12px;line-height:1.6;color:#969e88}@media(max-width:650px){.audio-panel{grid-template-columns:1fr 1fr;padding:16px}.audio-panel .button-row{grid-column:1/-1}}
+
+#game-help{font:11px/1.7 monospace;color:#969e88;margin:10px 0 3px}.game-hud{font:12px/1.8 monospace;color:#c4cf99;border-left:2px solid #818b54;padding-left:10px}#game-message{font-size:12px;line-height:1.7;color:#d5bd80}#game-message:empty{display:none}

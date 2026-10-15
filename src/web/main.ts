@@ -8,7 +8,10 @@ import { I_InitGraphics, I_SetPalette, I_FinishUpdate, I_ShutdownGraphics } from
 import { W_InitMultipleFiles, W_CacheLumpName, W_CheckNumForName, W_NumLumps } from '../linuxdoom-1.10/w_wad';
 import { wipe_StartScreen, wipe_EndScreen, wipe_ScreenWipe } from '../linuxdoom-1.10/f_wipe';
 import { listMaps, loadMapPreview, drawMapPreview } from './map-preview';
-import { demoWad } from './demo';
+import { playableDemoWad } from './playable-demo';
+import { weaponinfo } from '../linuxdoom-1.10/d_items';
+import { ammotype_t as AM } from '../linuxdoom-1.10/doomdef.h';
+import { BrowserGame } from './game-loop';
 import { R_InitData, R_GetColumn, texturestate } from '../linuxdoom-1.10/r_data';
 import { P_LoadMapData } from '../linuxdoom-1.10/p_setup';
 import { R_PointInSubsector, R_InitLightTables, R_SetViewSize, R_ExecuteSetViewSize } from '../linuxdoom-1.10/r_main';
@@ -45,12 +48,25 @@ function loadSounds(synthetic:boolean):void {
     if(!available.length)soundSelect.add(new Option('Sin efectos disponibles',''));
     soundStatus.textContent=synthetic?'Los datos de prueba incluyen un tono sintético, no el disparo original.':available.length?`${available.length} efectos disponibles. Pulsa Probar sonido para escucharlos.`:'Este WAD no contiene efectos identificados en las tablas del motor.';
 }
+let playing=false,gameStartGeneration=0;
 let resourcesReady = false;
 let loaded = false, animating = false, loadGeneration = 0;
 let lastView = new Uint8Array(320 * 200), animation = 0;
 V_Init(); I_InitGraphics(canvas);
 const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, error => report(error instanceof Error ? error.message : String(error),true));
 
+const gameHud=element('game-hud'),gameMessage=element('game-message');
+const browserGame=new BrowserGame(session=>{
+    const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
+    if(gameHud.textContent!==text)gameHud.textContent=text;
+    element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';
+    if(!session.completed&&gameMessage.textContent!==(p.message??''))gameMessage.textContent=p.message??'';
+    lastView=screens[0].slice();
+},error=>report(error instanceof Error?error.message:String(error),true),{
+    resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},
+    closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
+    onExit:secret=>{gameMessage.textContent=`${secret?'Salida secreta':'Nivel completado'}. Selecciona otro mapa o reinicia.`;}
+});
 function report(message: string, error = false): void { status.textContent = message; status.classList.toggle('error', error); }
 function safely(action: () => void): void { try { action(); } catch (error) { report(error instanceof Error ? error.message : String(error), true); } }
 function stopWipe(): void {
@@ -66,17 +82,19 @@ function initResources(): void {
     if (texturestate.numtextures > 1) textureSelect.value = '1';
 }
 function render(): void {
-    stopWipe(); worldPreview.stop();
-    element('camera-help').hidden = viewSelect.value !== 'world'; element('camera-buttons').hidden = viewSelect.value !== 'world'; element('camera-reset').hidden = viewSelect.value !== 'world';
-    wipeButton.disabled = viewSelect.value === 'world';
+    stopWipe(); worldPreview.stop();browserGame.stop();
+    element('camera-help').hidden = playing||viewSelect.value !== 'world'; element('camera-buttons').hidden = playing||viewSelect.value !== 'world'; element('camera-reset').hidden = playing||viewSelect.value !== 'world';
+    for(const id of ['game-buttons','game-help','game-hud','game-message'])element(id).hidden=!playing;
+    element('game-start').textContent=playing?'Reiniciar partida':'Jugar este mapa';
+    wipeButton.disabled = playing||viewSelect.value === 'world';
     if (!loaded) return;
-    if (viewSelect.value === 'world') {
+    if (playing||viewSelect.value === 'world') {
         if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos');
         initResources();
         const index = Number(mapSelect.value), level = P_LoadMapData(index);
         const player = level.things.find(thing => thing.type === 1);
         if (!player) throw new Error('No se ha encontrado el inicio del jugador 1');
-        R_InitSprites(sprnames); const actors = createStaticMapActors(); R_InitTranslationTables();
+        R_InitSprites(sprnames); const actors = playing?[]:createStaticMapActors(); R_InitTranslationTables();
         R_InitLightTables(); R_SetViewSize(11,0); R_ExecuteSetViewSize(); R_InitSkyMap();
         sky.skyflatnum = W_CheckNumForName('F_SKY1') >= 0 ? R_FlatNumForName('F_SKY1') : -1;
         const name = mapSelect.selectedOptions[0].textContent ?? '';
@@ -87,9 +105,9 @@ function render(): void {
         if (!subsector.sector) throw new Error('Inicio sin sector');
         const camera = {x:player.x*FRACUNIT,y:player.y*FRACUNIT,z:subsector.sector.floorheight+41*FRACUNIT,angle:Math.floor(player.angle/360*0x100000000)>>>0};
         screens[0].fill(0); 
-        worldPreview.start(camera);
-        label.textContent = `${name} / VISTA 3D`;
-        element('frame-state').textContent = `${actors.length} ${actors.length === 1 ? 'objeto estático' : 'objetos estáticos'} · cámara libre`;
+        if(playing)browserGame.start(name);else worldPreview.start(camera);
+        label.textContent = `${name} / ${playing?'PARTIDA':'VISTA 3D'}`;
+        element('frame-state').textContent = playing?'Simulación nativa · un jugador · 35 tics/s':`${actors.length} ${actors.length === 1 ? 'objeto estático' : 'objetos estáticos'} · cámara libre`;
     } else if (viewSelect.value === 'map' || viewSelect.value === 'level') {
         if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos de DOOM');
         const map = loadMapPreview(Number(mapSelect.value));
@@ -132,8 +150,8 @@ function render(): void {
     lastView = screens[0].slice(); I_FinishUpdate();
 }
 function load(files: WadFile[], synthetic: boolean): void {
-    stopWipe(); worldPreview.stop();
-    W_InitMultipleFiles(files);loadSounds(synthetic);
+    stopWipe(); worldPreview.stop();browserGame.stop();
+    gameStartGeneration++;playing=false;W_InitMultipleFiles(files);loadSounds(synthetic);
     resourcesReady = false; textureSelect.disabled = true; textureSelect.replaceChildren(new Option('Selecciona la vista de texturas',''));
     loaded = true;
     if (W_CheckNumForName('PLAYPAL') < 0) {
@@ -142,7 +160,7 @@ function load(files: WadFile[], synthetic: boolean): void {
     } else I_SetPalette(W_CacheLumpName('PLAYPAL', 1));
     const maps = listMaps();
     mapSelect.replaceChildren(...maps.map(map => new Option(map.name, String(map.index))));
-    mapSelect.disabled = maps.length === 0;
+    mapSelect.disabled = maps.length === 0;element<HTMLButtonElement>('game-start').disabled=maps.length===0;
     if (!maps.length) mapSelect.add(new Option('Sin mapas', ''));
     viewSelect.value = maps.length ? 'world' : 'title';
     report(`${synthetic ? 'Datos sintéticos de prueba' : files.map(f => f.name).join(' + ')} · ${W_NumLumps().toLocaleString('es')} recursos · ${maps.length} ${maps.length === 1 ? 'mapa' : 'mapas'}`);
@@ -163,9 +181,16 @@ input.addEventListener('change', async () => {
     } catch (error) { if (generation === loadGeneration) report(error instanceof Error ? error.message : String(error), true); }
     input.value = '';
 });
-demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: demoWad() }], true); }));
-viewSelect.addEventListener('change', () => safely(render)); mapSelect.addEventListener('change', () => safely(render));
-textureSelect.addEventListener('change', () => safely(render));
+demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: playableDemoWad() }], true); }));
+viewSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();})); mapSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
+textureSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
+element('game-start').addEventListener('click',async()=>{
+    const generation=++gameStartGeneration;
+    try {await audio.resume();if(generation!==gameStartGeneration)return;playing=true;render();canvas.focus();}
+    catch(error){if(generation!==gameStartGeneration)return;playing=false;browserGame.stop();report(error instanceof Error?error.message:String(error),true);}
+});
+element('game-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;playing=false;render();}));
+element('game-pause').addEventListener('click',()=>{browserGame.togglePause();canvas.focus();});
 element('camera-left').addEventListener('click', () => safely(() => worldPreview.nudge(97)));
 element('camera-forward').addEventListener('click', () => safely(() => worldPreview.nudge(119)));
 element('camera-right').addEventListener('click', () => safely(() => worldPreview.nudge(100)));
@@ -207,5 +232,5 @@ soundPlay.addEventListener('click',async()=>{
 soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soundStatus.textContent='Reproducción detenida.';});
 soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
 window.addEventListener('pagehide',()=>{soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
-window.addEventListener('pagehide', () => { worldPreview.stop(); stopWipe(); I_ShutdownGraphics(); });
-safely(() => load([{ name: 'test.wad', data: demoWad() }], true));
+window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
+safely(() => load([{ name: 'test.wad', data: playableDemoWad() }], true));

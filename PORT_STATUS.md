@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **47** · Parcial: **11** · Pendiente: **62**
+Traducido: **26** · Adaptado a web: **47** · Parcial: **12** · Pendiente: **61**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -44,7 +44,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/f_finale.h` | — | Pendiente |  |
 | `linuxdoom-1.10/f_wipe.c` | `src/linuxdoom-1.10/f_wipe.ts` | Adaptado a web | Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC. |
 | `linuxdoom-1.10/f_wipe.h` | `src/linuxdoom-1.10/f_wipe.h.ts` | Adaptado a web | Resultado de ScreenWipe convertido a boolean. |
-| `linuxdoom-1.10/g_game.c` | — | Pendiente |  |
+| `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | G_PlayerReborn original con conservación de frags/contadores y valores iniciales de vida/armas/ammo. Almacenamiento player_t explícito y contexto; resto de game loop, demos, guardado y flujo entre niveles pendiente. |
 | `linuxdoom-1.10/g_game.h` | — | Pendiente |  |
 | `linuxdoom-1.10/hu_lib.c` | — | Pendiente |  |
 | `linuxdoom-1.10/hu_lib.h` | — | Pendiente |  |
@@ -94,7 +94,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/p_pspr.h` | `src/linuxdoom-1.10/p_pspr.h.ts` | Traducido | Enums, flags y estructura pspdef_t. |
 | `linuxdoom-1.10/p_saveg.c` | — | Pendiente |  |
 | `linuxdoom-1.10/p_saveg.h` | — | Pendiente |  |
-| `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes. |
+| `linuxdoom-1.10/p_setup.c` | `src/linuxdoom-1.10/p_setup.ts` | Parcial | Lectores geométricos, P_GroupLines, THINGS, P_Init y P_SetupLevel con actores/especiales reales para un jugador. Deathmatch, precache e inicio de música pendientes; parada de efectos mediante contexto. |
 | `linuxdoom-1.10/p_setup.h` | `src/linuxdoom-1.10/p_setup.h.ts` | Parcial | Interfaz de lectores; ciclo completo de nivel pendiente. |
 | `linuxdoom-1.10/p_sight.c` | `src/linuxdoom-1.10/p_sight.ts` | Adaptado a web | Cinco funciones originales de visión: REJECT, divline, intersección, subsectors y BSP. Stack explícito; topslope/bottomslope compartidos con p_map; bug horizontal original conservado. |
 | `linuxdoom-1.10/p_spec.c` | `src/linuxdoom-1.10/p_spec.ts` | Adaptado a web | 18 funciones originales: helpers, dispatch de cruce/disparo, daño/secretos, donut, animaciones, scrollers, botones y setup/ticker. Estado de juego/salidas mediante contexto explícito. |

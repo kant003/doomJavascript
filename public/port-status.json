@@ -5,8 +5,8 @@
   "counts": {
     "translated": 26,
     "adapted": 47,
-    "partial": 11,
-    "pending": 62
+    "partial": 12,
+    "pending": 61
   },
   "files": [
     {
@@ -317,10 +317,10 @@
     },
     {
       "source": "linuxdoom-1.10/g_game.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/g_game.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "G_PlayerReborn original con conservación de frags/contadores y valores iniciales de vida/armas/ammo. Almacenamiento player_t explícito y contexto; resto de game loop, demos, guardado y flujo entre niveles pendiente.",
       "lines": 1690,
       "sha256": "bc8e2e0d76a70f8120174946641a82c46f0116a624f51c011b292e2ffcb78a29"
     },
@@ -770,7 +770,7 @@
       "target": "src/linuxdoom-1.10/p_setup.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_setup.ts",
       "status": "partial",
-      "notes": "Todos los lectores geométricos, P_GroupLines y carga de THINGS con callback; P_SetupLevel/P_Init y actores pendientes.",
+      "notes": "Lectores geométricos, P_GroupLines, THINGS, P_Init y P_SetupLevel con actores/especiales reales para un jugador. Deathmatch, precache e inicio de música pendientes; parada de efectos mediante contexto.",
       "lines": 708,
       "sha256": "cc56c3ef5eb73aaec4db8be855fd3c192af19bf8f775478d002e9b2e9225872d"
     },
