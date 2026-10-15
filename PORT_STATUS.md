@@ -44,7 +44,7 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/f_finale.h` | — | Pendiente |  |
 | `linuxdoom-1.10/f_wipe.c` | `src/linuxdoom-1.10/f_wipe.ts` | Adaptado a web | Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC. |
 | `linuxdoom-1.10/f_wipe.h` | `src/linuxdoom-1.10/f_wipe.h.ts` | Adaptado a web | Resultado de ScreenWipe convertido a boolean. |
-| `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | G_PlayerReborn original con conservación de frags/contadores y valores iniciales de vida/armas/ammo. Almacenamiento player_t explícito y contexto; resto de game loop, demos, guardado y flujo entre niveles pendiente. |
+| `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes. |
 | `linuxdoom-1.10/g_game.h` | — | Pendiente |  |
 | `linuxdoom-1.10/hu_lib.c` | — | Pendiente |  |
 | `linuxdoom-1.10/hu_lib.h` | — | Pendiente |  |

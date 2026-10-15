@@ -11,7 +11,8 @@ export class BrowserGame {
     private input=new GameInput();
     session:GameSession|null=null;
     paused=false;
-    togglePause():void {this.paused=!this.paused;this.input.clear();}
+    togglePause():void {if(this.session?.completed)return;this.paused=!this.paused;this.input.clear();}
+    continueLevel():boolean {this.input.clear();this.paused=false;return this.session?.continueLevel()??false;}
     constructor(private present:(game:GameSession)=>void,private onError:(error:unknown)=>void,private presentation:game_presentation_t){}
     stop():void {cancelAnimationFrame(this.animation);this.animation=0;this.input.clear();if(this.session)for(let i=0;i<channels.length;i++)if(channels[i].sfxinfo)S_StopChannel(i);this.session=null;this.paused=false;}
     private poll=():void=>{for(const e of I_StartTic())if(e.type===evtype_t.ev_keydown){if(e.data1===KEY_ESCAPE)this.togglePause();else this.input.keyDown(e.data1);}else if(e.type===evtype_t.ev_keyup)this.input.keyUp(e.data1);};

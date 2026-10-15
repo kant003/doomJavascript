@@ -320,7 +320,7 @@
       "target": "src/linuxdoom-1.10/g_game.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.ts",
       "status": "partial",
-      "notes": "G_PlayerReborn original con conservación de frags/contadores y valores iniciales de vida/armas/ammo. Almacenamiento player_t explícito y contexto; resto de game loop, demos, guardado y flujo entre niveles pendiente.",
+      "notes": "Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes.",
       "lines": 1690,
       "sha256": "bc8e2e0d76a70f8120174946641a82c46f0116a624f51c011b292e2ffcb78a29"
     },

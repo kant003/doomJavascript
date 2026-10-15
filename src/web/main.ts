@@ -11,6 +11,8 @@ import { listMaps, loadMapPreview, drawMapPreview } from './map-preview';
 import { playableDemoWad } from './playable-demo';
 import { weaponinfo } from '../linuxdoom-1.10/d_items';
 import { ammotype_t as AM } from '../linuxdoom-1.10/doomdef.h';
+import { setupMapSky } from './map-sky';
+import { gamestate_t as GS,GameMode_t as MODE } from '../linuxdoom-1.10/doomdef.h';
 import { BrowserGame } from './game-loop';
 import { R_InitData, R_GetColumn, texturestate } from '../linuxdoom-1.10/r_data';
 import { P_LoadMapData } from '../linuxdoom-1.10/p_setup';
@@ -55,9 +57,24 @@ let lastView = new Uint8Array(320 * 200), animation = 0;
 V_Init(); I_InitGraphics(canvas);
 const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, error => report(error instanceof Error ? error.message : String(error),true));
 
-const gameHud=element('game-hud'),gameMessage=element('game-message');
+const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=element('level-summary');
+let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
+    label.textContent=`${session.mapname} / ${session.completed?'RESUMEN':'PARTIDA'}`;
+    const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
+    const result=session.result;summary.hidden=!result;
+    element<HTMLButtonElement>('game-pause').disabled=session.completed;
+    if(result){
+        element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
+        const score=(value:number,total:number)=>`${value} / ${total} · ${Math.trunc(100*value/Math.max(1,total))}%`;
+        element('result-kills').textContent=score(result.kills,result.maxkills);element('result-items').textContent=score(result.items,result.maxitems);element('result-secrets').textContent=score(result.secrets,result.maxsecrets);
+        const seconds=Math.trunc(result.tics/35);element('result-time').textContent=`${Math.trunc(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
+        const next=session.nextMapName,finale=session.state.gamestate===GS.GS_FINALE;
+        element('next-map').textContent=result.terminal?'Puedes reiniciar o elegir otro mapa.':session.nextAvailable?`${finale?'Fin de tramo. ':''}Siguiente mapa: ${next}`:`El mapa ${next} no está cargado. Selecciona un WAD que lo incluya para jugarlo.`;
+        const button=element<HTMLButtonElement>('next-level');button.hidden=result.terminal&&finale;button.disabled=!result.terminal&&!session.nextAvailable;button.textContent=result.terminal?'Finalizar':`Continuar a ${next}`;
+        if(focusCompletion){focusCompletion=false;summary.scrollIntoView({block:'nearest'});summary.focus({preventScroll:true});}
+    }
     if(gameHud.textContent!==text)gameHud.textContent=text;
     element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';
     if(!session.completed&&gameMessage.textContent!==(p.message??''))gameMessage.textContent=p.message??'';
@@ -65,7 +82,7 @@ const browserGame=new BrowserGame(session=>{
 },error=>report(error instanceof Error?error.message:String(error),true),{
     resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},
     closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
-    onExit:secret=>{gameMessage.textContent=`${secret?'Salida secreta':'Nivel completado'}. Selecciona otro mapa o reinicia.`;}
+    onExit:secret=>{focusCompletion=true;gameMessage.textContent=secret?'Salida secreta.':'Nivel completado.';}
 });
 function report(message: string, error = false): void { status.textContent = message; status.classList.toggle('error', error); }
 function safely(action: () => void): void { try { action(); } catch (error) { report(error instanceof Error ? error.message : String(error), true); } }
@@ -82,7 +99,7 @@ function initResources(): void {
     if (texturestate.numtextures > 1) textureSelect.value = '1';
 }
 function render(): void {
-    stopWipe(); worldPreview.stop();browserGame.stop();
+    stopWipe(); worldPreview.stop();browserGame.stop();summary.hidden=true;focusCompletion=false;
     element('camera-help').hidden = playing||viewSelect.value !== 'world'; element('camera-buttons').hidden = playing||viewSelect.value !== 'world'; element('camera-reset').hidden = playing||viewSelect.value !== 'world';
     for(const id of ['game-buttons','game-help','game-hud','game-message'])element(id).hidden=!playing;
     element('game-start').textContent=playing?'Reiniciar partida':'Jugar este mapa';
@@ -96,11 +113,9 @@ function render(): void {
         if (!player) throw new Error('No se ha encontrado el inicio del jugador 1');
         R_InitSprites(sprnames); const actors = playing?[]:createStaticMapActors(); R_InitTranslationTables();
         R_InitLightTables(); R_SetViewSize(11,0); R_ExecuteSetViewSize(); R_InitSkyMap();
-        sky.skyflatnum = W_CheckNumForName('F_SKY1') >= 0 ? R_FlatNumForName('F_SKY1') : -1;
+
         const name = mapSelect.selectedOptions[0].textContent ?? '';
-        const episode = /^E(\d)M/.exec(name);
-        const texture = name.startsWith('MAP') ? Number(name.slice(3)) < 12 ? 'SKY1' : Number(name.slice(3)) < 21 ? 'SKY2' : 'SKY3' : `SKY${episode?.[1] === '4' ? '4' : episode?.[1] ?? '1'}`;
-        sky.skytexture = Math.max(0,R_CheckTextureNumForName(texture));
+        setupMapSky(name);
         const subsector = R_PointInSubsector(player.x*FRACUNIT,player.y*FRACUNIT);
         if (!subsector.sector) throw new Error('Inicio sin sector');
         const camera = {x:player.x*FRACUNIT,y:player.y*FRACUNIT,z:subsector.sector.floorheight+41*FRACUNIT,angle:Math.floor(player.angle/360*0x100000000)>>>0};
@@ -181,7 +196,7 @@ input.addEventListener('change', async () => {
     } catch (error) { if (generation === loadGeneration) report(error instanceof Error ? error.message : String(error), true); }
     input.value = '';
 });
-demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: playableDemoWad() }], true); }));
+demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: playableDemoWad(true) }], true); }));
 viewSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();})); mapSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
 textureSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
 element('game-start').addEventListener('click',async()=>{
@@ -189,6 +204,7 @@ element('game-start').addEventListener('click',async()=>{
     try {await audio.resume();if(generation!==gameStartGeneration)return;playing=true;render();canvas.focus();}
     catch(error){if(generation!==gameStartGeneration)return;playing=false;browserGame.stop();report(error instanceof Error?error.message:String(error),true);}
 });
+element('next-level').addEventListener('click',()=>safely(()=>{browserGame.continueLevel();canvas.focus();}));
 element('game-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;playing=false;render();}));
 element('game-pause').addEventListener('click',()=>{browserGame.togglePause();canvas.focus();});
 element('camera-left').addEventListener('click', () => safely(() => worldPreview.nudge(97)));
@@ -233,4 +249,4 @@ soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soun
 soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
 window.addEventListener('pagehide',()=>{soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
-safely(() => load([{ name: 'test.wad', data: playableDemoWad() }], true));
+safely(() => load([{ name: 'test.wad', data: playableDemoWad(true) }], true));
