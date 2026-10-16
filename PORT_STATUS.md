@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **51** · Parcial: **12** · Pendiente: **57**
+Traducido: **26** · Adaptado a web: **53** · Parcial: **14** · Pendiente: **53**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -127,10 +127,10 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/s_sound.h` | `src/linuxdoom-1.10/s_sound.h.ts` | Adaptado a web | Tipos de origen/listener, parámetros mutables y las trece firmas originales exportadas sólo como tipos para evitar ciclos ESM. |
 | `linuxdoom-1.10/sounds.c` | `src/linuxdoom-1.10/sounds.ts` | Adaptado a web | 109 descriptores de efectos y 68 de música, incluido dummy. Nombres, singularity, priority y enlace chgun→pistol literales; regenerable con generate-sounds.py. |
 | `linuxdoom-1.10/sounds.h` | `src/linuxdoom-1.10/sounds.h.ts` | Adaptado a web | Enums originales de efectos/música y descriptores sfxinfo_t/musicinfo_t; punteros data/link adaptados a referencias TS. |
-| `linuxdoom-1.10/st_lib.c` | — | Pendiente |  |
-| `linuxdoom-1.10/st_lib.h` | — | Pendiente |  |
-| `linuxdoom-1.10/st_stuff.c` | — | Pendiente |  |
-| `linuxdoom-1.10/st_stuff.h` | — | Pendiente |  |
+| `linuxdoom-1.10/st_lib.c` | `src/linuxdoom-1.10/st_lib.ts` | Adaptado a web | Diez funciones originales de widgets: números, porcentajes, iconos múltiples/binarios, borrado desde BG=4 y refresco. Getters sustituyen punteros mutables; reglas y offsets del C conservados. |
+| `linuxdoom-1.10/st_lib.h` | `src/linuxdoom-1.10/st_lib.h.ts` | Adaptado a web | Cuatro estructuras de widget, BG/FG y nueve firmas públicas exportadas como tipos. Punteros a valores adaptados a getters. |
+| `linuxdoom-1.10/st_stuff.c` | `src/linuxdoom-1.10/st_stuff.ts` | Parcial | 19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado. |
+| `linuxdoom-1.10/st_stuff.h` | `src/linuxdoom-1.10/st_stuff.h.ts` | Parcial | Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente. |
 | `linuxdoom-1.10/tables.c` | `src/linuxdoom-1.10/tables.ts` | Traducido |  |
 | `linuxdoom-1.10/tables.h` | `src/linuxdoom-1.10/tables.h.ts` | Traducido |  |
 | `linuxdoom-1.10/v_video.c` | `src/linuxdoom-1.10/v_video.ts` | Adaptado a web | Punteros convertidos a offsets y Uint8Array; validación binaria adicional; gamma literal. |

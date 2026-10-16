@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 51,
-    "partial": 12,
-    "pending": 57
+    "adapted": 53,
+    "partial": 14,
+    "pending": 53
   },
   "files": [
     {
@@ -1064,37 +1064,37 @@
     },
     {
       "source": "linuxdoom-1.10/st_lib.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/st_lib.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_lib.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Diez funciones originales de widgets: números, porcentajes, iconos múltiples/binarios, borrado desde BG=4 y refresco. Getters sustituyen punteros mutables; reglas y offsets del C conservados.",
       "lines": 293,
       "sha256": "da10b839e317054a44108bf2401ec7c1c6a8eb9371ba45e42446037a69efba6b"
     },
     {
       "source": "linuxdoom-1.10/st_lib.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/st_lib.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_lib.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Cuatro estructuras de widget, BG/FG y nueve firmas públicas exportadas como tipos. Punteros a valores adaptados a getters.",
       "lines": 226,
       "sha256": "8ae86cf219785672579e6dd75ce3a5abae2e9991c44af647d59f6bec384307c2"
     },
     {
       "source": "linuxdoom-1.10/st_stuff.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/st_stuff.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_stuff.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado.",
       "lines": 1471,
       "sha256": "aaff5a9391d93d4d459a4a98594d67da410e88b360e3bdc20e96cb2bcba5f0d9"
     },
     {
       "source": "linuxdoom-1.10/st_stuff.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/st_stuff.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_stuff.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente.",
       "lines": 86,
       "sha256": "0e2aad8828e13314e754c370da0c8cb61f08006c349fb1587ad28ea789ba4d85"
     },

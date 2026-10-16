@@ -357,6 +357,22 @@
     "linuxdoom-1.10/f_finale.h": {
       "status": "adapted",
       "notes": "Cuatro puntos de entrada originales reexportados con tipos de evento."
+    },
+    "linuxdoom-1.10/st_lib.c": {
+      "status": "adapted",
+      "notes": "Diez funciones originales de widgets: números, porcentajes, iconos múltiples/binarios, borrado desde BG=4 y refresco. Getters sustituyen punteros mutables; reglas y offsets del C conservados."
+    },
+    "linuxdoom-1.10/st_lib.h": {
+      "status": "adapted",
+      "notes": "Cuatro estructuras de widget, BG/FG y nueve firmas públicas exportadas como tipos. Punteros a valores adaptados a getters."
+    },
+    "linuxdoom-1.10/st_stuff.c": {
+      "status": "partial",
+      "notes": "19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado."
+    },
+    "linuxdoom-1.10/st_stuff.h": {
+      "status": "partial",
+      "notes": "Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente."
     }
   }
 }

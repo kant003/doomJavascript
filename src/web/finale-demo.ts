@@ -25,18 +25,18 @@ const glyphs:Record<string,string>={
  '%':'11001/11010/00100/01000/10110/00110/00000',
  '-':'00000/00000/00000/11111/00000/00000/00000'
 };
-function pixel(ch:string,x:number,y:number):boolean {
+export function demoGlyphPixel(ch:string,x:number,y:number):boolean {
     if(ch===' ')return false;
     const rows=(glyphs[ch]??'11111/10001/10001/10001/10001/10001/11111').split('/');
     return x>=0&&x<5&&y>=0&&y<7&&rows[y][x]==='1';
 }
 export function finaleDemoAssets():{name:string;data:Uint8Array}[]{
-    const result=Array.from({length:63},(_,i)=>({name:`STCFN${String(i+33).padStart(3,'0')}`,data:maskedPatch(6,7,(x,y)=>pixel(String.fromCharCode(i+33),x,y)?255:null)}));
+    const result=Array.from({length:63},(_,i)=>({name:`STCFN${String(i+33).padStart(3,'0')}`,data:maskedPatch(6,7,(x,y)=>demoGlyphPixel(String.fromCharCode(i+33),x,y)?255:null)}));
     result.push({name:'FLOOR4_8',data:Uint8Array.from({length:4096},(_,i)=>((i&63)>>3)^((i>>6)>>3)?32:40)});
     const title='FIN DEL EPISODIO',subtitle='DATOS DE PRUEBA';
     result.push({name:'HELP2',data:maskedPatch(320,200,(x,y)=>{
         const row=y>=100?subtitle:title,top=y>=100?110:70,cx=Math.floor((x-(320-row.length*12)/2)/2),cy=Math.floor((y-top)/2);
-        return cx>=0&&cx<row.length*6&&pixel(row[Math.floor(cx/6)],cx%6,cy)?255:((x>>4)^(y>>4))&1?40:32;
+        return cx>=0&&cx<row.length*6&&demoGlyphPixel(row[Math.floor(cx/6)],cx%6,cy)?255:((x>>4)^(y>>4))&1?40:32;
     })});
     return result;
 }
@@ -44,6 +44,6 @@ export function finaleDemoAssets():{name:string;data:Uint8Array}[]{
 export function demoTextPatch(text:string,scale=1):Uint8Array {
     return maskedPatch(Math.max(1,text.length*6*scale),7*scale,(x,y)=>{
         const cx=Math.floor(x/scale),cy=Math.floor(y/scale);
-        return pixel(text.toUpperCase()[Math.floor(cx/6)]??' ',cx%6,cy)?255:null;
+        return demoGlyphPixel(text.toUpperCase()[Math.floor(cx/6)]??' ',cx%6,cy)?255:null;
     });
 }

@@ -1,3 +1,4 @@
+import { ST_IsRunning } from '../linuxdoom-1.10/st_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import './style.css';
 import { SHAREWARE_URL,launchOptions,fetchRemoteWad } from './wad-source';
@@ -73,7 +74,7 @@ const browserGame=new BrowserGame(session=>{
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
     const result=session.result,fs=session.finale,wi=session.intermission;summary.hidden=!result;
     element('game-help').hidden=session.completed;
-    element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:'Simulación nativa · un jugador · 35 tics/s';
+    element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:`Partida · ${ST_IsRunning()?'barra del WAD':'HUD textual'} · 35 tics/s`;
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){
         element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
@@ -103,7 +104,7 @@ const browserGame=new BrowserGame(session=>{
     lastView=screens[0].slice();
 },error=>report(error instanceof Error?error.message:String(error),true),{
     resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},
-    closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
+    closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{if(!ST_IsRunning())canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
     onExit:secret=>{focusCompletion=true;gameMessage.textContent=secret?'Salida secreta.':'Nivel completado.';}
 });
 function report(message: string, error = false): void { status.textContent = message; status.classList.toggle('error', error); }
@@ -147,7 +148,7 @@ function render(): void {
         screens[0].fill(0); 
         if(playing)browserGame.start(name);else worldPreview.start(camera);
         label.textContent = `${name} / ${playing?'PARTIDA':'VISTA 3D'}`;
-        element('frame-state').textContent = playing?'Simulación nativa · un jugador · 35 tics/s':`${actors.length} ${actors.length === 1 ? 'objeto estático' : 'objetos estáticos'} · cámara libre`;
+        element('frame-state').textContent = playing?`Partida · ${ST_IsRunning()?'barra del WAD':'HUD textual'} · 35 tics/s`:`${actors.length} ${actors.length === 1 ? 'objeto estático' : 'objetos estáticos'} · cámara libre`;
     } else if (viewSelect.value === 'map' || viewSelect.value === 'level') {
         if (mapSelect.value === '') throw new Error('Este WAD no contiene mapas clásicos de DOOM');
         const map = loadMapPreview(Number(mapSelect.value));
