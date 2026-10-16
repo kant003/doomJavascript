@@ -112,5 +112,5 @@ test('MAP30 finishes counting before requesting the terminal commercial finale',
  assert.equal(session.state.gamestate,GS.GS_INTERMISSION);assert.equal(session.result!.terminal,true);
  session.continueLevel();session.step(cmd());session.step(cmd());session.continueLevel();session.step(cmd());session.step(cmd());
  assert.equal(session.intermission!.cnt,10);for(let i=0;i<10;i++)session.step(cmd());
- assert.equal(session.state.gamestate,GS.GS_FINALE);assert.equal(session.mapname,'MAP30');assert.equal(session.continueLevel(),false);
+ assert.equal(session.state.gamestate,GS.GS_FINALE);assert.equal(session.mapname,'MAP30');assert.equal(session.continueLevel(),true);for(let i=0;i<52;i++)session.step(cmd());assert.equal(session.finale!.stage,2);assert.equal(session.mapname,'MAP30');assert.equal(session.continueLevel(),false);
 });

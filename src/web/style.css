@@ -9,3 +9,5 @@
 
 #remote-form{display:grid;gap:8px;margin:16px 0}#remote-form label{font:11px monospace;color:#969e88}#remote-form input{min-width:0;width:100%;box-sizing:border-box;padding:9px;color:#deded6;background:#11150f;border:1px solid #464d39}
 .embedded .shell{max-width:960px;padding:8px}.embedded header,.embedded .intro,.embedded .progress,.embedded footer,.embedded .audio-panel{display:none}.embedded .workspace{display:flex;flex-direction:column}.embedded .canvas-wrap{padding:8px}.embedded .workspace aside{border-left:0;border-top:1px solid #404233;padding:12px}.embedded .workspace aside>:not(.controls):not(#status){display:none}.embedded .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.embedded .controls>:not(#game-start):not(#game-buttons):not(#game-help):not(#game-hud):not(#game-message){display:none}.embedded #game-help,.embedded #game-hud,.embedded #game-message{flex-basis:100%;margin:0}.embedded .status{min-height:0;margin:0 0 10px;padding-bottom:8px}.embedded .level-summary{margin-top:8px;padding:16px}
+
+#finale-text{white-space:pre-wrap;font:13px/1.6 monospace;color:#d7dfb6;overflow-wrap:anywhere}

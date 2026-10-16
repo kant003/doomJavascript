@@ -65,9 +65,11 @@ const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=el
 let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
-    label.textContent=`${session.mapname} / ${session.completed?'RESUMEN':'PARTIDA'}`;
+    label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
-    const result=session.result;summary.hidden=!result;
+    const result=session.result,fs=session.finale;summary.hidden=!result;
+    element('game-help').hidden=session.completed;
+    element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?'Intermisión · recuento original · 35 tics/s':'Simulación nativa · un jugador · 35 tics/s';
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){
         element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
@@ -79,15 +81,18 @@ const browserGame=new BrowserGame(session=>{
         const time=(seconds:number)=>seconds<0?'—':`${Math.trunc(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;
         element('result-time').textContent=time(wi?.time??Math.trunc(result.tics/35));
         element('result-par').textContent=wi?time(wi.par):'—';
+        element('finale-caption').hidden=!fs;element('finale-text').hidden=!fs||fs.drawable;
+        if(fs){element('finale-caption').textContent=fs.stage===2?`Reparto: ${fs.castName}. Pulsa una tecla para ver su animación de muerte.`:fs.stage===0?'El texto aparece con los tiempos originales.':'Fin del episodio. Puedes reiniciar o elegir otro mapa.';
+            element('finale-text').textContent=fs.drawable?'':`${fs.stage===0?fs.visibleText:fs.stage===2?fs.castName:'Imagen final'}\n\nFaltan recursos gráficos del final en este WAD.`;}
         const next=session.nextMapName,finale=session.state.gamestate===GS.GS_FINALE;
         const counting=!!wi&&wi.state===WI.StatCount&&wi.sp_state!==10;
         const entering=!!wi&&wi.state!==WI.StatCount;
-        element('intermission-help').textContent=counting?'F o Espacio: completar el recuento.':finale&&result.terminal?'Fin. Puedes reiniciar o elegir otro mapa.':!result.terminal&&!session.nextAvailable?'Falta el mapa de destino.':entering?(result.terminal?'Preparando el final…':'Preparando el siguiente mapa…'):'F o Espacio: avanzar.';
+        element('intermission-help').textContent=finale?(session.state.gamemode===MODE.commercial?(fs?.stage===2?'Pulsa una tecla en la pantalla para animar el reparto.':'F o Espacio: avanzar después de la pausa inicial.'):'El final avanza automáticamente al terminar el texto.'):counting?'F o Espacio: completar el recuento.':!result.terminal&&!session.nextAvailable?'Falta el mapa de destino.':entering?(result.terminal?'Preparando el final…':'Preparando el siguiente mapa…'):'F o Espacio: avanzar.';
         element('next-map').textContent=result.terminal?'Puedes reiniciar o elegir otro mapa.':session.nextAvailable?`${finale?'Fin de tramo. ':''}Siguiente mapa: ${next}`:`El mapa ${next} no está cargado. Selecciona un WAD que lo incluya para jugarlo.`;
-        const button=element<HTMLButtonElement>('next-level');button.hidden=result.terminal&&finale;
+        const button=element<HTMLButtonElement>('next-level');button.hidden=finale&&(session.state.gamemode!==MODE.commercial||fs?.stage===2);
         button.disabled=(!counting&&!result.terminal&&!session.nextAvailable)||wi?.state===WI.NoState;
-        button.textContent=counting?'Completar recuento':result.terminal?'Finalizar':entering?`Entrar en ${next}`:`Continuar a ${next}`;
-        if(focusCompletion){focusCompletion=false;summary.scrollIntoView({block:'nearest'});summary.focus({preventScroll:true});}
+        button.textContent=finale&&result.terminal?'Ver reparto':counting?'Completar recuento':result.terminal?'Finalizar':entering?`Entrar en ${next}`:`Continuar a ${next}`;
+        if(focusCompletion){focusCompletion=false;const target=finale?canvas:summary;target.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}
     }
     if(gameHud.textContent!==text)gameHud.textContent=text;
     element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';
@@ -200,6 +205,11 @@ function load(files: WadFile[], synthetic: boolean): void {
     render();
     if (synthetic && viewSelect.value === 'title') { label.textContent = 'PRUEBA DE VÍDEO / SIN DATOS COMERCIALES'; }
 }
+function selectInitialMap(map:string|null):void {
+    if(!map)return;
+    const option=Array.from(mapSelect.options).find(option=>option.textContent===map);
+    if(option){mapSelect.value=option.value;render();}else report(`El WAD no contiene ${map}. Se muestra el primer mapa disponible.`,true);
+}
 async function loadRemoteSources(urls:string[],map:string|null=null):Promise<void> {
     cancelRemote();const generation=++loadGeneration,controller=new AbortController();remoteController=controller;
     const timeout=setTimeout(()=>controller.abort(),30000);report('Descargando WAD…');
@@ -207,8 +217,7 @@ async function loadRemoteSources(urls:string[],map:string|null=null):Promise<voi
         const files=await Promise.all(urls.map(url=>fetchRemoteWad(url,controller.signal)));
         if(generation!==loadGeneration)return;
         load(files,false);
-        if(map){const option=Array.from(mapSelect.options).find(option=>option.textContent===map);
-            if(option){mapSelect.value=option.value;render();}else report(`El WAD no contiene ${map}. Se muestra el primer mapa disponible.`,true);}
+        selectInitialMap(map);
     }catch(error){
         if(generation!==loadGeneration)return;
         // Restore valid engine resources even when a remote WAD could not initialize.
@@ -287,5 +296,5 @@ soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soun
 soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
 window.addEventListener('pagehide',()=>{loadGeneration++;cancelRemote();soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
-try {const options=launchOptions(location.href);document.body.classList.toggle('embedded',options.embed);if(options.synthetic)load([{name:'test.wad',data:playableDemoWad(true)}],true);else void loadRemoteSources(options.urls,options.map);}
+try {const options=launchOptions(location.href);document.body.classList.toggle('embedded',options.embed);if(options.synthetic){load([{name:'test.wad',data:playableDemoWad(true)}],true);selectInitialMap(options.map);}else void loadRemoteSources(options.urls,options.map);}
 catch(error){safely(()=>load([{name:'test.wad',data:playableDemoWad(true)}],true));report(error instanceof Error?error.message:String(error),true);}

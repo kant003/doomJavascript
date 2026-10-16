@@ -5,6 +5,8 @@ import { gameaction_t as GA } from '../linuxdoom-1.10/d_event.h';
 import { WI_InitContext,WI_Start,WI_Ticker,WI_GetState } from '../linuxdoom-1.10/wi_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import { buttoncode_t as BT } from '../linuxdoom-1.10/d_event.h';
+import { F_InitContext,F_StartFinale,F_Ticker,F_Responder,F_GetState,F_CanDraw,type finale_context_t } from '../linuxdoom-1.10/f_finale';
+import type { event_t } from '../linuxdoom-1.10/d_event.h';
 import { leveltime } from '../linuxdoom-1.10/p_tick';
 import { playerstate_t as PST } from '../linuxdoom-1.10/d_player.h';
 import type { ticcmd_t } from '../linuxdoom-1.10/d_ticcmd.h';
@@ -30,7 +32,7 @@ export interface game_presentation_t {
     resetStatus():void;resetMessages():void;closeAutomap():void;
     tactile(on:number,off:number,total:number):void;onExit(secret:boolean):void;
 }
-type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t;
+type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t;
 export function detectGameMode(mapname:string):GameMode_t {
     return mapname.startsWith('MAP')?GameMode_t.commercial:W_CheckNumForName('E4M1')>=0?GameMode_t.retail:W_CheckNumForName('E2M1')>=0?GameMode_t.registered:GameMode_t.shareware;
 }
@@ -38,6 +40,9 @@ export class GameSession {
     readonly state:session_state_t;
     result:level_result_t|null=null;
     private advanceTics=0;
+    private advanceFinale=false;
+    get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
+    respond(event:event_t):boolean {return this.state.gamestate===GS.GS_FINALE&&F_Responder(event);}
     private intermissionEnded=false;
     get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?WI_GetState():null;}
     get completed():boolean {return this.state.gamestate!==GS.GS_LEVEL;}
@@ -50,10 +55,10 @@ export class GameSession {
     constructor(mapname:string,private presentation:game_presentation_t){
         const mode=detectGameMode(mapname),match=/^E(\d)M(\d)$/.exec(mapname);
         if(!match&&!/^MAP\d\d$/.test(mapname))throw new Error('Unsupported classic map name');
-        const showFinale=()=>{this.state.gameaction=GA.ga_nothing;this.state.gamestate=GS.GS_FINALE;this.state.viewactive=false;presentation.onExit(this.state.secretexit);};
+        const showFinale=()=>{F_StartFinale();presentation.onExit(this.state.secretexit);};
         this.state={gamemode:mode,gameskill:skill_t.sk_medium,gameepisode:match?+match[1]:1,gamemap:match?+match[2]:Number(mapname.slice(3)),gametic:0,
             deathmatch:0,netgame:false,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
-            playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
+            playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),wipegamestate:GS.GS_LEVEL,automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
             get ceilingline(){return mapclip.ceilingline;},get linetarget(){return mapclip.linetarget;},get attackrange(){return mapclip.attackrange;},
             P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
             ST_Start:presentation.resetStatus,HU_Start:presentation.resetMessages,AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
@@ -63,11 +68,11 @@ export class GameSession {
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
-        const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.intermissionEnded=false;
+        const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
         WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
-        G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
+        F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
         P_InitPlayerContext({gamemode:state.gamemode,P_MovePsprites,P_PlayerInSpecialSector,P_UseLines});
@@ -93,8 +98,8 @@ export class GameSession {
             if(!this.result.terminal&&!this.nextAvailable)return false;
             if(wi.state!==WI.NoState){this.advanceTics=2;return true;}return false;
         }
-        if(this.result.terminal||!this.nextAvailable)return false;
-        G_DoWorldDone();return true;
+        if(this.state.gamemode!==GameMode_t.commercial||F_GetState().stage===2||(!this.result.terminal&&!this.nextAvailable))return false;
+        this.advanceFinale=true;return true;
     }
     step(command:ticcmd_t):void {
         this.finishIfRequested();
@@ -106,6 +111,13 @@ export class GameSession {
             if(!this.intermissionEnded)WI_Ticker();
             this.state.gametic=(this.state.gametic+1)|0;
             if(this.state.gameaction===GA.ga_worlddone)G_DoWorldDone();
+            S_UpdateSounds(this.player.mo!);return;
+        }
+        if(this.state.gamestate===GS.GS_FINALE){
+            Object.assign(this.player.cmd,command);if(this.advanceFinale)this.player.cmd.buttons=BT.BT_USE;
+            F_Ticker();this.state.gametic=(this.state.gametic+1)|0;
+            if(F_GetState().stage===2||this.state.gameaction===GA.ga_worlddone)this.advanceFinale=false;
+            if(this.state.gameaction===GA.ga_worlddone&&this.nextAvailable)G_DoWorldDone();
             S_UpdateSounds(this.player.mo!);return;
         }
         if(this.completed)return;

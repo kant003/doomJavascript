@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 47,
-    "partial": 14,
-    "pending": 59
+    "adapted": 48,
+    "partial": 15,
+    "pending": 57
   },
   "files": [
     {
@@ -281,19 +281,19 @@
     },
     {
       "source": "linuxdoom-1.10/f_finale.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/f_finale.ts",
       "plannedTarget": "src/linuxdoom-1.10/f_finale.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; música y conductor de wipes de D_Display pendientes.",
       "lines": 738,
       "sha256": "c443ab18b6fa27df7033ac1ced0e86ab7c43c6e2cf2f8e428348d67d40a35670"
     },
     {
       "source": "linuxdoom-1.10/f_finale.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/f_finale.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/f_finale.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Cuatro puntos de entrada originales reexportados con tipos de evento.",
       "lines": 53,
       "sha256": "ee5cb17f104a894de9fed452dfad04df3e070a7bc70e65d9d336421f7dee9359"
     },

@@ -349,6 +349,14 @@
     "linuxdoom-1.10/wi_stuff.h": {
       "status": "partial",
       "notes": "Enum original de estados. WI_Start/WI_Ticker implementados; WI_Drawer pendiente."
+    },
+    "linuxdoom-1.10/f_finale.c": {
+      "status": "partial",
+      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; música y conductor de wipes de D_Display pendientes."
+    },
+    "linuxdoom-1.10/f_finale.h": {
+      "status": "adapted",
+      "notes": "Cuatro puntos de entrada originales reexportados con tipos de evento."
     }
   }
 }

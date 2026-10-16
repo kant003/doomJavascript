@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **47** · Parcial: **14** · Pendiente: **59**
+Traducido: **26** · Adaptado a web: **48** · Parcial: **15** · Pendiente: **57**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -40,8 +40,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/doomtype.h` | `src/linuxdoom-1.10/doomtype.h.ts` | Traducido |  |
 | `linuxdoom-1.10/dstrings.c` | — | Pendiente |  |
 | `linuxdoom-1.10/dstrings.h` | — | Pendiente |  |
-| `linuxdoom-1.10/f_finale.c` | — | Pendiente |  |
-| `linuxdoom-1.10/f_finale.h` | — | Pendiente |  |
+| `linuxdoom-1.10/f_finale.c` | `src/linuxdoom-1.10/f_finale.ts` | Parcial | 12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; música y conductor de wipes de D_Display pendientes. |
+| `linuxdoom-1.10/f_finale.h` | `src/linuxdoom-1.10/f_finale.h.ts` | Adaptado a web | Cuatro puntos de entrada originales reexportados con tipos de evento. |
 | `linuxdoom-1.10/f_wipe.c` | `src/linuxdoom-1.10/f_wipe.ts` | Adaptado a web | Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC. |
 | `linuxdoom-1.10/f_wipe.h` | `src/linuxdoom-1.10/f_wipe.h.ts` | Adaptado a web | Resultado de ScreenWipe convertido a boolean. |
 | `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes. |
