@@ -1,5 +1,6 @@
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import './style.css';
+import { SHAREWARE_URL,launchOptions,fetchRemoteWad } from './wad-source';
 import { WebAudioBackend } from './audio';
 import { I_InstallSoundBackend,I_InitSound,I_ShutdownSound } from '../linuxdoom-1.10/i_sound';
 import { S_Init,S_StartSound,S_StopSound,S_SetSfxVolume } from '../linuxdoom-1.10/s_sound';
@@ -53,7 +54,9 @@ function loadSounds(synthetic:boolean):void {
 }
 let playing=false,gameStartGeneration=0;
 let resourcesReady = false;
-let loaded = false, animating = false, loadGeneration = 0;
+let loaded = false, animating = false, loadGeneration = 0, syntheticData = false;
+let remoteController:AbortController|null=null;
+function cancelRemote():void {remoteController?.abort();remoteController=null;}
 let lastView = new Uint8Array(320 * 200), animation = 0;
 V_Init(); I_InitGraphics(canvas);
 const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, error => report(error instanceof Error ? error.message : String(error),true));
@@ -130,6 +133,9 @@ function render(): void {
         const subsector = R_PointInSubsector(player.x*FRACUNIT,player.y*FRACUNIT);
         if (!subsector.sector) throw new Error('Inicio sin sector');
         const camera = {x:player.x*FRACUNIT,y:player.y*FRACUNIT,z:subsector.sector.floorheight+41*FRACUNIT,angle:Math.floor(player.angle/360*0x100000000)>>>0};
+        // The synthetic player starts beside EXIT for gameplay tests; inspection
+        // starts 160 units behind it to show the whole room.
+        if(syntheticData)camera.x-=160*FRACUNIT;
         screens[0].fill(0); 
         if(playing)browserGame.start(name);else worldPreview.start(camera);
         label.textContent = `${name} / ${playing?'PARTIDA':'VISTA 3D'}`;
@@ -177,7 +183,8 @@ function render(): void {
 }
 function load(files: WadFile[], synthetic: boolean): void {
     stopWipe(); worldPreview.stop();browserGame.stop();
-    gameStartGeneration++;playing=false;W_InitMultipleFiles(files);loadSounds(synthetic);
+    files=[...files].sort((a,b)=>Number(new TextDecoder().decode(b.data.subarray(0,4))==='IWAD')-Number(new TextDecoder().decode(a.data.subarray(0,4))==='IWAD'));
+    gameStartGeneration++;playing=false;syntheticData=synthetic;W_InitMultipleFiles(files);loadSounds(synthetic);
     resourcesReady = false; textureSelect.disabled = true; textureSelect.replaceChildren(new Option('Selecciona la vista de texturas',''));
     loaded = true;
     if (W_CheckNumForName('PLAYPAL') < 0) {
@@ -193,10 +200,27 @@ function load(files: WadFile[], synthetic: boolean): void {
     render();
     if (synthetic && viewSelect.value === 'title') { label.textContent = 'PRUEBA DE VÍDEO / SIN DATOS COMERCIALES'; }
 }
+async function loadRemoteSources(urls:string[],map:string|null=null):Promise<void> {
+    cancelRemote();const generation=++loadGeneration,controller=new AbortController();remoteController=controller;
+    const timeout=setTimeout(()=>controller.abort(),30000);report('Descargando WAD…');
+    try {
+        const files=await Promise.all(urls.map(url=>fetchRemoteWad(url,controller.signal)));
+        if(generation!==loadGeneration)return;
+        load(files,false);
+        if(map){const option=Array.from(mapSelect.options).find(option=>option.textContent===map);
+            if(option){mapSelect.value=option.value;render();}else report(`El WAD no contiene ${map}. Se muestra el primer mapa disponible.`,true);}
+    }catch(error){
+        if(generation!==loadGeneration)return;
+        // Restore valid engine resources even when a remote WAD could not initialize.
+        load([{name:'test.wad',data:playableDemoWad(true)}],true);
+        const message=controller.signal.aborted?'La descarga agotó el tiempo de espera.':error instanceof TypeError?'No se pudo descargar el WAD. Comprueba el enlace y que el servidor permita CORS.':error instanceof Error?error.message:String(error);
+        report(`${message} Se muestran los datos sintéticos de prueba.`,true);
+    }finally {clearTimeout(timeout);controller.abort();if(remoteController===controller)remoteController=null;}
+}
 input.addEventListener('change', async () => {
     const selected = Array.from(input.files ?? []);
     if (!selected.length) return;
-    const generation = ++loadGeneration;
+    cancelRemote();const generation = ++loadGeneration;
     report('Leyendo archivos…');
     try {
         const files = await Promise.all(selected.map(async file => ({ name: file.name, data: new Uint8Array(await file.arrayBuffer()) })));
@@ -207,7 +231,9 @@ input.addEventListener('change', async () => {
     } catch (error) { if (generation === loadGeneration) report(error instanceof Error ? error.message : String(error), true); }
     input.value = '';
 });
-demoButton.addEventListener('click', () => safely(() => { loadGeneration++; load([{ name: 'test.wad', data: playableDemoWad(true) }], true); }));
+demoButton.addEventListener('click', () => safely(() => { cancelRemote();loadGeneration++; load([{ name: 'test.wad', data: playableDemoWad(true) }], true); }));
+element('shareware').addEventListener('click',()=>{void loadRemoteSources([SHAREWARE_URL]);});
+element('remote-form').addEventListener('submit',event=>{event.preventDefault();safely(()=>{const url=new URL(element<HTMLInputElement>('wad-url').value,location.href);void loadRemoteSources([url.href]);});});
 viewSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();})); mapSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
 textureSelect.addEventListener('change', () => safely(()=>{gameStartGeneration++;playing=false;render();}));
 element('game-start').addEventListener('click',async()=>{
@@ -259,6 +285,7 @@ soundPlay.addEventListener('click',async()=>{
 });
 soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soundStatus.textContent='Reproducción detenida.';});
 soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
-window.addEventListener('pagehide',()=>{soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
+window.addEventListener('pagehide',()=>{loadGeneration++;cancelRemote();soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
-safely(() => load([{ name: 'test.wad', data: playableDemoWad(true) }], true));
+try {const options=launchOptions(location.href);document.body.classList.toggle('embedded',options.embed);if(options.synthetic)load([{name:'test.wad',data:playableDemoWad(true)}],true);else void loadRemoteSources(options.urls,options.map);}
+catch(error){safely(()=>load([{name:'test.wad',data:playableDemoWad(true)}],true));report(error instanceof Error?error.message:String(error),true);}

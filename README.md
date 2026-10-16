@@ -2,6 +2,8 @@
 
 Conversión progresiva de [id-Software/DOOM](https://github.com/id-Software/DOOM) a TypeScript nativo para navegador, conservando los nombres de módulos, funciones y tablas. **Incluye inspección 3D y un primer modo jugable de un jugador con simulación y renderer nativos. La conversión completa sigue pendiente.** No se utiliza WebAssembly ni se ejecuta el código C para la aplicación.
 
+[**▶ Jugar con el WAD shareware original**](https://kant003.github.io/doomJavascript/?wad=shareware) · [Prueba sintética](https://kant003.github.io/doomJavascript/?wad=demo) · [Ejemplo con iframe](https://kant003.github.io/doomJavascript/embed.html)
+
 ## Ejecutar
 
 Requiere Node.js 20.19+ o 22.12+ y npm.
@@ -11,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web abre por defecto la vista 3D del nivel cuando hay mapas disponibles y arranca con un WAD sintético de prueba con textura 0 reservada como NoTexture y paredes orientadas hacia el interior y permite seleccionar archivos WAD locales. No sube los archivos a ningún servidor.
+Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web abre por defecto la vista 3D del nivel cuando hay mapas disponibles y descarga por defecto el WAD original de DOOM shareware 1.9 desde un archivo externo. También permite seleccionar WAD locales, cargar un enlace o usar datos sintéticos. La cámara de inspección de la prueba sintética empieza 160 unidades detrás del inicio del jugador para mostrar mejor la habitación. No sube los archivos a ningún servidor.
 
 - **Imagen de título**: lee `PLAYPAL` y `TITLEPIC` (o `INTERPIC`/`CREDIT`), dibujando los posts originales sobre el framebuffer.
 - **Geometría del mapa**: inspecciona vértices, líneas y posición inicial. Es una utilidad de desarrollo, no el automapa original ni un modo jugable.
@@ -23,6 +25,37 @@ Abrir la URL que muestra Vite, normalmente `http://127.0.0.1:5173/`. La web abre
 - **Efecto melt**: aplica la transición original a la vista seleccionada, a 35 tics/s.
 
 Para PWAD que dependan del juego base, seleccionar también el IWAD. La web coloca el IWAD primero; los PWAD posteriores pueden sobrescribir recursos. Mapas Hexen/UDMF, patches altos extendidos y formatos de source ports modernos no forman parte de esta etapa. Las columnas de texturas transparentes que requieren composición de varios patches no están representadas como posts en la cache opaca original; se rechazan explícitamente.
+
+## Cargar un WAD mediante un enlace
+
+- Sin parámetros o con `?wad=shareware`: descarga DOOM shareware 1.9 (episodio 1, unos 4 MiB).
+- `?wad=demo`: usa la prueba sintética sin descargas externas.
+- `?wad=https%3A%2F%2Fservidor.example%2Fdoom1.wad`: carga un enlace directo. El servidor debe permitir CORS. Los ZIP y páginas de descarga HTML no sirven como WAD.
+- Se puede repetir `wad` para cargar un IWAD con sus PWAD. El IWAD se coloca primero; los PWAD conservan su orden.
+- `&map=E1M2`: selecciona el mapa inicial. Si no existe, se informa y se muestra el primero disponible.
+- `&embed=1`: presentación compacta para un iframe. Hay que pulsar **Jugar este mapa** para empezar y activar el sonido.
+
+También hay un formulario **Cargar enlace** y un botón **Cargar DOOM shareware**. Las descargas tienen un límite de 64 MiB por archivo y 30 segundos por carga. Si fallan, se muestran los datos sintéticos con el motivo del error; elegir archivos locales o la prueba cancela una descarga anterior.
+
+El archivo original no se incorpora al repositorio ni al paquete de despliegue. Se carga sin modificar desde [Doom-Utils/shareware-collection](https://github.com/Doom-Utils/shareware-collection/tree/6591a922701e5769b32278e9c555b1bf93f5714c/Doom%201.9), en una revisión fija. Su SHA-256 comprobado es `1d7d43be501e67d927e415e0b8f3e29c3bf33075e859721816f652a526cac771`. Los datos shareware conservan sus condiciones originales; la licencia GPL del motor no convierte el WAD en dominio público.
+
+## Incrustar el juego
+
+El README de GitHub no puede ejecutar un iframe: [GitHub Flavored Markdown filtra esa etiqueta](https://github.github.com/gfm/#disallowed-raw-html-extension-). El enlace de juego situado arriba abre la aplicación. En una web propia o un visor Markdown que permita HTML e iframes puedes usar:
+
+```html
+<iframe
+  src="https://kant003.github.io/doomJavascript/?embed=1&amp;wad=shareware"
+  title="DOOM en TypeScript"
+  width="960"
+  height="820"
+  style="width:100%;max-width:960px;border:0"
+  allow="fullscreen; autoplay"
+  allowfullscreen>
+</iframe>
+```
+
+[Ver el ejemplo funcional en GitHub Pages](https://kant003.github.io/doomJavascript/embed.html). El botón de inicio dentro del juego activa el audio; no se inicia una partida automáticamente al abrir el documento. Para tus propios datos, sustituye `wad=shareware` por el enlace del WAD codificado para una URL.
 
 ## Publicación en GitHub Pages
 
