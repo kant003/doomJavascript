@@ -22,6 +22,7 @@ const glyphs:Record<string,string>={
  '.':'00000/00000/00000/00000/00000/00110/00110',',':'00000/00000/00000/00000/00110/00100/01000',
  '!':'00100/00100/00100/00100/00100/00000/00100','?':'01110/10001/00001/00010/00100/00000/00100',
  "'":'00100/00100/01000/00000/00000/00000/00000',':':'00000/00110/00110/00000/00110/00110/00000',
+ '%':'11001/11010/00100/01000/10110/00110/00000',
  '-':'00000/00000/00000/11111/00000/00000/00000'
 };
 function pixel(ch:string,x:number,y:number):boolean {
@@ -38,4 +39,11 @@ export function finaleDemoAssets():{name:string;data:Uint8Array}[]{
         return cx>=0&&cx<row.length*6&&pixel(row[Math.floor(cx/6)],cx%6,cy)?255:((x>>4)^(y>>4))&1?40:32;
     })});
     return result;
+}
+
+export function demoTextPatch(text:string,scale=1):Uint8Array {
+    return maskedPatch(Math.max(1,text.length*6*scale),7*scale,(x,y)=>{
+        const cx=Math.floor(x/scale),cy=Math.floor(y/scale);
+        return pixel(text.toUpperCase()[Math.floor(cx/6)]??' ',cx%6,cy)?255:null;
+    });
 }

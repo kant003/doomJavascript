@@ -344,11 +344,11 @@
     },
     "linuxdoom-1.10/wi_stuff.c": {
       "status": "partial",
-      "notes": "Diez funciones originales de intermisión single-player: contadores, pausas, aceleración por flanco y transiciones Doom/Doom II. Presentación HTML; gráficos, animación, música y multijugador pendientes."
+      "notes": "28 funciones originales de intermisión single-player: contadores, gráficos, títulos, números/tiempo, mapa de nodos y temporización de animaciones. Condición constante de dibujo upstream preservada; música y multijugador pendientes."
     },
     "linuxdoom-1.10/wi_stuff.h": {
-      "status": "partial",
-      "notes": "Enum original de estados. WI_Start/WI_Ticker implementados; WI_Drawer pendiente."
+      "status": "adapted",
+      "notes": "Enum de estados y tres firmas de función exportadas sólo como tipos; llamadas desde wi_stuff.ts para evitar un ciclo de inicialización ESM."
     },
     "linuxdoom-1.10/f_finale.c": {
       "status": "partial",

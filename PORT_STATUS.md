@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **48** · Parcial: **15** · Pendiente: **57**
+Traducido: **26** · Adaptado a web: **49** · Parcial: **14** · Pendiente: **57**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -137,8 +137,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/v_video.h` | `src/linuxdoom-1.10/v_video.h.ts` | Adaptado a web | Reexports y tipos de la implementación web. |
 | `linuxdoom-1.10/w_wad.c` | `src/linuxdoom-1.10/w_wad.ts` | Adaptado a web | Archivos en memoria; carga asíncrona en web; reload explícito; GC en lugar de Z_Zone; perfil devuelto como texto. |
 | `linuxdoom-1.10/w_wad.h` | `src/linuxdoom-1.10/w_wad.h.ts` | Adaptado a web | WadFile sustituye al nombre de archivo del sistema. |
-| `linuxdoom-1.10/wi_stuff.c` | `src/linuxdoom-1.10/wi_stuff.ts` | Parcial | Diez funciones originales de intermisión single-player: contadores, pausas, aceleración por flanco y transiciones Doom/Doom II. Presentación HTML; gráficos, animación, música y multijugador pendientes. |
-| `linuxdoom-1.10/wi_stuff.h` | `src/linuxdoom-1.10/wi_stuff.h.ts` | Parcial | Enum original de estados. WI_Start/WI_Ticker implementados; WI_Drawer pendiente. |
+| `linuxdoom-1.10/wi_stuff.c` | `src/linuxdoom-1.10/wi_stuff.ts` | Parcial | 28 funciones originales de intermisión single-player: contadores, gráficos, títulos, números/tiempo, mapa de nodos y temporización de animaciones. Condición constante de dibujo upstream preservada; música y multijugador pendientes. |
+| `linuxdoom-1.10/wi_stuff.h` | `src/linuxdoom-1.10/wi_stuff.h.ts` | Adaptado a web | Enum de estados y tres firmas de función exportadas sólo como tipos; llamadas desde wi_stuff.ts para evitar un ciclo de inicialización ESM. |
 | `linuxdoom-1.10/z_zone.c` | — | Pendiente |  |
 | `linuxdoom-1.10/z_zone.h` | — | Pendiente |  |
 | `sersrc/DOOMNET.C` | — | Pendiente |  |

@@ -67,13 +67,12 @@ const browserGame=new BrowserGame(session=>{
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
     label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
-    const result=session.result,fs=session.finale;summary.hidden=!result;
+    const result=session.result,fs=session.finale,wi=session.intermission;summary.hidden=!result;
     element('game-help').hidden=session.completed;
-    element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?'Intermisión · recuento original · 35 tics/s':'Simulación nativa · un jugador · 35 tics/s';
+    element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:'Simulación nativa · un jugador · 35 tics/s';
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){
         element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
-        const wi=session.intermission;
         const score=(value:number,total:number,count:number)=>`${value} / ${total} · ${count<0?'—':`${count}%`}`;
         element('result-kills').textContent=score(result.kills,result.maxkills,wi?.kills??Math.trunc(100*result.kills/Math.max(1,result.maxkills)));
         element('result-items').textContent=score(result.items,result.maxitems,wi?.items??Math.trunc(100*result.items/Math.max(1,result.maxitems)));
@@ -92,7 +91,7 @@ const browserGame=new BrowserGame(session=>{
         const button=element<HTMLButtonElement>('next-level');button.hidden=finale&&(session.state.gamemode!==MODE.commercial||fs?.stage===2);
         button.disabled=(!counting&&!result.terminal&&!session.nextAvailable)||wi?.state===WI.NoState;
         button.textContent=finale&&result.terminal?'Ver reparto':counting?'Completar recuento':result.terminal?'Finalizar':entering?`Entrar en ${next}`:`Continuar a ${next}`;
-        if(focusCompletion){focusCompletion=false;const target=finale?canvas:summary;target.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}
+        if(focusCompletion){focusCompletion=false;const target=finale||wi?.drawable?canvas:summary;target.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}
     }
     if(gameHud.textContent!==text)gameHud.textContent=text;
     element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';

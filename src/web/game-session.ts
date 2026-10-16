@@ -2,7 +2,7 @@
 import { G_CreatePlayer,G_InitGameContext,G_PlayerReborn,G_InitCompletionContext,G_CreateIntermission,G_ExitLevel,G_SecretExitLevel,G_DoCompleted,G_WorldDone,G_DoWorldDone,type completion_context_t } from '../linuxdoom-1.10/g_game';
 import { GameMode_t,skill_t,gamestate_t as GS } from '../linuxdoom-1.10/doomdef.h';
 import { gameaction_t as GA } from '../linuxdoom-1.10/d_event.h';
-import { WI_InitContext,WI_Start,WI_Ticker,WI_GetState } from '../linuxdoom-1.10/wi_stuff';
+import { WI_InitContext,WI_Start,WI_Ticker,WI_GetState,WI_CanDraw,WI_End } from '../linuxdoom-1.10/wi_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import { buttoncode_t as BT } from '../linuxdoom-1.10/d_event.h';
 import { F_InitContext,F_StartFinale,F_Ticker,F_Responder,F_GetState,F_CanDraw,type finale_context_t } from '../linuxdoom-1.10/f_finale';
@@ -44,7 +44,7 @@ export class GameSession {
     get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
     respond(event:event_t):boolean {return this.state.gamestate===GS.GS_FINALE&&F_Responder(event);}
     private intermissionEnded=false;
-    get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?WI_GetState():null;}
+    get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?{...WI_GetState(),drawable:WI_CanDraw()}:null;}
     get completed():boolean {return this.state.gamestate!==GS.GS_LEVEL;}
     get mapname():string {return this.state.gamemode===GameMode_t.commercial?`MAP${String(this.state.gamemap).padStart(2,'0')}`:`E${this.state.gameepisode}M${this.state.gamemap}`;}
     get nextMapName():string|null {
@@ -68,7 +68,7 @@ export class GameSession {
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
-        const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
+        WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
         WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});

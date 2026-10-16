@@ -80,7 +80,7 @@ test('Episode finale ends the session with a terminal result rather than looking
  const {session}=createHeadlessGame();session.state.gamemap=8;session.state.G_ExitLevel();session.step(cmd());assert.equal(session.state.gamestate,GS.GS_FINALE);assert.equal(session.result!.terminal,true);assert.equal(session.nextMapName,null);assert.equal(session.continueLevel(),false);
 });
 test('Continuing preserves cosmetic/gameplay RNG instead of reseeding a new game',()=>{
- const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));const before=[rndindex,prndindex];assert.ok(before.some(v=>v>0));continueThroughIntermission(session);assert.ok(prndindex>=before[1]);assert.equal(rndindex,(before[0]+2)&255); // barexp and sgcock consume the two cosmetic RNG draws.
+ const {session}=createHeadlessGame(true);session.step(cmd());session.step(cmd(BT.BT_USE));const before=[rndindex,prndindex];assert.ok(before.some(v=>v>0));continueThroughIntermission(session);assert.ok(prndindex>=before[1]);assert.equal(rndindex,(before[0]+12)&255); // Two sound effects plus ten native location-animation seeds.
 });
 test('A dead player carried through an exit is reborn before the destination spawns',()=>{
  const {session}=createHeadlessGame(true);session.state.G_ExitLevel();session.step(cmd());session.player.playerstate=PST.PST_DEAD;session.player.health=session.player.mo!.health=0;

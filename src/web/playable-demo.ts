@@ -1,4 +1,5 @@
 // Authored test assets only. Gameplay comes from the original actor/state definitions.
+import { intermissionDemoAssets } from './intermission-demo';
 import { finaleDemoAssets } from './finale-demo';
 import { demoWad,makeWad,maskedPatch } from './demo';
 import { alphSwitchList } from '../linuxdoom-1.10/p_switch';
@@ -48,7 +49,7 @@ export function playableDemoWad(withCampaign=false):Uint8Array {
         const next=lumps.slice(lumps.findIndex(l=>l.name==='E1M1')).map(l=>({name:l.name,data:l.data.slice()}));next[0].name='E1M2';
         // A second map marker exercises reloading the same test geometry.
         new DataView(next.find(l=>l.name==='THINGS')!.data.buffer).setInt16(4,0,true);lumps.push(...next);
-        const ending=next.map(l=>({name:l.name,data:l.data.slice()}));ending[0].name='E1M8';lumps.push(...ending,...finaleDemoAssets());
+        const ending=next.map(l=>({name:l.name,data:l.data.slice()}));ending[0].name='E1M8';lumps.push(...ending,...finaleDemoAssets(),...intermissionDemoAssets());
     }
     return makeWad(lumps);
 }

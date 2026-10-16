@@ -4,8 +4,8 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 48,
-    "partial": 15,
+    "adapted": 49,
+    "partial": 14,
     "pending": 57
   },
   "files": [
@@ -1157,7 +1157,7 @@
       "target": "src/linuxdoom-1.10/wi_stuff.ts",
       "plannedTarget": "src/linuxdoom-1.10/wi_stuff.ts",
       "status": "partial",
-      "notes": "Diez funciones originales de intermisión single-player: contadores, pausas, aceleración por flanco y transiciones Doom/Doom II. Presentación HTML; gráficos, animación, música y multijugador pendientes.",
+      "notes": "28 funciones originales de intermisión single-player: contadores, gráficos, títulos, números/tiempo, mapa de nodos y temporización de animaciones. Condición constante de dibujo upstream preservada; música y multijugador pendientes.",
       "lines": 1850,
       "sha256": "d894ead3416d3d21eb9c197b0644882637725b0339ef28a4fd9afa0a43ff9581"
     },
@@ -1165,8 +1165,8 @@
       "source": "linuxdoom-1.10/wi_stuff.h",
       "target": "src/linuxdoom-1.10/wi_stuff.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/wi_stuff.h.ts",
-      "status": "partial",
-      "notes": "Enum original de estados. WI_Start/WI_Ticker implementados; WI_Drawer pendiente.",
+      "status": "adapted",
+      "notes": "Enum de estados y tres firmas de función exportadas sólo como tipos; llamadas desde wi_stuff.ts para evitar un ciclo de inicialización ESM.",
       "lines": 54,
       "sha256": "57ab19c222d6e54158b3fff8ea6ea23d23e7646925aab830b06cf8cfc1e84f5e"
     },
