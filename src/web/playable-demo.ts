@@ -53,6 +53,7 @@ export function playableDemoWad(withCampaign=false):Uint8Array {
         new DataView(next.find(l=>l.name==='THINGS')!.data.buffer).setInt16(4,0,true);lumps.push(...next);
         const ending=next.map(l=>({name:l.name,data:l.data.slice()}));ending[0].name='E1M8';lumps.push(...ending,...finaleDemoAssets(),...intermissionDemoAssets());
     }
+    if(!withCampaign)lumps.push(...finaleDemoAssets().filter(lump=>lump.name.startsWith('STCFN')));
     const palette=lumps.find(l=>l.name==='PLAYPAL')!;palette.data=statusDemoPalettes(palette.data);
     lumps.push(...statusDemoAssets(),...demoMusicAssets());return makeWad(lumps);
 }

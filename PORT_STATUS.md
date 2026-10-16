@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **53** · Parcial: **14** · Pendiente: **53**
+Traducido: **26** · Adaptado a web: **57** · Parcial: **14** · Pendiente: **49**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -40,16 +40,16 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/doomtype.h` | `src/linuxdoom-1.10/doomtype.h.ts` | Traducido |  |
 | `linuxdoom-1.10/dstrings.c` | — | Pendiente |  |
 | `linuxdoom-1.10/dstrings.h` | — | Pendiente |  |
-| `linuxdoom-1.10/f_finale.c` | `src/linuxdoom-1.10/f_finale.ts` | Parcial | 12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente. |
+| `linuxdoom-1.10/f_finale.c` | `src/linuxdoom-1.10/f_finale.ts` | Parcial | 12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN compartida con HU; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente. |
 | `linuxdoom-1.10/f_finale.h` | `src/linuxdoom-1.10/f_finale.h.ts` | Adaptado a web | Cuatro puntos de entrada originales reexportados con tipos de evento. |
 | `linuxdoom-1.10/f_wipe.c` | `src/linuxdoom-1.10/f_wipe.ts` | Adaptado a web | Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC. |
 | `linuxdoom-1.10/f_wipe.h` | `src/linuxdoom-1.10/f_wipe.h.ts` | Adaptado a web | Resultado de ScreenWipe convertido a boolean. |
 | `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes. |
 | `linuxdoom-1.10/g_game.h` | — | Pendiente |  |
-| `linuxdoom-1.10/hu_lib.c` | — | Pendiente |  |
-| `linuxdoom-1.10/hu_lib.h` | — | Pendiente |  |
-| `linuxdoom-1.10/hu_stuff.c` | — | Pendiente |  |
-| `linuxdoom-1.10/hu_stuff.h` | — | Pendiente |  |
+| `linuxdoom-1.10/hu_lib.c` | `src/linuxdoom-1.10/hu_lib.ts` | Adaptado a web | 20 funciones originales: líneas de 80 bytes, ventanas, input/cursor, borrado de bordes y márgenes. Getters sustituyen punteros on; HUlib_init permanece vacío como upstream. |
+| `linuxdoom-1.10/hu_lib.h` | `src/linuxdoom-1.10/hu_lib.h.ts` | Adaptado a web | Tres estructuras de widgets, constantes y veinte firmas públicas sólo como tipos; texto con terminador y getters para campos mutables. |
+| `linuxdoom-1.10/hu_stuff.c` | `src/linuxdoom-1.10/hu_stuff.ts` | Adaptado a web | Diez funciones originales, font STCFN, mensajes/timeout/prioridad, títulos, colas/chat/macros y tablas inglesa/francesa. Contexto explícito; web de un jugador, transporte de red externo aún pendiente. |
+| `linuxdoom-1.10/hu_stuff.h` | `src/linuxdoom-1.10/hu_stuff.h.ts` | Adaptado a web | Constantes originales de fuente, mensajes y broadcast; siete puntos de entrada exportados sólo como tipos. |
 | `linuxdoom-1.10/i_main.c` | — | Pendiente |  |
 | `linuxdoom-1.10/i_net.c` | — | Pendiente |  |
 | `linuxdoom-1.10/i_net.h` | — | Pendiente |  |

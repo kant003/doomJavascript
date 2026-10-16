@@ -1,6 +1,7 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
 // f_finale.c: native text/art, bunny scroll, Doom II cast and music.
 // The D_Display wipe driver remains pending; wipegamestate requests are preserved.
+import { HU_CanLoad,HU_FontPatch } from './hu_stuff';
 import { GameMode_t as MODE,gamestate_t as GS,MAXPLAYERS,SCREENWIDTH as SW,SCREENHEIGHT as SH } from './doomdef.h';
 import { gameaction_t as GA,evtype_t,type event_t } from './d_event.h';
 import type { player_t } from './d_player.h';
@@ -8,7 +9,7 @@ import * as strings from './d_englsh.h';
 import { states,mobjinfo } from './info';
 import { mobjtype_t as MT,statenum_t as ST,type state_t } from './info.h';
 import { sfxenum_t as SFX,musicenum_t as MUS } from './sounds.h';
-import { W_CacheLumpName,W_CacheLumpNum,W_CheckNumForName,lumpinfo,numlumps } from './w_wad';
+import { W_CacheLumpName,W_CacheLumpNum,W_CheckNumForName } from './w_wad';
 import { screens,V_MarkRect,V_DrawPatch,V_DrawPatchFlipped,V_PatchHeader } from './v_video';
 import { spritesState } from './r_things';
 import { texturestate } from './r_data';
@@ -69,14 +70,9 @@ export function F_Ticker():void {
     if(!finalestage&&finalecount>finaletext.length*TEXTSPEED+TEXTWAIT){finalecount=0;finalestage=1;context.wipegamestate=-1;if(context.gameepisode===3)context.S_StartMusic(MUS.mus_bunny);}
 }
 const fontCode=(c:number)=>c>=33&&c<=95;
-// hu_stuff is not yet ported. Resolve its original STCFN font names once per
-// WAD directory, retaining lump indexes so W_Reload still invalidates the bytes.
-let fontDirectory:typeof lumpinfo|null=null,fontCount=-1,hu_font:number[]=[];
-function loadFont():void {
-    if(fontDirectory===lumpinfo&&fontCount===numlumps)return;
-    fontDirectory=lumpinfo;fontCount=numlumps;hu_font=Array.from({length:63},(_,i)=>W_CheckNumForName(`STCFN${String(i+33).padStart(3,'0')}`));
-}
-const font=(c:number)=>{loadFont();return W_CacheLumpNum(hu_font[c-33],1);};
+// Shared native HU font lookup resolves current WAD/cache bytes, including reloads.
+const font=HU_FontPatch;
+
 export function F_TextWrite():void {
     const src=W_CacheLumpName(finaleflat,1);
     if(src.length<4096)throw new Error('Finale background flat is truncated');
@@ -174,7 +170,7 @@ export function F_GetState(){return {stage:finalestage,count:finalecount,text:fi
 export function F_CanDraw():boolean {
     const has=(name:string)=>W_CheckNumForName(name)>=0;
     if(finalestage===1)return context.gameepisode===3?['PFUB1','PFUB2',...Array.from({length:7},(_,i)=>`END${i}`)].every(has):!!artName()&&has(artName()!);
-    loadFont();if(hu_font.some(index=>index<0))return false;
+    if(!HU_CanLoad())return false;
     if(finalestage===0)return has(finaleflat);
     return has('BOSSBACK')&&!!spritesState.sprites[caststate.sprite]?.spriteframes[caststate.frame&FF_FRAMEMASK];
 }

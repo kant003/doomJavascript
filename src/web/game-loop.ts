@@ -1,3 +1,4 @@
+import { HU_Drawer,HU_Erase,HU_IsActive,HU_Unload } from '../linuxdoom-1.10/hu_stuff';
 import { ST_Drawer,ST_IsRunning,ST_Stop,ST_unloadData } from '../linuxdoom-1.10/st_stuff';
 import { GameSession,type game_presentation_t } from './game-session';
 import { GameInput } from './game-input';
@@ -18,13 +19,13 @@ export class BrowserGame {
     togglePause():void {if(this.session?.completed)return;this.paused=!this.paused;if(this.paused)S_PauseSound();else S_ResumeSound();this.input.clear();}
     continueLevel():boolean {this.input.clear();this.paused=false;return this.session?.continueLevel()??false;}
     constructor(private present:(game:GameSession)=>void,private onError:(error:unknown)=>void,private presentation:game_presentation_t){}
-    stop():void {cancelAnimationFrame(this.animation);this.animation=0;this.input.clear();if(this.session)for(let i=0;i<channels.length;i++)if(channels[i].sfxinfo)S_StopChannel(i);if(this.session){WI_End();ST_Stop();ST_unloadData();S_StopMusic();}this.session=null;this.paused=false;}
+    stop():void {cancelAnimationFrame(this.animation);this.animation=0;this.input.clear();if(this.session)for(let i=0;i<channels.length;i++)if(channels[i].sfxinfo)S_StopChannel(i);if(this.session){WI_End();HU_Unload();ST_Stop();ST_unloadData();S_StopMusic();}this.session=null;this.paused=false;}
     private poll=():void=>{for(const e of I_StartTic()){if(this.session?.respond(e))continue;if(e.type===evtype_t.ev_keydown){if(e.data1===KEY_ESCAPE)this.togglePause();else this.input.keyDown(e.data1);}else if(e.type===evtype_t.ev_keyup)this.input.keyUp(e.data1);}};
     start(mapname:string):void {
         this.stop();const session=new GameSession(mapname,this.presentation);this.session=session;
         try{session.start();R_SetViewSize(ST_IsRunning()?10:11,0);R_ExecuteSetViewSize();I_StartTic();}catch(error){this.stop();throw error;}
         let previous:number|null=null,accumulator=0;
-        const render=()=>{screens[0].fill(0);if(session.state.gamestate===GS.GS_FINALE){if(F_CanDraw())F_Drawer();}else if(session.state.gamestate===GS.GS_INTERMISSION&&WI_CanDraw())WI_Drawer();else R_RenderPlayerView(session.player,this.poll);if(session.state.gamestate===GS.GS_LEVEL&&ST_IsRunning())ST_Drawer(false,true);I_FinishUpdate();this.present(session);};
+        const render=()=>{if(session.state.gamestate===GS.GS_LEVEL&&HU_IsActive())HU_Erase();screens[0].fill(0);if(session.state.gamestate===GS.GS_FINALE){if(F_CanDraw())F_Drawer();}else if(session.state.gamestate===GS.GS_INTERMISSION&&WI_CanDraw())WI_Drawer();else R_RenderPlayerView(session.player,this.poll);if(session.state.gamestate===GS.GS_LEVEL&&ST_IsRunning())ST_Drawer(false,true);if(session.state.gamestate===GS.GS_LEVEL&&HU_IsActive())HU_Drawer();I_FinishUpdate();this.present(session);};
         render();
         const frame=(now:number)=>{
             if(this.session!==session)return;

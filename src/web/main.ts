@@ -100,7 +100,8 @@ const browserGame=new BrowserGame(session=>{
     }
     if(gameHud.textContent!==text)gameHud.textContent=text;
     element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';
-    if(!session.completed&&gameMessage.textContent!==(p.message??''))gameMessage.textContent=p.message??'';
+    const hu=session.headsUp,message=hu?(hu.visible?hu.text:''):(p.message??'');
+    if(!session.completed&&gameMessage.textContent!==message)gameMessage.textContent=message;
     lastView=screens[0].slice();
 },error=>report(error instanceof Error?error.message:String(error),true),{
     resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},

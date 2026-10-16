@@ -352,7 +352,7 @@
     },
     "linuxdoom-1.10/f_finale.c": {
       "status": "partial",
-      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente."
+      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN compartida con HU; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente."
     },
     "linuxdoom-1.10/f_finale.h": {
       "status": "adapted",
@@ -373,6 +373,22 @@
     "linuxdoom-1.10/st_stuff.h": {
       "status": "partial",
       "notes": "Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente."
+    },
+    "linuxdoom-1.10/hu_lib.c": {
+      "status": "adapted",
+      "notes": "20 funciones originales: líneas de 80 bytes, ventanas, input/cursor, borrado de bordes y márgenes. Getters sustituyen punteros on; HUlib_init permanece vacío como upstream."
+    },
+    "linuxdoom-1.10/hu_lib.h": {
+      "status": "adapted",
+      "notes": "Tres estructuras de widgets, constantes y veinte firmas públicas sólo como tipos; texto con terminador y getters para campos mutables."
+    },
+    "linuxdoom-1.10/hu_stuff.c": {
+      "status": "adapted",
+      "notes": "Diez funciones originales, font STCFN, mensajes/timeout/prioridad, títulos, colas/chat/macros y tablas inglesa/francesa. Contexto explícito; web de un jugador, transporte de red externo aún pendiente."
+    },
+    "linuxdoom-1.10/hu_stuff.h": {
+      "status": "adapted",
+      "notes": "Constantes originales de fuente, mensajes y broadcast; siete puntos de entrada exportados sólo como tipos."
     }
   }
 }

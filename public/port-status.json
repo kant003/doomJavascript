@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 53,
+    "adapted": 57,
     "partial": 14,
-    "pending": 53
+    "pending": 49
   },
   "files": [
     {
@@ -284,7 +284,7 @@
       "target": "src/linuxdoom-1.10/f_finale.ts",
       "plannedTarget": "src/linuxdoom-1.10/f_finale.ts",
       "status": "partial",
-      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente.",
+      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN compartida con HU; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente.",
       "lines": 738,
       "sha256": "c443ab18b6fa27df7033ac1ced0e86ab7c43c6e2cf2f8e428348d67d40a35670"
     },
@@ -335,37 +335,37 @@
     },
     {
       "source": "linuxdoom-1.10/hu_lib.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/hu_lib.ts",
       "plannedTarget": "src/linuxdoom-1.10/hu_lib.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "20 funciones originales: líneas de 80 bytes, ventanas, input/cursor, borrado de bordes y márgenes. Getters sustituyen punteros on; HUlib_init permanece vacío como upstream.",
       "lines": 354,
       "sha256": "2e0f06d46e0c581bdc59fc66791c9001d23cca0c0e25983e1f74ac9095e8f3f3"
     },
     {
       "source": "linuxdoom-1.10/hu_lib.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/hu_lib.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/hu_lib.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Tres estructuras de widgets, constantes y veinte firmas públicas sólo como tipos; texto con terminador y getters para campos mutables.",
       "lines": 196,
       "sha256": "611143caa98ef13992845fde571be9a9c3d944fa850ee2f2d8b0406aae9ed02e"
     },
     {
       "source": "linuxdoom-1.10/hu_stuff.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/hu_stuff.ts",
       "plannedTarget": "src/linuxdoom-1.10/hu_stuff.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Diez funciones originales, font STCFN, mensajes/timeout/prioridad, títulos, colas/chat/macros y tablas inglesa/francesa. Contexto explícito; web de un jugador, transporte de red externo aún pendiente.",
       "lines": 759,
       "sha256": "0273745e404b2d151eb231fd4146e88d4fccef87412ac937c87ba7253141db5a"
     },
     {
       "source": "linuxdoom-1.10/hu_stuff.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/hu_stuff.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/hu_stuff.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Constantes originales de fuente, mensajes y broadcast; siete puntos de entrada exportados sólo como tipos.",
       "lines": 66,
       "sha256": "09a1c0ef0434b0b46e9ea3b43232898b7b939b07bf18f302458227948d98579c"
     },

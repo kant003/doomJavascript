@@ -1,3 +1,4 @@
+import { HU_InitContext,HU_CanLoad,HU_Init,HU_Start,HU_Stop,HU_Unload,HU_Ticker,HU_IsActive,HU_Responder,HU_GetState } from '../linuxdoom-1.10/hu_stuff';
 import { ST_InitContext,ST_CanLoad,ST_Init,ST_Start,ST_Stop,ST_unloadData,ST_Ticker,ST_IsRunning } from '../linuxdoom-1.10/st_stuff';
 import { I_SetPalette } from '../linuxdoom-1.10/i_video';
 // Browser single-player composition. Simulation remains in the original-named engine modules.
@@ -44,7 +45,8 @@ export class GameSession {
     private advanceTics=0;
     private advanceFinale=false;
     get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
-    respond(event:event_t):boolean {return this.state.gamestate===GS.GS_FINALE&&F_Responder(event);}
+    get headsUp(){return HU_IsActive()?HU_GetState():null;}
+    respond(event:event_t):boolean {return this.state.gamestate===GS.GS_FINALE?F_Responder(event):this.state.gamestate===GS.GS_LEVEL&&HU_IsActive()&&HU_Responder(event);}
     private intermissionEnded=false;
     get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?{...WI_GetState(),drawable:WI_CanDraw()}:null;}
     get completed():boolean {return this.state.gamestate!==GS.GS_LEVEL;}
@@ -63,18 +65,19 @@ export class GameSession {
             playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),wipegamestate:GS.GS_LEVEL,automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
             get ceilingline(){return mapclip.ceilingline;},get linetarget(){return mapclip.linetarget;},get attackrange(){return mapclip.attackrange;},
             P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartMusic,S_ChangeMusic,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
-            ST_Start:()=>{if(ST_CanLoad())ST_Start();presentation.resetStatus();},HU_Start:presentation.resetMessages,AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
+            ST_Start:()=>{if(ST_CanLoad())ST_Start();presentation.resetStatus();},HU_Start:()=>{if(HU_CanLoad())HU_Start();presentation.resetMessages();},AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
             P_UseSpecialLine,EV_DoDoor,EV_DoFloor,G_ExitLevel,G_SecretExitLevel,
             WI_Start:info=>{WI_Start(info);presentation.onExit(this.state.secretexit);},F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
             StopLevelSounds:S_Start};
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
-        ST_Stop();ST_unloadData();WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
+        HU_Unload();ST_Stop();ST_unloadData();WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
         WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,S_ChangeMusic,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
         ST_InitContext({get players(){return state.players;},get consoleplayer(){return state.consoleplayer;},get deathmatch(){return state.deathmatch;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},I_SetPalette});if(ST_CanLoad())ST_Init();
+        HU_InitContext({get gamemode(){return state.gamemode;},get gameepisode(){return state.gameepisode;},get gamemap(){return state.gamemap;},get players(){return state.players;},get playeringame(){return state.playeringame;},get consoleplayer(){return state.consoleplayer;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},french:false,showMessages:true,S_StartSound});if(HU_CanLoad())HU_Init();
         S_InitMusicContext(state);F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
@@ -91,7 +94,7 @@ export class GameSession {
         const p=this.player;
         this.result={mapname:this.mapname,secret:s.secretexit,terminal:s.gamemode===GameMode_t.commercial?s.gamemap===30:s.gamemap===8,
             kills:p.killcount,maxkills:s.totalkills,items:p.itemcount,maxitems:s.totalitems,secrets:p.secretcount,maxsecrets:s.totalsecret,tics:leveltime};
-        ST_Stop();G_DoCompleted();if((s.gameaction as GA)===GA.ga_victory)s.F_StartFinale();
+        HU_Stop();ST_Stop();G_DoCompleted();if((s.gameaction as GA)===GA.ga_victory)s.F_StartFinale();
     }
     continueLevel():boolean {
         if(!this.completed||!this.result)return false;
@@ -128,7 +131,7 @@ export class GameSession {
         Object.assign(this.player.cmd,command);
         P_Ticker({paused:false,netgame:false,menuactive:false,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
             P_PlayerThink,P_UpdateSpecials,P_RespawnSpecials});
-        if(ST_IsRunning())ST_Ticker();
+        if(ST_IsRunning())ST_Ticker();if(HU_IsActive())HU_Ticker();
         this.state.gametic=(this.state.gametic+1)|0;this.finishIfRequested();S_UpdateSounds(this.player.mo!);
     }
 }
