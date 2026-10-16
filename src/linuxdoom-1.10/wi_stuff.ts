@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Single-player wi_stuff.c counters, transitions and graphics. Music, netgame
+// Single-player wi_stuff.c counters, transitions, graphics and music. Netgame
 // and deathmatch intermissions remain pending (see PORTING.md).
 import { M_Random } from './m_random';
 import { W_CacheLumpName,W_CheckNumForName } from './w_wad';
@@ -8,11 +8,11 @@ import type { event_t } from './d_event.h';
 import { GameMode_t,MAXPLAYERS,TICRATE } from './doomdef.h';
 import { buttoncode_t as BT } from './d_event.h';
 import type { player_t,wbstartstruct_t,wbplayerstruct_t } from './d_player.h';
-import { sfxenum_t as SFX } from './sounds.h';
+import { sfxenum_t as SFX,musicenum_t as MUS } from './sounds.h';
 import { stateenum_t as ST } from './wi_stuff.h';
 export interface intermission_context_t {
     gamemode:GameMode_t;netgame:boolean;deathmatch:number;players:player_t[];playeringame:boolean[];
-    S_StartSound(origin:null,sound:SFX):void;G_WorldDone():void;
+    S_ChangeMusic(music:MUS,looping:boolean):void;S_StartSound(origin:null,sound:SFX):void;G_WorldDone():void;
 }
 let context:intermission_context_t;
 let wbs:wbstartstruct_t,plrs:wbplayerstruct_t[],me=0;
@@ -71,7 +71,7 @@ export function WI_checkForAccelerate():void {
     }
 }
 export function WI_Ticker():void {
-    bcnt++;WI_checkForAccelerate();
+    bcnt++;if(bcnt===1)context.S_ChangeMusic(context.gamemode===GameMode_t.commercial?MUS.mus_dm2int:MUS.mus_inter,true);WI_checkForAccelerate();
     switch(state){case ST.StatCount:WI_updateStats();break;case ST.ShowNextLoc:WI_updateShowNextLoc();break;case ST.NoState:WI_updateNoState();break;}
 }
 export function WI_initVariables(info:wbstartstruct_t):void {

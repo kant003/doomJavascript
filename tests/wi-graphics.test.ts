@@ -22,7 +22,7 @@ function fixture(mode=MODE.shareware,episode=0,next=1){
  W_InitFile({name:'wi.wad',data:makeWad(assets)});
  const players=Array.from({length:4},G_CreatePlayer),info=G_CreateIntermission();info.epsd=episode;info.next=next;info.maxkills=10;info.maxitems=10;info.maxsecret=10;info.partime=30*35;
  info.plyr[0].skills=3;info.plyr[0].sitems=4;info.plyr[0].ssecret=5;info.plyr[0].stime=120*35;
- let done=0;WI.WI_InitContext({gamemode:mode,netgame:false,deathmatch:0,players,playeringame:[true,false,false,false],S_StartSound:()=>{},G_WorldDone:()=>done++});WI.WI_Start(info);
+ let done=0;WI.WI_InitContext({gamemode:mode,netgame:false,deathmatch:0,players,playeringame:[true,false,false,false],S_ChangeMusic:()=>{},S_StartSound:()=>{},G_WorldDone:()=>done++});WI.WI_Start(info);
  return {info,players,tick:(n=1,buttons=0)=>{players[0].cmd.buttons=buttons;for(let i=0;i<n;i++)WI.WI_Ticker();},get done(){return done;}};
 }
 const at=(x:number,y:number)=>screens[0][y*320+x];

@@ -4,8 +4,8 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 49,
-    "partial": 14,
+    "adapted": 51,
+    "partial": 12,
     "pending": 57
   },
   "files": [
@@ -284,7 +284,7 @@
       "target": "src/linuxdoom-1.10/f_finale.ts",
       "plannedTarget": "src/linuxdoom-1.10/f_finale.ts",
       "status": "partial",
-      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; música y conductor de wipes de D_Display pendientes.",
+      "notes": "12 funciones originales: texto, imágenes de episodio, bunny scroll y reparto completo con estados/sonidos/sprites. Fuente STCFN enlazada por adaptador; Música victor/read_m/evil/bunny enlazada; conductor de wipes de D_Display pendiente.",
       "lines": 738,
       "sha256": "c443ab18b6fa27df7033ac1ced0e86ab7c43c6e2cf2f8e428348d67d40a35670"
     },
@@ -401,7 +401,7 @@
       "target": "src/linuxdoom-1.10/i_sound.ts",
       "plannedTarget": "src/linuxdoom-1.10/i_sound.ts",
       "status": "partial",
-      "notes": "Ocho funciones originales de I/O de efectos adaptadas a backend Web Audio con handles reales; decoder DMX, caché por lump y ganancias estéreo. Mixer OSS/SNDSERV y música sin convertir.",
+      "notes": "Ocho funciones originales de efectos y diez de música adaptadas a Web Audio: PCM DMX, registro MUS, handles, volumen, bucles y pausa. Mixer OSS/SNDSERV, I_UpdateSound/I_SubmitSound y fidelidad instrumental pendientes.",
       "lines": 985,
       "sha256": "8a11322daa57ba407f7a0d85e55e5e60e971244f9d496f928823ef5e3a9d32d8"
     },
@@ -410,7 +410,7 @@
       "target": "src/linuxdoom-1.10/i_sound.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/i_sound.h.ts",
       "status": "partial",
-      "notes": "Contrato tipado del backend de efectos y muestras PCM; música pendiente.",
+      "notes": "Contratos tipados de PCM, eventos MUS y backend musical. Actualización/envío del mixer original pendientes.",
       "lines": 122,
       "sha256": "7a4171979ac20b40c02969be19d404cbc77e4493aa69bb22c0eeaf1f9b8c519b"
     },
@@ -770,7 +770,7 @@
       "target": "src/linuxdoom-1.10/p_setup.ts",
       "plannedTarget": "src/linuxdoom-1.10/p_setup.ts",
       "status": "partial",
-      "notes": "Lectores geométricos, P_GroupLines, THINGS, P_Init y P_SetupLevel con actores/especiales reales para un jugador. Deathmatch, precache e inicio de música pendientes; parada de efectos mediante contexto.",
+      "notes": "Lectores geométricos, P_GroupLines, THINGS, P_Init y P_SetupLevel con actores/especiales reales para un jugador. Inicio de música y parada de efectos mediante S_Start enlazado por contexto; deathmatch y precache pendientes.",
       "lines": 708,
       "sha256": "cc56c3ef5eb73aaec4db8be855fd3c192af19bf8f775478d002e9b2e9225872d"
     },
@@ -1030,8 +1030,8 @@
       "source": "linuxdoom-1.10/s_sound.c",
       "target": "src/linuxdoom-1.10/s_sound.ts",
       "plannedTarget": "src/linuxdoom-1.10/s_sound.ts",
-      "status": "partial",
-      "notes": "10 funciones del gestor de efectos: init, volumen, canales, prioridades, origen, atenuación, estéreo y actualización. S_SetMusicVolume almacena el ajuste; inicio de nivel y transporte de música pendientes.",
+      "status": "adapted",
+      "notes": "16 funciones originales de efectos y música: canales, atenuación, selección de temas por nivel/E4/Doom II, registro, bucles, volumen, pausa y parada. Caché y dispositivo adaptados a referencias TS y Web Audio.",
       "lines": 879,
       "sha256": "4feb68dcba87262903b3c5e1aed3db05fb554c56040c58bac6af97d8920ef2c5"
     },
@@ -1039,8 +1039,8 @@
       "source": "linuxdoom-1.10/s_sound.h",
       "target": "src/linuxdoom-1.10/s_sound.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/s_sound.h.ts",
-      "status": "partial",
-      "notes": "Tipos de origen/listener y parámetros mutables para la API de efectos. Interfaz de música pendiente.",
+      "status": "adapted",
+      "notes": "Tipos de origen/listener, parámetros mutables y las trece firmas originales exportadas sólo como tipos para evitar ciclos ESM.",
       "lines": 109,
       "sha256": "d747126bc8105ef540dee2f6f7e9f17db047dabb2c03a740ddc1bb9f98746b83"
     },
@@ -1157,7 +1157,7 @@
       "target": "src/linuxdoom-1.10/wi_stuff.ts",
       "plannedTarget": "src/linuxdoom-1.10/wi_stuff.ts",
       "status": "partial",
-      "notes": "28 funciones originales de intermisión single-player: contadores, gráficos, títulos, números/tiempo, mapa de nodos y temporización de animaciones. Condición constante de dibujo upstream preservada; música y multijugador pendientes.",
+      "notes": "28 funciones originales de intermisión single-player: contadores, gráficos, títulos, números/tiempo, mapa de nodos y temporización de animaciones. Condición constante de dibujo upstream preservada; música inter/dm2int enlazada; multijugador pendiente.",
       "lines": 1850,
       "sha256": "d894ead3416d3d21eb9c197b0644882637725b0339ef28a4fd9afa0a43ff9581"
     },

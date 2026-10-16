@@ -8,7 +8,7 @@ import { buttoncode_t as BT } from '../src/linuxdoom-1.10/d_event.h';
 import { sfxenum_t as SFX } from '../src/linuxdoom-1.10/sounds.h';
 function fixture(mode=MODE.shareware){
  const players=Array.from({length:4},G_CreatePlayer),info=G_CreateIntermission(),sounds:{tic:number;id:SFX}[]=[];let done=0;
- const context={gamemode:mode,players,playeringame:[true,false,false,false],netgame:false,deathmatch:0,S_StartSound:(_origin:null,id:SFX)=>sounds.push({tic:WI_GetState().bcnt,id}),G_WorldDone:()=>done++};
+ const context={gamemode:mode,players,playeringame:[true,false,false,false],netgame:false,deathmatch:0,S_ChangeMusic:()=>{},S_StartSound:(_origin:null,id:SFX)=>sounds.push({tic:WI_GetState().bcnt,id}),G_WorldDone:()=>done++};
  WI_InitContext(context);WI_Start(info);
  const tick=(n=1,buttons=0)=>{for(let i=0;i<n;i++){players[0].cmd.buttons=buttons;WI_Ticker();}};
  return {players,info,sounds,context,tick,get done(){return done;}};

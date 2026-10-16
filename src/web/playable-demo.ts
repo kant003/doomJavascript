@@ -1,4 +1,5 @@
 // Authored test assets only. Gameplay comes from the original actor/state definitions.
+import { demoMusicAssets } from './music-demo';
 import { intermissionDemoAssets } from './intermission-demo';
 import { finaleDemoAssets } from './finale-demo';
 import { demoWad,makeWad,maskedPatch } from './demo';
@@ -51,5 +52,5 @@ export function playableDemoWad(withCampaign=false):Uint8Array {
         new DataView(next.find(l=>l.name==='THINGS')!.data.buffer).setInt16(4,0,true);lumps.push(...next);
         const ending=next.map(l=>({name:l.name,data:l.data.slice()}));ending[0].name='E1M8';lumps.push(...ending,...finaleDemoAssets(),...intermissionDemoAssets());
     }
-    return makeWad(lumps);
+    lumps.push(...demoMusicAssets());return makeWad(lumps);
 }

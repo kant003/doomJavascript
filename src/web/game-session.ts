@@ -23,7 +23,7 @@ import { P_UseSpecialLine } from '../linuxdoom-1.10/p_switch';
 import { EV_DoFloor } from '../linuxdoom-1.10/p_floor';
 import { EV_DoDoor } from '../linuxdoom-1.10/p_doors';
 import { P_Ticker } from '../linuxdoom-1.10/p_tick';
-import { S_Init,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds,snd_SfxVolume,snd_MusicVolume } from '../linuxdoom-1.10/s_sound';
+import { S_Start,S_StartMusic,S_ChangeMusic,S_InitMusicContext,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds } from '../linuxdoom-1.10/s_sound';
 import { M_ClearRandom } from '../linuxdoom-1.10/m_random';
 import { setupMapSky } from './map-sky';
 import { W_CheckNumForName } from '../linuxdoom-1.10/w_wad';
@@ -60,19 +60,19 @@ export class GameSession {
             deathmatch:0,netgame:false,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
             playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),wipegamestate:GS.GS_LEVEL,automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
             get ceilingline(){return mapclip.ceilingline;},get linetarget(){return mapclip.linetarget;},get attackrange(){return mapclip.attackrange;},
-            P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
+            P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartMusic,S_ChangeMusic,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
             ST_Start:presentation.resetStatus,HU_Start:presentation.resetMessages,AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
             P_UseSpecialLine,EV_DoDoor,EV_DoFloor,G_ExitLevel,G_SecretExitLevel,
             WI_Start:info=>{WI_Start(info);presentation.onExit(this.state.secretexit);},F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
-            StopLevelSounds:()=>S_Init(snd_SfxVolume,snd_MusicVolume)};
+            StopLevelSounds:S_Start};
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
         WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
-        WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,
+        WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,S_ChangeMusic,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
-        F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
+        S_InitMusicContext(state);F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
         P_InitPlayerContext({gamemode:state.gamemode,P_MovePsprites,P_PlayerInSpecialSector,P_UseLines});

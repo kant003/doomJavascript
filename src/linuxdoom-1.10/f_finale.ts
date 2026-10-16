@@ -1,13 +1,13 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// f_finale.c: native text/art, bunny scroll and Doom II cast. Music and the
-// D_Display wipe driver remain pending; wipegamestate requests are preserved.
+// f_finale.c: native text/art, bunny scroll, Doom II cast and music.
+// The D_Display wipe driver remains pending; wipegamestate requests are preserved.
 import { GameMode_t as MODE,gamestate_t as GS,MAXPLAYERS,SCREENWIDTH as SW,SCREENHEIGHT as SH } from './doomdef.h';
 import { gameaction_t as GA,evtype_t,type event_t } from './d_event.h';
 import type { player_t } from './d_player.h';
 import * as strings from './d_englsh.h';
 import { states,mobjinfo } from './info';
 import { mobjtype_t as MT,statenum_t as ST,type state_t } from './info.h';
-import { sfxenum_t as SFX } from './sounds.h';
+import { sfxenum_t as SFX,musicenum_t as MUS } from './sounds.h';
 import { W_CacheLumpName,W_CacheLumpNum,W_CheckNumForName,lumpinfo,numlumps } from './w_wad';
 import { screens,V_MarkRect,V_DrawPatch,V_DrawPatchFlipped,V_PatchHeader } from './v_video';
 import { spritesState } from './r_things';
@@ -15,7 +15,7 @@ import { texturestate } from './r_data';
 import { FF_FRAMEMASK } from './p_pspr.h';
 export interface finale_context_t {
     gamemode:MODE;gameepisode:number;gamemap:number;gameaction:GA;gamestate:GS;viewactive:boolean;automapactive:boolean;wipegamestate:number;players:player_t[];
-    S_StartSound(origin:null,sound:SFX):void;
+    S_ChangeMusic(music:MUS,looping:boolean):void;S_StartMusic(music:MUS):void;S_StartSound(origin:null,sound:SFX):void;
 }
 let context:finale_context_t;
 export function F_InitContext(value:finale_context_t):void {context=value;}
@@ -35,6 +35,7 @@ export function F_StartFinale():void {
     const g=context;g.gameaction=GA.ga_nothing;g.gamestate=GS.GS_FINALE;g.viewactive=false;g.automapactive=false;
     switch(g.gamemode){
         case MODE.shareware:case MODE.registered:case MODE.retail:
+            g.S_ChangeMusic(MUS.mus_victor,true);
             switch(g.gameepisode){
                 case 1:finaleflat='FLOOR4_8';finaletext=strings.E1TEXT;break;
                 case 2:finaleflat='SFLR6_1';finaletext=strings.E2TEXT;break;
@@ -42,6 +43,7 @@ export function F_StartFinale():void {
                 case 4:finaleflat='MFLR8_3';finaletext=strings.E4TEXT;break;
             }break;
         case MODE.commercial:
+            g.S_ChangeMusic(MUS.mus_read_m,true);
             switch(g.gamemap){
                 case 6:finaleflat='SLIME16';finaletext=strings.C1TEXT;break;
                 case 11:finaleflat='RROCK14';finaletext=strings.C2TEXT;break;
@@ -50,7 +52,7 @@ export function F_StartFinale():void {
                 case 15:finaleflat='RROCK13';finaletext=strings.C5TEXT;break;
                 case 31:finaleflat='RROCK19';finaletext=strings.C6TEXT;break;
             }break;
-        default:finaleflat='F_SKY1';finaletext=strings.C1TEXT;
+        default:g.S_ChangeMusic(MUS.mus_read_m,true);finaleflat='F_SKY1';finaletext=strings.C1TEXT;
     }
     finalestage=0;finalecount=0;
 }
@@ -64,7 +66,7 @@ export function F_Ticker():void {
     finalecount++;
     if(finalestage===2){F_CastTicker();return;}
     if(context.gamemode===MODE.commercial)return;
-    if(!finalestage&&finalecount>finaletext.length*TEXTSPEED+TEXTWAIT){finalecount=0;finalestage=1;context.wipegamestate=-1;}
+    if(!finalestage&&finalecount>finaletext.length*TEXTSPEED+TEXTWAIT){finalecount=0;finalestage=1;context.wipegamestate=-1;if(context.gameepisode===3)context.S_StartMusic(MUS.mus_bunny);}
 }
 const fontCode=(c:number)=>c>=33&&c<=95;
 // hu_stuff is not yet ported. Resolve its original STCFN font names once per
@@ -90,7 +92,7 @@ export function F_TextWrite():void {
 }
 export function F_StartCast():void {
     context.wipegamestate=-1;castnum=0;caststate=states[mobjinfo[castorder[0][1]].seestate];casttics=caststate.tics;
-    castdeath=false;finalestage=2;castframes=0;castonmelee=0;castattacking=false;
+    castdeath=false;finalestage=2;castframes=0;castonmelee=0;castattacking=false;context.S_ChangeMusic(MUS.mus_evil,true);
 }
 const castSounds=new Map<number,SFX>([
     [ST.S_PLAY_ATK1,SFX.sfx_dshtgn],[ST.S_POSS_ATK2,SFX.sfx_pistol],[ST.S_SPOS_ATK2,SFX.sfx_shotgn],

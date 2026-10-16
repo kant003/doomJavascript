@@ -20,7 +20,7 @@ const event=(type=EV.ev_keydown)=>({type,data1:32,data2:0,data3:0});
 const cmd=(buttons=0)=>({forwardmove:0,sidemove:0,angleturn:0,buttons,consistancy:0,chatchar:0});
 function fixture(mode=MODE.shareware,episode=1,map=8){
  V_Init();W_InitFile({name:'finale.wad',data:makeWad(finaleDemoAssets())});
- const sounds:SFX[]=[],g:F.finale_context_t={gamemode:mode,gameepisode:episode,gamemap:map,gameaction:GA.ga_victory,gamestate:GS.GS_LEVEL,viewactive:true,automapactive:true,wipegamestate:GS.GS_LEVEL,players:Array.from({length:4},G_CreatePlayer),S_StartSound:(_origin,id)=>sounds.push(id)};
+ const sounds:SFX[]=[],g:F.finale_context_t={gamemode:mode,gameepisode:episode,gamemap:map,gameaction:GA.ga_victory,gamestate:GS.GS_LEVEL,viewactive:true,automapactive:true,wipegamestate:GS.GS_LEVEL,players:Array.from({length:4},G_CreatePlayer),S_ChangeMusic:()=>{},S_StartMusic:()=>{},S_StartSound:(_origin,id)=>sounds.push(id)};
  F.F_InitContext(g);F.F_StartFinale();return {g,sounds,tick:(n:number)=>{for(let i=0;i<n;i++)F.F_Ticker();}};
 }
 const solid=(name:string,value:number,width=320,height=200)=>({name,data:maskedPatch(width,height,()=>value)});

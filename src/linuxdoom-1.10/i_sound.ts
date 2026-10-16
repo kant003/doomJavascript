@@ -42,3 +42,25 @@ export function I_StereoGains(params:Pick<sound_params_t,'volume'|'separation'>)
     const sep=separation+1;
     return [(volume-((volume*sep*sep)>>16))/127,(volume-((volume*(sep-257)*(sep-257))>>16))/127];
 }
+
+// Linux's music functions were dummies. Native API names now delegate to a
+// browser sequencer with real registered handles and validated MUS data.
+import { decodeMus } from '../web/mus';
+import type { music_backend_t,music_score_t } from './i_sound.h';
+let musicBackend:music_backend_t|null=null,musicVolume=15,nextSong=1;
+const songs=new Map<number,{score:music_score_t;voice:number|null}>();
+export function I_InstallMusicBackend(value:music_backend_t):void {musicBackend?.reset();songs.clear();musicBackend=value;musicBackend.setVolume(musicVolume);}
+export function I_InitMusic():void {musicBackend?.reset();songs.clear();}
+export function I_ShutdownMusic():void {musicBackend?.reset();songs.clear();}
+export function I_SetMusicVolume(volume:number):void {if(!Number.isInteger(volume)||volume<0||volume>127)throw new Error('Invalid music volume');musicVolume=volume;musicBackend?.setVolume(volume);}
+export function I_RegisterSong(data:Uint8Array):number {const score=decodeMus(data),handle=nextSong++;songs.set(handle,{score,voice:null});return handle;}
+export function I_PlaySong(handle:number,looping:boolean):void {
+    const song=songs.get(handle);if(!song)throw new Error('Invalid registered music handle');
+    if(!musicBackend)throw new Error('Music backend is not installed');
+    if(song.voice!==null)musicBackend.stop(song.voice);song.voice=musicBackend.play(song.score,looping,musicVolume);
+}
+export function I_StopSong(handle:number):void {const song=songs.get(handle);if(song?.voice!==null&&song?.voice!==undefined){musicBackend?.stop(song.voice);song.voice=null;}}
+export function I_UnRegisterSong(handle:number):void {I_StopSong(handle);songs.delete(handle);}
+export function I_PauseSong(handle:number):void {const song=songs.get(handle);if(song?.voice!==null&&song?.voice!==undefined)musicBackend?.pause(song.voice);}
+export function I_ResumeSong(handle:number):void {const song=songs.get(handle);if(song?.voice!==null&&song?.voice!==undefined)musicBackend?.resume(song.voice);}
+export function I_QrySongPlaying(handle:number):boolean {const song=songs.get(handle);return song?.voice!==null&&song?.voice!==undefined?musicBackend?.isPlaying(song.voice)??false:false;}

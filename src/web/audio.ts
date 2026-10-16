@@ -13,6 +13,7 @@ export class WebAudioBackend implements sound_backend_t {
         if(this.context.state!=='running')await this.context.resume();
         if(this.context.state!=='running')throw new Error('El navegador no ha activado el audio');
     }
+    getContext():AudioContext {if(!this.context||this.context.state!=='running')throw new Error('Activa el audio antes de reproducir música');return this.context;}
     start(sample:sound_sample_t,params:sound_params_t):number {
         const context=this.context;
         if(!context||context.state!=='running')throw new Error('Activa el audio antes de reproducir un sonido');

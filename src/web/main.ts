@@ -2,8 +2,9 @@ import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import './style.css';
 import { SHAREWARE_URL,launchOptions,fetchRemoteWad } from './wad-source';
 import { WebAudioBackend } from './audio';
-import { I_InstallSoundBackend,I_InitSound,I_ShutdownSound } from '../linuxdoom-1.10/i_sound';
-import { S_Init,S_StartSound,S_StopSound,S_SetSfxVolume } from '../linuxdoom-1.10/s_sound';
+import { WebMusicBackend } from './music';
+import { I_InstallSoundBackend,I_InitSound,I_ShutdownSound,I_InstallMusicBackend,I_InitMusic,I_ShutdownMusic } from '../linuxdoom-1.10/i_sound';
+import { S_Init,S_StartSound,S_StopSound,S_SetSfxVolume,S_SetMusicVolume,S_GetMusicState } from '../linuxdoom-1.10/s_sound';
 import { S_sfx } from '../linuxdoom-1.10/sounds';
 import { V_Init, V_DrawPatch, V_PatchHeader, V_SetGamma, usegamma, screens } from '../linuxdoom-1.10/v_video';
 import { I_InitGraphics, I_SetPalette, I_FinishUpdate, I_ShutdownGraphics } from '../linuxdoom-1.10/i_video';
@@ -41,11 +42,13 @@ const wipeButton = element<HTMLButtonElement>('wipe'), demoButton = element<HTML
 const textureSelect = element<HTMLSelectElement>('textures');
 const soundSelect=element<HTMLSelectElement>('sounds'),soundPlay=element<HTMLButtonElement>('sound-play');
 const soundStop=element<HTMLButtonElement>('sound-stop'),soundStatus=element('sound-status'),soundVolume=element<HTMLInputElement>('sound-volume');
-const audio=new WebAudioBackend();I_InstallSoundBackend(audio);
+const musicVolume=element<HTMLInputElement>('music-volume'),musicStatus=element('music-status');
+const audio=new WebAudioBackend();I_InstallSoundBackend(audio);I_InstallMusicBackend(new WebMusicBackend(()=>audio.getContext()));
 let soundGeneration=0,syntheticAudio=false;
 function soundLevel():number {return Math.round(Number(soundVolume.value)*127/15);}
+function musicLevel():number {return Math.round(Number(musicVolume.value)*127/15);}
 function loadSounds(synthetic:boolean):void {
-    soundGeneration++;syntheticAudio=synthetic;I_InitSound();S_Init(soundLevel(),0);
+    soundGeneration++;syntheticAudio=synthetic;I_InitSound();I_InitMusic();S_Init(soundLevel(),musicLevel());musicStatus.textContent='La música comienza al pulsar Jugar · síntesis básica.';
     const available=S_sfx.map((sfx,id)=>({sfx,id})).filter(({sfx,id})=>id>0&&W_CheckNumForName(`ds${(sfx.link??sfx).name}`)>=0);
     soundSelect.replaceChildren(...available.map(({sfx,id})=>new Option(sfx.name,String(id))));
     soundSelect.disabled=soundPlay.disabled=soundStop.disabled=!available.length;
@@ -64,6 +67,7 @@ const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, 
 const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=element('level-summary');
 let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
+    const music=S_GetMusicState();musicStatus.textContent=music.name?`Tema ${music.name.toUpperCase()} · ${music.paused?'pausa':music.volume===0?'silenciado':music.playing?'reproduciendo':'finalizado'} · síntesis básica`:'Música detenida';
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
     label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
@@ -117,7 +121,7 @@ function initResources(): void {
     if (texturestate.numtextures > 1) textureSelect.value = '1';
 }
 function render(): void {
-    stopWipe(); worldPreview.stop();browserGame.stop();summary.hidden=true;focusCompletion=false;
+    stopWipe(); worldPreview.stop();browserGame.stop();musicStatus.textContent='Música detenida · pulsa Jugar para escuchar el tema del nivel.';summary.hidden=true;focusCompletion=false;
     element('camera-help').hidden = playing||viewSelect.value !== 'world'; element('camera-buttons').hidden = playing||viewSelect.value !== 'world'; element('camera-reset').hidden = playing||viewSelect.value !== 'world';
     for(const id of ['game-buttons','game-help','game-hud','game-message'])element(id).hidden=!playing;
     element('game-start').textContent=playing?'Reiniciar partida':'Jugar este mapa';
@@ -293,7 +297,8 @@ soundPlay.addEventListener('click',async()=>{
 });
 soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soundStatus.textContent='Reproducción detenida.';});
 soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
-window.addEventListener('pagehide',()=>{loadGeneration++;cancelRemote();soundGeneration++;I_ShutdownSound();void audio.close().catch(()=>{});});
+musicVolume.addEventListener('input',()=>S_SetMusicVolume(musicLevel()));
+window.addEventListener('pagehide',()=>{loadGeneration++;cancelRemote();soundGeneration++;I_ShutdownMusic();I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
 try {const options=launchOptions(location.href);document.body.classList.toggle('embedded',options.embed);if(options.synthetic){load([{name:'test.wad',data:playableDemoWad(true)}],true);selectInitialMap(options.map);}else void loadRemoteSources(options.urls,options.map);}
 catch(error){safely(()=>load([{name:'test.wad',data:playableDemoWad(true)}],true));report(error instanceof Error?error.message:String(error),true);}
