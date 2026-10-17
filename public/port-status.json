@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 57,
-    "partial": 14,
-    "pending": 49
+    "adapted": 61,
+    "partial": 13,
+    "pending": 46
   },
   "files": [
     {
@@ -74,19 +74,19 @@
     },
     {
       "source": "linuxdoom-1.10/am_map.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/am_map.ts",
       "plannedTarget": "src/linuxdoom-1.10/am_map.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "34 funciones originales: entrada/ticker, escala/seguimiento/pan, clipping/Bresenham, paredes descubiertas, jugadores/actores, cuadrícula y diez marcas. Vectores originales y errata de notificación de salida conservados; contexto web single-player.",
       "lines": 1349,
       "sha256": "a439be31195ac73316978e770042813f51251e137758186aa5660856cb146d54"
     },
     {
       "source": "linuxdoom-1.10/am_map.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/am_map.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/am_map.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Tres mensajes de estado y cuatro firmas originales exportadas sólo como tipos.",
       "lines": 52,
       "sha256": "75c3671cbc7f003e16cc50abe98fe824e595f1c3bf66c2c722e8597a015e40ed"
     },
@@ -320,16 +320,16 @@
       "target": "src/linuxdoom-1.10/g_game.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.ts",
       "status": "partial",
-      "notes": "Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes.",
+      "notes": "Diez funciones originales: rebirth, finish-level/salidas/completion/WorldDone/carga siguiente y G_DeferedInitNew, G_DoNewGame, G_InitNew. Reglas skill/episodio, fast/nightmare y reinicio enlazadas; resto del loop, demos y guardado pendientes.",
       "lines": 1690,
       "sha256": "bc8e2e0d76a70f8120174946641a82c46f0116a624f51c011b292e2ffcb78a29"
     },
     {
       "source": "linuxdoom-1.10/g_game.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/g_game.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Cinco declaraciones públicas convertidas: InitNew, DeferedInitNew, ExitLevel, SecretExitLevel y WorldDone. Cabecera parcial por demos, guardado, red y bucle principal.",
       "lines": 79,
       "sha256": "ab47e29d7506cda9a702073c451d6e533204e49a064a0ccc6e98ae4c5e9faa60"
     },
@@ -1084,8 +1084,8 @@
       "source": "linuxdoom-1.10/st_stuff.c",
       "target": "src/linuxdoom-1.10/st_stuff.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_stuff.ts",
-      "status": "partial",
-      "notes": "19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado.",
+      "status": "adapted",
+      "notes": "20 funciones originales de barra, rostro, paletas y ST_Responder: secuencias/trucos, poderes, música y cambio diferido. Erratas CHOPPERS, ouch y IDCLEV comercial preservadas. Caché/contextos adaptados a web.",
       "lines": 1471,
       "sha256": "aaff5a9391d93d4d459a4a98594d67da410e88b360e3bdc20e96cb2bcba5f0d9"
     },
@@ -1093,8 +1093,8 @@
       "source": "linuxdoom-1.10/st_stuff.h",
       "target": "src/linuxdoom-1.10/st_stuff.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/st_stuff.h.ts",
-      "status": "partial",
-      "notes": "Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente.",
+      "status": "adapted",
+      "notes": "Geometría 320x32, enums de estado/chat y cinco firmas públicas originales sólo como tipos.",
       "lines": 86,
       "sha256": "0e2aad8828e13314e754c370da0c8cb61f08006c349fb1587ad28ea789ba4d85"
     },

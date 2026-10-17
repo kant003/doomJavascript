@@ -65,15 +65,17 @@ let lastView = new Uint8Array(320 * 200), animation = 0;
 V_Init(); I_InitGraphics(canvas);
 const worldPreview = new WorldPreview(() => { lastView = screens[0].slice(); }, error => report(error instanceof Error ? error.message : String(error),true));
 
+const normalGameHelp=element('game-help').textContent;
 const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=element('level-summary');
 let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
     const music=S_GetMusicState();musicStatus.textContent=music.name?`Tema ${music.name.toUpperCase()} · ${music.paused?'pausa':music.volume===0?'silenciado':music.playing?'reproduciendo':'finalizado'} · síntesis básica`:'Música detenida';
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
-    label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':'PARTIDA'}`;
+    label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':session.state.automapactive?'AUTOMAPA':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
     const result=session.result,fs=session.finale,wi=session.intermission;summary.hidden=!result;
     element('game-help').hidden=session.completed;
+    element('game-help').textContent=session.state.automapactive?'Tab: volver · =/−: zoom · 0: vista amplia · F: seguir jugador · Flechas: desplazar con seguimiento desactivado · G: cuadrícula · M: marca · C: borrar marcas · Esc: pausa.':normalGameHelp;
     element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:`Partida · ${ST_IsRunning()?'barra del WAD':'HUD textual'} · 35 tics/s`;
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){

@@ -340,7 +340,7 @@
     },
     "linuxdoom-1.10/g_game.c": {
       "status": "partial",
-      "notes": "Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes."
+      "notes": "Diez funciones originales: rebirth, finish-level/salidas/completion/WorldDone/carga siguiente y G_DeferedInitNew, G_DoNewGame, G_InitNew. Reglas skill/episodio, fast/nightmare y reinicio enlazadas; resto del loop, demos y guardado pendientes."
     },
     "linuxdoom-1.10/wi_stuff.c": {
       "status": "partial",
@@ -367,12 +367,12 @@
       "notes": "Cuatro estructuras de widget, BG/FG y nueve firmas públicas exportadas como tipos. Punteros a valores adaptados a getters."
     },
     "linuxdoom-1.10/st_stuff.c": {
-      "status": "partial",
-      "notes": "19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado."
+      "status": "adapted",
+      "notes": "20 funciones originales de barra, rostro, paletas y ST_Responder: secuencias/trucos, poderes, música y cambio diferido. Erratas CHOPPERS, ouch y IDCLEV comercial preservadas. Caché/contextos adaptados a web."
     },
     "linuxdoom-1.10/st_stuff.h": {
-      "status": "partial",
-      "notes": "Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente."
+      "status": "adapted",
+      "notes": "Geometría 320x32, enums de estado/chat y cinco firmas públicas originales sólo como tipos."
     },
     "linuxdoom-1.10/hu_lib.c": {
       "status": "adapted",
@@ -389,6 +389,18 @@
     "linuxdoom-1.10/hu_stuff.h": {
       "status": "adapted",
       "notes": "Constantes originales de fuente, mensajes y broadcast; siete puntos de entrada exportados sólo como tipos."
+    },
+    "linuxdoom-1.10/am_map.c": {
+      "status": "adapted",
+      "notes": "34 funciones originales: entrada/ticker, escala/seguimiento/pan, clipping/Bresenham, paredes descubiertas, jugadores/actores, cuadrícula y diez marcas. Vectores originales y errata de notificación de salida conservados; contexto web single-player."
+    },
+    "linuxdoom-1.10/am_map.h": {
+      "status": "adapted",
+      "notes": "Tres mensajes de estado y cuatro firmas originales exportadas sólo como tipos."
+    },
+    "linuxdoom-1.10/g_game.h": {
+      "status": "partial",
+      "notes": "Cinco declaraciones públicas convertidas: InitNew, DeferedInitNew, ExitLevel, SecretExitLevel y WorldDone. Cabecera parcial por demos, guardado, red y bucle principal."
     }
   }
 }

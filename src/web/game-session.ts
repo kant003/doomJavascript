@@ -1,10 +1,11 @@
+import { AM_InitContext,AM_CanLoad,AM_ResetLevel,AM_Responder,AM_Stop,AM_Ticker,type automap_context_t } from '../linuxdoom-1.10/am_map';
 import { HU_InitContext,HU_CanLoad,HU_Init,HU_Start,HU_Stop,HU_Unload,HU_Ticker,HU_IsActive,HU_Responder,HU_GetState } from '../linuxdoom-1.10/hu_stuff';
-import { ST_InitContext,ST_CanLoad,ST_Init,ST_Start,ST_Stop,ST_unloadData,ST_Ticker,ST_IsRunning } from '../linuxdoom-1.10/st_stuff';
+import { ST_Responder,ST_InitResponderContext,ST_ResetCheats,ST_InitContext,ST_CanLoad,ST_Init,ST_Start,ST_Stop,ST_unloadData,ST_Ticker,ST_IsRunning,type status_responder_context_t } from '../linuxdoom-1.10/st_stuff';
 import { I_SetPalette } from '../linuxdoom-1.10/i_video';
 // Browser single-player composition. Simulation remains in the original-named engine modules.
-import { G_CreatePlayer,G_InitGameContext,G_PlayerReborn,G_InitCompletionContext,G_CreateIntermission,G_ExitLevel,G_SecretExitLevel,G_DoCompleted,G_WorldDone,G_DoWorldDone,type completion_context_t } from '../linuxdoom-1.10/g_game';
-import { GameMode_t,skill_t,gamestate_t as GS } from '../linuxdoom-1.10/doomdef.h';
-import { gameaction_t as GA } from '../linuxdoom-1.10/d_event.h';
+import { G_CreatePlayer,G_InitGameContext,G_PlayerReborn,G_InitCompletionContext,G_CreateIntermission,G_ExitLevel,G_SecretExitLevel,G_DoCompleted,G_WorldDone,G_DoWorldDone,G_InitNewContext,G_DeferedInitNew,G_DoNewGame,G_GetDeferredNewGame,type newgame_context_t,type completion_context_t } from '../linuxdoom-1.10/g_game';
+import { KEY_TAB,GameMode_t,skill_t,gamestate_t as GS } from '../linuxdoom-1.10/doomdef.h';
+import { evtype_t as EV,gameaction_t as GA } from '../linuxdoom-1.10/d_event.h';
 import { WI_InitContext,WI_Start,WI_Ticker,WI_GetState,WI_CanDraw,WI_End } from '../linuxdoom-1.10/wi_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import { buttoncode_t as BT } from '../linuxdoom-1.10/d_event.h';
@@ -19,14 +20,14 @@ import { P_InitSetupContext,P_SetupLevel,P_Init,type setup_context_t } from '../
 import { P_InitPlayerContext,P_PlayerThink } from '../linuxdoom-1.10/p_user';
 import { P_InitPspriteContext,P_SetupPsprites,P_MovePsprites,weaponStateActions } from '../linuxdoom-1.10/p_pspr';
 import { P_InitEnemyContext,P_NoiseAlert,enemyStateActions,type enemy_gameplay_t } from '../linuxdoom-1.10/p_enemy';
-import { P_InitInteractionContext,P_DamageMobj,P_TouchSpecialThing,type interaction_context_t } from '../linuxdoom-1.10/p_inter';
+import { P_InitInteractionContext,P_GivePower,P_DamageMobj,P_TouchSpecialThing,type interaction_context_t } from '../linuxdoom-1.10/p_inter';
 import { P_InitMapContext,P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,P_LineAttack,P_UseLines,mapclip } from '../linuxdoom-1.10/p_map';
 import { P_InitSectorContext,P_CrossSpecialLine,P_ShootSpecialLine,P_PlayerInSpecialSector,P_UpdateSpecials,type specials_game_t } from '../linuxdoom-1.10/p_spec';
 import { P_UseSpecialLine } from '../linuxdoom-1.10/p_switch';
 import { EV_DoFloor } from '../linuxdoom-1.10/p_floor';
 import { EV_DoDoor } from '../linuxdoom-1.10/p_doors';
 import { P_Ticker } from '../linuxdoom-1.10/p_tick';
-import { S_Start,S_StartMusic,S_ChangeMusic,S_InitMusicContext,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds } from '../linuxdoom-1.10/s_sound';
+import { S_Start,S_StartMusic,S_ChangeMusic,S_InitMusicContext,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds,S_ResumeSound } from '../linuxdoom-1.10/s_sound';
 import { M_ClearRandom } from '../linuxdoom-1.10/m_random';
 import { setupMapSky } from './map-sky';
 import { W_CheckNumForName } from '../linuxdoom-1.10/w_wad';
@@ -35,7 +36,7 @@ export interface game_presentation_t {
     resetStatus():void;resetMessages():void;closeAutomap():void;
     tactile(on:number,off:number,total:number):void;onExit(secret:boolean):void;
 }
-type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t;
+type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t&newgame_context_t&automap_context_t&status_responder_context_t;
 export function detectGameMode(mapname:string):GameMode_t {
     return mapname.startsWith('MAP')?GameMode_t.commercial:W_CheckNumForName('E4M1')>=0?GameMode_t.retail:W_CheckNumForName('E2M1')>=0?GameMode_t.registered:GameMode_t.shareware;
 }
@@ -46,7 +47,13 @@ export class GameSession {
     private advanceFinale=false;
     get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
     get headsUp(){return HU_IsActive()?HU_GetState():null;}
-    respond(event:event_t):boolean {return this.state.gamestate===GS.GS_FINALE?F_Responder(event):this.state.gamestate===GS.GS_LEVEL&&HU_IsActive()&&HU_Responder(event);}
+    respond(event:event_t):boolean {
+        if(this.state.gamestate===GS.GS_FINALE)return F_Responder(event);
+        if(this.state.gamestate!==GS.GS_LEVEL)return false;
+        if(HU_IsActive()&&HU_Responder(event))return true;if(ST_Responder(event))return true;
+        if(event.type===EV.ev_keydown&&event.data1===KEY_TAB&&!this.state.automapactive&&!AM_CanLoad()){this.player.message='Faltan los gráficos AMMNUM del automapa en este WAD.';return true;}
+        return AM_Responder(event);
+    }
     private intermissionEnded=false;
     get intermission(){return this.state.gamestate===GS.GS_INTERMISSION?{...WI_GetState(),drawable:WI_CanDraw()}:null;}
     get completed():boolean {return this.state.gamestate!==GS.GS_LEVEL;}
@@ -57,27 +64,28 @@ export class GameSession {
     }
     get nextAvailable():boolean {const name=this.nextMapName;return !!name&&W_CheckNumForName(name)>=0;}
     constructor(mapname:string,private presentation:game_presentation_t){
-        const mode=detectGameMode(mapname),match=/^E(\d)M(\d)$/.exec(mapname);
+        ST_ResetCheats();const mode=detectGameMode(mapname),match=/^E(\d)M(\d)$/.exec(mapname);
         if(!match&&!/^MAP\d\d$/.test(mapname))throw new Error('Unsupported classic map name');
         const showFinale=()=>{F_StartFinale();presentation.onExit(this.state.secretexit);};
         this.state={gamemode:mode,gameskill:skill_t.sk_medium,gameepisode:match?+match[1]:1,gamemap:match?+match[2]:Number(mapname.slice(3)),gametic:0,
-            deathmatch:0,netgame:false,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
+            deathmatch:0,netgame:false,singledemo:false,paused:false,demoplayback:false,netdemo:false,respawnparm:false,usergame:true,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
             playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),wipegamestate:GS.GS_LEVEL,automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
             get ceilingline(){return mapclip.ceilingline;},get linetarget(){return mapclip.linetarget;},get attackrange(){return mapclip.attackrange;},
-            P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartMusic,S_ChangeMusic,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,
-            ST_Start:()=>{if(ST_CanLoad())ST_Start();presentation.resetStatus();},HU_Start:()=>{if(HU_CanLoad())HU_Start();presentation.resetMessages();},AM_Stop:presentation.closeAutomap,I_Tactile:presentation.tactile,
+            P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartMusic,S_ChangeMusic,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,P_GivePower,G_DeferedInitNew,ST_Responder,S_ResumeSound,SetSkyForLevel:()=>setupMapSky(this.mapname),
+            ST_Start:()=>{if(ST_CanLoad())ST_Start();presentation.resetStatus();},HU_Start:()=>{if(HU_CanLoad())HU_Start();presentation.resetMessages();},AM_Stop:()=>{if(this.state.automapactive)AM_Stop();presentation.closeAutomap();},I_Tactile:presentation.tactile,
             P_UseSpecialLine,EV_DoDoor,EV_DoFloor,G_ExitLevel,G_SecretExitLevel,
             WI_Start:info=>{WI_Start(info);presentation.onExit(this.state.secretexit);},F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
             StopLevelSounds:S_Start};
     }
     get player(){return this.state.players[0];}
     start(newGame=true):void {
-        HU_Unload();ST_Stop();ST_unloadData();WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
+        AM_ResetLevel();HU_Unload();ST_Stop();ST_unloadData();WI_End();const state=this.state;state.gamestate=GS.GS_LEVEL;state.gameaction=GA.ga_nothing;state.viewactive=true;this.result=null;this.advanceTics=0;this.advanceFinale=false;this.intermissionEnded=false;
         if(newGame){state.gametic=0;state.players=Array.from({length:4},G_CreatePlayer);M_ClearRandom();}
         WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,S_ChangeMusic,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
         ST_InitContext({get players(){return state.players;},get consoleplayer(){return state.consoleplayer;},get deathmatch(){return state.deathmatch;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},I_SetPalette});if(ST_CanLoad())ST_Init();
         HU_InitContext({get gamemode(){return state.gamemode;},get gameepisode(){return state.gameepisode;},get gamemap(){return state.gamemap;},get players(){return state.players;},get playeringame(){return state.playeringame;},get consoleplayer(){return state.consoleplayer;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},french:false,showMessages:true,S_StartSound});if(HU_CanLoad())HU_Init();
+        AM_InitContext(state);ST_InitResponderContext(state);G_InitNewContext(state);
         S_InitMusicContext(state);F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
@@ -108,6 +116,11 @@ export class GameSession {
         this.advanceFinale=true;return true;
     }
     step(command:ticcmd_t):void {
+        if(this.state.gameaction===GA.ga_newgame){
+            const request=G_GetDeferredNewGame(),name=this.state.gamemode===GameMode_t.commercial?`MAP${String(request.map).padStart(2,'0')}`:`E${request.episode}M${request.map}`;
+            if(W_CheckNumForName(name)<0){this.state.gameaction=GA.ga_nothing;this.player.message=`El mapa ${name} no está cargado.`;}
+            else G_DoNewGame();
+        }
         this.finishIfRequested();
         if(this.state.gamestate===GS.GS_INTERMISSION){
             Object.assign(this.player.cmd,command);
@@ -131,7 +144,7 @@ export class GameSession {
         Object.assign(this.player.cmd,command);
         P_Ticker({paused:false,netgame:false,menuactive:false,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
             P_PlayerThink,P_UpdateSpecials,P_RespawnSpecials});
-        if(ST_IsRunning())ST_Ticker();if(HU_IsActive())HU_Ticker();
+        if(ST_IsRunning())ST_Ticker();AM_Ticker();if(HU_IsActive())HU_Ticker();
         this.state.gametic=(this.state.gametic+1)|0;this.finishIfRequested();S_UpdateSounds(this.player.mo!);
     }
 }

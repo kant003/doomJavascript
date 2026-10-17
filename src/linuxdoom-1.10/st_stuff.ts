@@ -1,6 +1,13 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// st_stuff.c presentation, widget/face ticker and palettes. Cheats/automap responder pending.
-import { MAXPLAYERS,TICRATE,weapontype_t as WP,ammotype_t as AM,powertype_t as PW } from './doomdef.h';
+// st_stuff.c presentation, widget/face ticker and palettes. Includes the original cheats and automap notifications.
+import { MAXPLAYERS,TICRATE,GameMode_t as MODE,skill_t,weapontype_t as WP,ammotype_t as AM,powertype_t as PW } from './doomdef.h';
+import { evtype_t as EV,type event_t } from './d_event.h';
+import { AM_MSGHEADER,AM_MSGENTERED,AM_MSGEXITED } from './am_map.h';
+import { cht_CheckCheat,cht_GetParam } from './m_cheat';
+import type { cheatseq_t } from './m_cheat.h';
+import { musicenum_t as MUS } from './sounds.h';
+import { S_music } from './sounds';
+import * as T from './d_englsh.h';
 import { cheat_t as CF,type player_t } from './d_player.h';
 import { ANG45,ANG180 } from './tables.h';
 import { M_Random } from './m_random';
@@ -116,3 +123,59 @@ export function ST_createWidgets():void {
 export function ST_Start():void {if(!st_stopped)ST_Stop();ST_initData();ST_createWidgets();st_stopped=false;}
 export function ST_Stop():void {if(st_stopped)return;if(palettes)context.I_SetPalette(palettes.subarray(0,768));st_stopped=true;}
 export function ST_Init():void {ST_loadData();screens[4]=new Uint8Array(ST_WIDTH*ST_HEIGHT);}
+
+// Encoded sequences are literal bytes from st_stuff.c.
+export const cheat_mus:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xb6,0xae,0xea,1,0,0,0xff]),p:null};
+export const cheat_choppers:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xe2,0x32,0xf6,0x2a,0x2a,0xa6,0x6a,0xea,0xff]),p:null};
+export const cheat_god:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0x26,0xaa,0x26,0xff]),p:null};
+export const cheat_ammo:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xf2,0x66,0xa2,0xff]),p:null};
+export const cheat_ammonokey:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0x66,0xa2,0xff]),p:null};
+export const cheat_noclip:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xea,0x2a,0xb2,0xea,0x2a,0xf6,0x2a,0x26,0xff]),p:null};
+export const cheat_commercial_noclip:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xe2,0x36,0xb2,0x2a,0xff]),p:null};
+export const cheat_clev:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xe2,0x36,0xa6,0x6e,1,0,0,0xff]),p:null};
+export const cheat_mypos:cheatseq_t={sequence:new Uint8Array([0xb2,0x26,0xb6,0xba,0x2a,0xf6,0xea,0xff]),p:null};
+export const cheat_powerup:cheatseq_t[]=[{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0x6e,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0xea,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0xb2,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0x6a,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0xa2,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0x36,0xff]),p:null},{sequence:new Uint8Array([0xb2,0x26,0x62,0xa6,0x32,0xf6,0x36,0x26,0xff]),p:null}];
+const allCheats=[cheat_mus,cheat_choppers,cheat_god,cheat_ammo,cheat_ammonokey,cheat_noclip,cheat_commercial_noclip,cheat_clev,cheat_mypos,...cheat_powerup],initialCheats=allCheats.map(c=>c.sequence.slice());
+export function ST_ResetCheats():void {allCheats.forEach((c,i)=>{c.sequence.set(initialCheats[i]);c.p=null;});}
+export interface status_responder_context_t {
+    players:player_t[];consoleplayer:number;netgame:boolean;gamemode:MODE;gameskill:skill_t;
+    S_ChangeMusic(id:number,looping:boolean):void;P_GivePower(player:player_t,power:PW):boolean;
+    G_DeferedInitNew(skill:skill_t,episode:number,map:number):void;
+}
+let responder:status_responder_context_t;
+export function ST_InitResponderContext(value:status_responder_context_t):void {responder=value;}
+export function ST_Responder(ev:event_t):boolean {
+    if(ev.type===EV.ev_keyup&&((ev.data1&0xffff0000)===AM_MSGHEADER)){
+        switch(ev.data1){case AM_MSGENTERED:st_gamestate=STATE.AutomapState;st_firsttime=true;break;case AM_MSGEXITED:st_gamestate=STATE.FirstPersonState;break;}
+    }else if(ev.type===EV.ev_keydown){
+        const g=responder,p=g.players[g.consoleplayer],check=(c:cheatseq_t)=>cht_CheckCheat(c,ev.data1);
+        if(!g.netgame){
+            if(check(cheat_god)){p.cheats^=CF.CF_GODMODE;if(p.cheats&CF.CF_GODMODE){if(p.mo)p.mo.health=100;p.health=100;p.message=T.STSTR_DQDON;}else p.message=T.STSTR_DQDOFF;}
+            else if(check(cheat_ammonokey)){p.armorpoints=200;p.armortype=2;p.weaponowned.fill(true);p.ammo.set(p.maxammo);p.message=T.STSTR_FAADDED;}
+            else if(check(cheat_ammo)){p.armorpoints=200;p.armortype=2;p.weaponowned.fill(true);p.ammo.set(p.maxammo);p.cards.fill(true);p.message=T.STSTR_KFAADDED;}
+            else if(check(cheat_mus)){
+                const buf=new Uint8Array(3);cht_GetParam(cheat_mus,buf);p.message=T.STSTR_MUS;let musnum:number,bad:boolean;
+                if(g.gamemode===MODE.commercial){const number=(buf[0]-48)*10+buf[1]-48;musnum=MUS.mus_runnin+number-1;bad=number>35;}
+                else {const number=(buf[0]-49)*9+buf[1]-49;musnum=MUS.mus_e1m1+number;bad=number>31;}
+                // Upper-only C validation can yield an invalid descriptor or a
+                // missing WAD lump. Report that case instead of ending the game.
+                if(bad||musnum<=MUS.mus_None||musnum>=MUS.NUMMUSIC||W_CheckNumForName(`D_${S_music[musnum].name}`)<0)p.message=T.STSTR_NOMUS;else g.S_ChangeMusic(musnum,true);
+            }else if(check(cheat_noclip)||check(cheat_commercial_noclip)){p.cheats^=CF.CF_NOCLIP;p.message=p.cheats&CF.CF_NOCLIP?T.STSTR_NCON:T.STSTR_NCOFF;}
+            for(let i=0;i<6;i++)if(check(cheat_powerup[i])){if(!p.powers[i])g.P_GivePower(p,i);else if(i!==PW.pw_strength)p.powers[i]=1;else p.powers[i]=0;p.message=T.STSTR_BEHOLDX;}
+            if(check(cheat_powerup[6]))p.message=T.STSTR_BEHOLD;
+            else if(check(cheat_choppers)){p.weaponowned[WP.wp_chainsaw]=true;p.powers[PW.pw_invulnerability]=1;p.message=T.STSTR_CHOPPERS;}
+            else if(check(cheat_mypos)){const mo=g.players[g.consoleplayer].mo!;p.message=`ang=0x${(mo.angle>>>0).toString(16)};x,y=(0x${(mo.x>>>0).toString(16)},0x${(mo.y>>>0).toString(16)})`;}
+        }
+        // C checks idclev even in netgame. Preserve its commercial epsd=0 bug:
+        // the following epsd<1 guard rejects every commercial warp.
+        if(check(cheat_clev)){
+            const buf=new Uint8Array(3);cht_GetParam(cheat_clev,buf);const epsd=g.gamemode===MODE.commercial?0:buf[0]-48,map=g.gamemode===MODE.commercial?(buf[0]-48)*10+buf[1]-48:buf[1]-48;
+            if(epsd<1||map<1)return false;
+            if(g.gamemode===MODE.retail&&(epsd>4||map>9))return false;
+            if(g.gamemode===MODE.registered&&(epsd>3||map>9))return false;
+            if(g.gamemode===MODE.shareware&&(epsd>1||map>9))return false;
+            if(g.gamemode===MODE.commercial&&(epsd>1||map>34))return false;
+            p.message=T.STSTR_CLEV;g.G_DeferedInitNew(g.gameskill,epsd,map);
+        }
+    }return false;
+}

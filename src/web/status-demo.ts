@@ -5,6 +5,7 @@ export function statusDemoAssets():{name:string;data:Uint8Array}[]{
     const result:{name:string;data:Uint8Array}[]=[];
     const glyph=(name:string,ch:string,color:number,scale=1)=>result.push({name,data:maskedPatch(6*scale,7*scale,(x,y)=>demoGlyphPixel(ch,Math.floor(x/scale),Math.floor(y/scale))?color:null)});
     for(let i=0;i<10;i++){glyph(`STTNUM${i}`,String(i),220,2);glyph(`STYSNUM${i}`,String(i),250);}
+    for(let i=0;i<10;i++)result.push({name:`AMMNUM${i}`,data:maskedPatch(5,6,(x,y)=>demoGlyphPixel(String(i),x,Math.floor(y*7/6))?250:null)});
     glyph('STTMINUS','-',220,2);glyph('STTPRCNT','%',220,2);for(let i=2;i<=7;i++)glyph(`STGNUM${i}`,String(i),100);
     for(let i=0;i<6;i++)result.push({name:`STKEYS${i}`,data:maskedPatch(8,5,(x,y)=>x<3||y===2?(i<3?160+i*20:180+i*10):null)});
     const label=(text:string,x:number,y:number,left:number,top:number)=>{const cx=x-left,cy=y-top;return cx>=0&&cx<text.length*6&&demoGlyphPixel(text[Math.floor(cx/6)],cx%6,cy);};

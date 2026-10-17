@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **57** · Parcial: **14** · Pendiente: **49**
+Traducido: **26** · Adaptado a web: **61** · Parcial: **13** · Pendiente: **46**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -17,8 +17,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `ipx/IPXSETUP.C` | — | Pendiente |  |
 | `ipx/IPXSTR.H` | — | Pendiente |  |
 | `ipx/IPX_FRCH.H` | — | Pendiente |  |
-| `linuxdoom-1.10/am_map.c` | — | Pendiente |  |
-| `linuxdoom-1.10/am_map.h` | — | Pendiente |  |
+| `linuxdoom-1.10/am_map.c` | `src/linuxdoom-1.10/am_map.ts` | Adaptado a web | 34 funciones originales: entrada/ticker, escala/seguimiento/pan, clipping/Bresenham, paredes descubiertas, jugadores/actores, cuadrícula y diez marcas. Vectores originales y errata de notificación de salida conservados; contexto web single-player. |
+| `linuxdoom-1.10/am_map.h` | `src/linuxdoom-1.10/am_map.h.ts` | Adaptado a web | Tres mensajes de estado y cuatro firmas originales exportadas sólo como tipos. |
 | `linuxdoom-1.10/d_englsh.h` | `src/linuxdoom-1.10/d_englsh.h.ts` | Traducido | 285 macros originales de strings/caracteres; concatenación y caracteres enteros preservados. Regenerable con generate-strings.py. |
 | `linuxdoom-1.10/d_event.h` | `src/linuxdoom-1.10/d_event.h.ts` | Parcial | Enums, flags y event_t; cola global de D_PostEvent pendiente. |
 | `linuxdoom-1.10/d_french.h` | — | Pendiente |  |
@@ -44,8 +44,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/f_finale.h` | `src/linuxdoom-1.10/f_finale.h.ts` | Adaptado a web | Cuatro puntos de entrada originales reexportados con tipos de evento. |
 | `linuxdoom-1.10/f_wipe.c` | `src/linuxdoom-1.10/f_wipe.ts` | Adaptado a web | Algoritmo original con vistas Uint16Array; pantalla completa; memoria gestionada por GC. |
 | `linuxdoom-1.10/f_wipe.h` | `src/linuxdoom-1.10/f_wipe.h.ts` | Adaptado a web | Resultado de ScreenWipe convertido a boolean. |
-| `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | Siete funciones originales: rebirth, finish-level, salidas normal/secreta, completion, WorldDone y carga del siguiente mapa; tablas pars/cpars. Estado/callbacks explícitos; resto del game loop, demos y guardado pendientes. |
-| `linuxdoom-1.10/g_game.h` | — | Pendiente |  |
+| `linuxdoom-1.10/g_game.c` | `src/linuxdoom-1.10/g_game.ts` | Parcial | Diez funciones originales: rebirth, finish-level/salidas/completion/WorldDone/carga siguiente y G_DeferedInitNew, G_DoNewGame, G_InitNew. Reglas skill/episodio, fast/nightmare y reinicio enlazadas; resto del loop, demos y guardado pendientes. |
+| `linuxdoom-1.10/g_game.h` | `src/linuxdoom-1.10/g_game.h.ts` | Parcial | Cinco declaraciones públicas convertidas: InitNew, DeferedInitNew, ExitLevel, SecretExitLevel y WorldDone. Cabecera parcial por demos, guardado, red y bucle principal. |
 | `linuxdoom-1.10/hu_lib.c` | `src/linuxdoom-1.10/hu_lib.ts` | Adaptado a web | 20 funciones originales: líneas de 80 bytes, ventanas, input/cursor, borrado de bordes y márgenes. Getters sustituyen punteros on; HUlib_init permanece vacío como upstream. |
 | `linuxdoom-1.10/hu_lib.h` | `src/linuxdoom-1.10/hu_lib.h.ts` | Adaptado a web | Tres estructuras de widgets, constantes y veinte firmas públicas sólo como tipos; texto con terminador y getters para campos mutables. |
 | `linuxdoom-1.10/hu_stuff.c` | `src/linuxdoom-1.10/hu_stuff.ts` | Adaptado a web | Diez funciones originales, font STCFN, mensajes/timeout/prioridad, títulos, colas/chat/macros y tablas inglesa/francesa. Contexto explícito; web de un jugador, transporte de red externo aún pendiente. |
@@ -129,8 +129,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/sounds.h` | `src/linuxdoom-1.10/sounds.h.ts` | Adaptado a web | Enums originales de efectos/música y descriptores sfxinfo_t/musicinfo_t; punteros data/link adaptados a referencias TS. |
 | `linuxdoom-1.10/st_lib.c` | `src/linuxdoom-1.10/st_lib.ts` | Adaptado a web | Diez funciones originales de widgets: números, porcentajes, iconos múltiples/binarios, borrado desde BG=4 y refresco. Getters sustituyen punteros mutables; reglas y offsets del C conservados. |
 | `linuxdoom-1.10/st_lib.h` | `src/linuxdoom-1.10/st_lib.h.ts` | Adaptado a web | Cuatro estructuras de widget, BG/FG y nueve firmas públicas exportadas como tipos. Punteros a valores adaptados a getters. |
-| `linuxdoom-1.10/st_stuff.c` | `src/linuxdoom-1.10/st_stuff.ts` | Parcial | 19 funciones originales: carga/liberación, widgets, rostro/prioridades, ticker y paletas de daño/bonus/berserk/radiación. ST_Responder (cheats y eventos de automapa) pendiente; flujo single-player enlazado. |
-| `linuxdoom-1.10/st_stuff.h` | `src/linuxdoom-1.10/st_stuff.h.ts` | Parcial | Geometría 320x32, enums de estado/chat y firmas de inicio/ticker/dibujo. ST_Responder aún pendiente. |
+| `linuxdoom-1.10/st_stuff.c` | `src/linuxdoom-1.10/st_stuff.ts` | Adaptado a web | 20 funciones originales de barra, rostro, paletas y ST_Responder: secuencias/trucos, poderes, música y cambio diferido. Erratas CHOPPERS, ouch y IDCLEV comercial preservadas. Caché/contextos adaptados a web. |
+| `linuxdoom-1.10/st_stuff.h` | `src/linuxdoom-1.10/st_stuff.h.ts` | Adaptado a web | Geometría 320x32, enums de estado/chat y cinco firmas públicas originales sólo como tipos. |
 | `linuxdoom-1.10/tables.c` | `src/linuxdoom-1.10/tables.ts` | Traducido |  |
 | `linuxdoom-1.10/tables.h` | `src/linuxdoom-1.10/tables.h.ts` | Traducido |  |
 | `linuxdoom-1.10/v_video.c` | `src/linuxdoom-1.10/v_video.ts` | Adaptado a web | Punteros convertidos a offsets y Uint8Array; validación binaria adicional; gamma literal. |

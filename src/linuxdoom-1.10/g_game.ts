@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Partial g_game.c: player lifecycle and level completion; other game actions remain pending.
+// Partial g_game.c: player lifecycle, completion and native deferred new games.
 import { playerstate_t as PST,type player_t } from './d_player.h';
 import { weapontype_t as WP,ammotype_t as AM,MAXPLAYERS } from './doomdef.h';
 import { maxammo } from './p_inter';
@@ -87,4 +87,39 @@ export function G_WorldDone():void {
 }
 export function G_DoWorldDone():void {
     const g=flow();g.gamestate=GS.GS_LEVEL;g.gamemap=g.wminfo.next+1;g.G_DoLoadLevel();g.gameaction=GA.ga_nothing;g.viewactive=true;
+}
+
+// Deferred new games are processed outside event/render/actor traversal.
+import { skill_t } from './doomdef.h';
+import { M_ClearRandom } from './m_random';
+import { states,mobjinfo } from './info';
+import { statenum_t as ST,mobjtype_t as MT } from './info.h';
+import { FRACUNIT } from './m_fixed.h';
+export interface newgame_context_t extends completion_context_t {
+    gameskill:skill_t;paused:boolean;demoplayback:boolean;netdemo:boolean;netgame:boolean;deathmatch:number;
+    respawnparm:boolean;respawnmonsters:boolean;fastparm:boolean;nomonsters:boolean;usergame:boolean;
+    S_ResumeSound():void;SetSkyForLevel(episode:number,map:number):void;
+}
+let newgame:newgame_context_t,d_skill:skill_t,d_episode:number,d_map:number;
+export function G_InitNewContext(g:newgame_context_t):void {newgame=g;}
+export function G_GetDeferredNewGame(){return {skill:d_skill,episode:d_episode,map:d_map};}
+export function G_DeferedInitNew(skill:skill_t,episode:number,map:number):void {d_skill=skill;d_episode=episode;d_map=map;newgame.gameaction=GA.ga_newgame;}
+export function G_DoNewGame():void {
+    const g=newgame;g.demoplayback=g.netdemo=g.netgame=false;g.deathmatch=0;g.playeringame[1]=g.playeringame[2]=g.playeringame[3]=false;g.respawnparm=g.fastparm=g.nomonsters=false;g.consoleplayer=0;
+    G_InitNew(d_skill,d_episode,d_map);g.gameaction=GA.ga_nothing;
+}
+export function G_InitNew(skill:skill_t,episode:number,map:number):void {
+    const g=newgame;if(g.paused){g.paused=false;g.S_ResumeSound();}if(skill>skill_t.sk_nightmare)skill=skill_t.sk_nightmare;
+    if(episode<1)episode=1;episode=Math.min(episode,g.gamemode===GameMode_t.retail?4:g.gamemode===GameMode_t.shareware?1:3);
+    if(map<1)map=1;if(map>9&&g.gamemode!==GameMode_t.commercial)map=9;M_ClearRandom();g.respawnmonsters=skill===skill_t.sk_nightmare||g.respawnparm;
+    if(g.fastparm||(skill===skill_t.sk_nightmare&&g.gameskill!==skill_t.sk_nightmare)){
+        for(let i=ST.S_SARG_RUN1;i<=ST.S_SARG_PAIN2;i++)states[i].tics>>=1;
+        for(const id of [MT.MT_BRUISERSHOT,MT.MT_HEADSHOT,MT.MT_TROOPSHOT])mobjinfo[id].speed=20*FRACUNIT;
+    }else if(skill!==skill_t.sk_nightmare&&g.gameskill===skill_t.sk_nightmare){
+        for(let i=ST.S_SARG_RUN1;i<=ST.S_SARG_PAIN2;i++)states[i].tics<<=1;
+        mobjinfo[MT.MT_BRUISERSHOT].speed=15*FRACUNIT;mobjinfo[MT.MT_HEADSHOT].speed=mobjinfo[MT.MT_TROOPSHOT].speed=10*FRACUNIT;
+    }
+    for(const p of g.players)p.playerstate=PST.PST_REBORN;
+    g.usergame=true;g.paused=g.demoplayback=g.automapactive=false;g.viewactive=true;g.gameepisode=episode;g.gamemap=map;g.gameskill=skill;
+    g.SetSkyForLevel(episode,map);g.G_DoLoadLevel();
 }
