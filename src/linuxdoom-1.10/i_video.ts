@@ -36,10 +36,24 @@ export function I_InitGraphics(canvas: HTMLCanvasElement): void {
         if (e.type === 'keydown') held.add(key); else held.delete(key);
         pending.push({ type: e.type === 'keydown' ? evtype_t.ev_keydown : evtype_t.ev_keyup, data1: key, data2: 0, data3: 0 });
     };
-    const release = (): void => { for (const key of held) pending.push({ type: evtype_t.ev_keyup, data1: key, data2: 0, data3: 0 }); held.clear(); };
+    let mouseButtons=0;
+    const mouse = (e: MouseEvent): void => {
+        if(document.pointerLockElement!==canvas)return;
+        // DOM and X11 use different right/middle bit positions.
+        mouseButtons=(e.buttons&1)|((e.buttons&4)>>1)|((e.buttons&2)<<1);
+        pending.push({type:evtype_t.ev_mouse,data1:mouseButtons,data2:Math.trunc(e.movementX),data3:-Math.trunc(e.movementY)});
+    };
+    const unlock = (): void => {if(document.pointerLockElement!==canvas){mouseButtons=0;pending.push({type:evtype_t.ev_mouse,data1:0,data2:0,data3:0});}};
+    const contextMenu=(e:MouseEvent):void=>{if(document.pointerLockElement===canvas)e.preventDefault();};
+    window.addEventListener('mousemove',mouse);window.addEventListener('mousedown',mouse);window.addEventListener('mouseup',mouse);
+    document.addEventListener('pointerlockchange',unlock);canvas.addEventListener('contextmenu',contextMenu);
+    const release = (): void => { for (const key of held) pending.push({ type: evtype_t.ev_keyup, data1: key, data2: 0, data3: 0 }); held.clear();if(mouseButtons){mouseButtons=0;pending.push({type:evtype_t.ev_mouse,data1:0,data2:0,data3:0});} };
     window.addEventListener('keydown', postKey); window.addEventListener('keyup', postKey);
     window.addEventListener('blur', release); canvas.addEventListener('blur', release);
     dispose = () => {
+        if(document.pointerLockElement===canvas)document.exitPointerLock();
+        window.removeEventListener('mousemove',mouse);window.removeEventListener('mousedown',mouse);window.removeEventListener('mouseup',mouse);
+        document.removeEventListener('pointerlockchange',unlock);canvas.removeEventListener('contextmenu',contextMenu);
         window.removeEventListener('keydown', postKey); window.removeEventListener('keyup', postKey);
         window.removeEventListener('blur', release); canvas.removeEventListener('blur', release);
     };

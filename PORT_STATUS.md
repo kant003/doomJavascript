@@ -4,7 +4,7 @@ Fuente: https://github.com/id-Software/DOOM, commit `a77dfb96cb91780ca334d0d4cfd
 
 **El motor completo todavía no está convertido.** Este inventario registra 146 ficheros C/H del repositorio original, incluidos IPX, serie y el servidor de sonido. El estado es explícito; la existencia de un fichero no implica que el módulo esté terminado.
 
-Traducido: **26** · Adaptado a web: **61** · Parcial: **13** · Pendiente: **46**
+Traducido: **26** · Adaptado a web: **62** · Parcial: **14** · Pendiente: **44**
 
 El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de equivalencia. Para regenerar: `npm run inventory`. SHA-256 de cada original en `public/port-status.json`.
 
@@ -69,8 +69,8 @@ El conteo es por archivos, no un porcentaje de funcionalidad ni una prueba de eq
 | `linuxdoom-1.10/m_cheat.h` | `src/linuxdoom-1.10/m_cheat.h.ts` | Traducido |  |
 | `linuxdoom-1.10/m_fixed.c` | `src/linuxdoom-1.10/m_fixed.ts` | Traducido |  |
 | `linuxdoom-1.10/m_fixed.h` | `src/linuxdoom-1.10/m_fixed.h.ts` | Traducido |  |
-| `linuxdoom-1.10/m_menu.c` | — | Pendiente |  |
-| `linuxdoom-1.10/m_menu.h` | — | Pendiente |  |
+| `linuxdoom-1.10/m_menu.c` | `src/linuxdoom-1.10/m_menu.ts` | Parcial | Menús originales de nueva partida, episodios, dificultad/Nightmare, opciones, mensajes, ayuda, volumen, tamaño de pantalla, cursor, prompts y navegación de teclado/ratón/joystick. Adaptación de salida a inspección y escala de audio 0..15 a 0..127. Guardado/carga/quicksave/quickload, quit de proceso, título/demos y edición de slots pendientes. Se conserva el early return de detalle del C. |
+| `linuxdoom-1.10/m_menu.h` | `src/linuxdoom-1.10/m_menu.h.ts` | Adaptado a web | Las cinco firmas públicas originales: M_Responder, M_Ticker, M_Drawer, M_Init y M_StartControlPanel. |
 | `linuxdoom-1.10/m_misc.c` | — | Pendiente |  |
 | `linuxdoom-1.10/m_misc.h` | — | Pendiente |  |
 | `linuxdoom-1.10/m_random.c` | `src/linuxdoom-1.10/m_random.ts` | Traducido |  |

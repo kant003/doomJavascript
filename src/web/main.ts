@@ -1,3 +1,4 @@
+import { M_SetVolumes } from '../linuxdoom-1.10/m_menu';
 import { ST_IsRunning } from '../linuxdoom-1.10/st_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
 import './style.css';
@@ -70,12 +71,14 @@ const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=el
 let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
     const music=S_GetMusicState();musicStatus.textContent=music.name?`Tema ${music.name.toUpperCase()} · ${music.paused?'pausa':music.volume===0?'silenciado':music.playing?'reproduciendo':'finalizado'} · síntesis básica`:'Música detenida';
+    soundVolume.value=String(session.menu.sfxVolume);musicVolume.value=String(session.menu.musicVolume);
+    element('gamma').textContent=`Gamma: ${usegamma}`;
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
-    label.textContent=`${session.mapname} / ${session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':session.state.automapactive?'AUTOMAPA':'PARTIDA'}`;
+    label.textContent=`${session.mapname} / ${session.menu.active?'MENÚ':session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':session.state.automapactive?'AUTOMAPA':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
     const result=session.result,fs=session.finale,wi=session.intermission;summary.hidden=!result;
-    element('game-help').hidden=session.completed;
-    element('game-help').textContent=session.state.automapactive?'Tab: volver · =/−: zoom · 0: vista amplia · F: seguir jugador · Flechas: desplazar con seguimiento desactivado · G: cuadrícula · M: marca · C: borrar marcas · Esc: pausa.':normalGameHelp;
+    element('game-help').hidden=session.completed&&!session.menu.active;
+    element('game-help').textContent=session.menu.active?'Menú: flechas para elegir y ajustar · Intro: aceptar · Retroceso: volver · Esc: cerrar · Y/N: confirmar o cancelar.':session.state.automapactive?'Tab: volver · =/−: zoom · 0: vista amplia · F: seguir jugador · Flechas: desplazar con seguimiento desactivado · G: cuadrícula · M: marca · C: borrar marcas · Esc: menú.':normalGameHelp;
     element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:`Partida · ${ST_IsRunning()?'barra del WAD':'HUD textual'} · 35 tics/s`;
     element<HTMLButtonElement>('game-pause').disabled=session.completed;
     if(result){
@@ -102,10 +105,11 @@ const browserGame=new BrowserGame(session=>{
     }
     if(gameHud.textContent!==text)gameHud.textContent=text;
     element('game-pause').textContent=browserGame.paused?'Continuar':'Pausa';
-    const hu=session.headsUp,message=hu?(hu.visible?hu.text:''):(p.message??'');
-    if(!session.completed&&gameMessage.textContent!==message)gameMessage.textContent=message;
+    const hu=session.headsUp,message=session.menu.message??(session.menu.active?`Menú ${session.menu.title}: ${session.menu.selection}`:hu?(hu.visible?hu.text:''):(p.message??''));
+    if((!session.completed||session.menu.active)&&gameMessage.textContent!==message)gameMessage.textContent=message;
     lastView=screens[0].slice();
 },error=>report(error instanceof Error?error.message:String(error),true),{
+    setVolumes:(effects,music)=>{soundVolume.value=String(effects);musicVolume.value=String(music);},returnToInspection:()=>queueMicrotask(()=>{gameStartGeneration++;playing=false;render();}),
     resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},
     closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{if(!ST_IsRunning())canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
     onExit:secret=>{focusCompletion=true;gameMessage.textContent=secret?'Salida secreta.':'Nivel completado.';}
@@ -260,6 +264,10 @@ element('game-start').addEventListener('click',async()=>{
 summary.addEventListener('keydown',event=>{if(event.target===summary&&!event.repeat&&[' ','f','F','Control'].includes(event.key)){event.preventDefault();browserGame.continueLevel();}});
 element('next-level').addEventListener('click',()=>safely(()=>{browserGame.continueLevel();canvas.focus();}));
 element('game-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;playing=false;render();}));
+element('game-mouse').addEventListener('click',async()=>{try{canvas.focus();await canvas.requestPointerLock();}catch{report('Este navegador no permite capturar el ratón. Puedes seguir jugando con el teclado.',true);}});
+let mouseCaptured=false;
+document.addEventListener('pointerlockchange',()=>{const captured=document.pointerLockElement===canvas;element('game-mouse').textContent=captured?'Ratón activo · Esc libera':'Activar ratón';if(mouseCaptured&&!captured&&playing)browserGame.openMenu();mouseCaptured=captured;});
+element('game-menu').addEventListener('click',()=>{browserGame.openMenu();canvas.focus();});
 element('game-pause').addEventListener('click',()=>{browserGame.togglePause();canvas.focus();});
 element('camera-left').addEventListener('click', () => safely(() => worldPreview.nudge(97)));
 element('camera-forward').addEventListener('click', () => safely(() => worldPreview.nudge(119)));
@@ -300,8 +308,8 @@ soundPlay.addEventListener('click',async()=>{
     }catch(error){if(generation===soundGeneration)soundStatus.textContent=error instanceof Error?error.message:String(error);}
 });
 soundStop.addEventListener('click',()=>{soundGeneration++;S_StopSound(null);soundStatus.textContent='Reproducción detenida.';});
-soundVolume.addEventListener('input',()=>{S_SetSfxVolume(soundLevel());S_StopSound(null);});
-musicVolume.addEventListener('input',()=>S_SetMusicVolume(musicLevel()));
+soundVolume.addEventListener('input',()=>{M_SetVolumes(Number(soundVolume.value),Number(musicVolume.value));S_SetSfxVolume(soundLevel());S_StopSound(null);});
+musicVolume.addEventListener('input',()=>{M_SetVolumes(Number(soundVolume.value),Number(musicVolume.value));S_SetMusicVolume(musicLevel());});
 window.addEventListener('pagehide',()=>{loadGeneration++;cancelRemote();soundGeneration++;I_ShutdownMusic();I_ShutdownSound();void audio.close().catch(()=>{});});
 window.addEventListener('pagehide', () => { worldPreview.stop(); browserGame.stop(); stopWipe(); I_ShutdownGraphics(); });
 try {const options=launchOptions(location.href);document.body.classList.toggle('embedded',options.embed);if(options.synthetic){load([{name:'test.wad',data:playableDemoWad(true)}],true);selectInitialMap(options.map);}else void loadRemoteSources(options.urls,options.map);}

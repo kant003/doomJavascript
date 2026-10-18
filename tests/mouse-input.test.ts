@@ -1,0 +1,11 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { GameInput } from '../src/web/game-input';
+import { KEY_RSHIFT,KEY_RALT } from '../src/linuxdoom-1.10/doomdef.h';
+import { buttoncode_t as BT } from '../src/linuxdoom-1.10/d_event.h';
+import { M_ChangeSensitivity,mouseSensitivity } from '../src/linuxdoom-1.10/m_menu';
+function sensitivity(value:number){while(mouseSensitivity<value)M_ChangeSensitivity(1);while(mouseSensitivity>value)M_ChangeSensitivity(0);}
+test('Relative mouse movement accumulates between simulation tics and is consumed exactly once',()=>{sensitivity(5);const input=new GameInput();input.mouse(0,3,4);input.mouse(0,7,-2);const c=input.command();assert.equal(c.angleturn,-80);assert.equal(c.forwardmove,2);assert.equal(input.command().angleturn,0);assert.equal(input.command().forwardmove,0);});
+test('Sensitivity follows the native integer scale and clamps movement while retaining signed short turns',()=>{sensitivity(0);const input=new GameInput();input.mouse(0,3,-3);assert.equal(input.command().angleturn,-8);input.mouse(0,0,999);assert.equal(input.command().forwardmove,50);input.mouse(0,0,-999);assert.equal(input.command().forwardmove,-50);sensitivity(9);input.mouse(0,10,0);assert.equal(input.command().angleturn,-112);sensitivity(5);input.mouse(0,8192,0);assert.equal(input.command().angleturn,0);});
+test('Default X11 mouse buttons fire, strafe and move forward; short clicks survive a frame',()=>{sensitivity(5);const input=new GameInput();input.mouse(1,0,0);input.mouse(0,0,0);assert.ok(input.command().buttons&BT.BT_ATTACK);assert.equal(input.command().buttons&BT.BT_ATTACK,0);input.mouse(2,12,0);assert.equal(input.command().sidemove,24);assert.equal(input.command().angleturn,0);input.mouse(4,0,0);assert.equal(input.command().forwardmove,25);input.keyDown(KEY_RSHIFT);assert.equal(input.command().forwardmove,50);input.clear();input.keyDown(KEY_RALT);input.mouse(0,40,0);assert.equal(input.command().sidemove,50);});
+test('Clearing input removes held buttons and pending deltas on menu, pause, blur or stop',()=>{sensitivity(5);const input=new GameInput();input.mouse(7,20,20);input.keyDown(119);input.clear();const c=input.command();assert.equal(c.buttons,0);assert.equal(c.forwardmove,0);assert.equal(c.sidemove,0);assert.equal(c.angleturn,0);});

@@ -4,9 +4,9 @@
   "completeEngine": false,
   "counts": {
     "translated": 26,
-    "adapted": 61,
-    "partial": 13,
-    "pending": 46
+    "adapted": 62,
+    "partial": 14,
+    "pending": 44
   },
   "files": [
     {
@@ -542,19 +542,19 @@
     },
     {
       "source": "linuxdoom-1.10/m_menu.c",
-      "target": null,
+      "target": "src/linuxdoom-1.10/m_menu.ts",
       "plannedTarget": "src/linuxdoom-1.10/m_menu.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "partial",
+      "notes": "Menús originales de nueva partida, episodios, dificultad/Nightmare, opciones, mensajes, ayuda, volumen, tamaño de pantalla, cursor, prompts y navegación de teclado/ratón/joystick. Adaptación de salida a inspección y escala de audio 0..15 a 0..127. Guardado/carga/quicksave/quickload, quit de proceso, título/demos y edición de slots pendientes. Se conserva el early return de detalle del C.",
       "lines": 1893,
       "sha256": "62d58889f7dcbdef4a52efd081beb33fed85d7ed46c35e6d7d634652d0ef3e50"
     },
     {
       "source": "linuxdoom-1.10/m_menu.h",
-      "target": null,
+      "target": "src/linuxdoom-1.10/m_menu.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/m_menu.h.ts",
-      "status": "pending",
-      "notes": "",
+      "status": "adapted",
+      "notes": "Las cinco firmas públicas originales: M_Responder, M_Ticker, M_Drawer, M_Init y M_StartControlPanel.",
       "lines": 67,
       "sha256": "ccfc1f2abe50cbb78e83d2ec35eb3812003945f2d668e69551b5b2d56bfc4dfa"
     },

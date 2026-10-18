@@ -401,6 +401,14 @@
     "linuxdoom-1.10/g_game.h": {
       "status": "partial",
       "notes": "Cinco declaraciones públicas convertidas: InitNew, DeferedInitNew, ExitLevel, SecretExitLevel y WorldDone. Cabecera parcial por demos, guardado, red y bucle principal."
+    },
+    "linuxdoom-1.10/m_menu.c": {
+      "status": "partial",
+      "notes": "Menús originales de nueva partida, episodios, dificultad/Nightmare, opciones, mensajes, ayuda, volumen, tamaño de pantalla, cursor, prompts y navegación de teclado/ratón/joystick. Adaptación de salida a inspección y escala de audio 0..15 a 0..127. Guardado/carga/quicksave/quickload, quit de proceso, título/demos y edición de slots pendientes. Se conserva el early return de detalle del C."
+    },
+    "linuxdoom-1.10/m_menu.h": {
+      "status": "adapted",
+      "notes": "Las cinco firmas públicas originales: M_Responder, M_Ticker, M_Drawer, M_Init y M_StartControlPanel."
     }
   }
 }

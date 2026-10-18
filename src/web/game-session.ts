@@ -1,3 +1,6 @@
+import { M_InitContext,M_Init,M_Responder,M_GetState,menuactive,showMessages } from '../linuxdoom-1.10/m_menu';
+import { R_SetViewSize } from '../linuxdoom-1.10/r_main';
+import { S_SetSfxVolume,S_SetMusicVolume } from '../linuxdoom-1.10/s_sound';
 import { AM_InitContext,AM_CanLoad,AM_ResetLevel,AM_Responder,AM_Stop,AM_Ticker,type automap_context_t } from '../linuxdoom-1.10/am_map';
 import { HU_InitContext,HU_CanLoad,HU_Init,HU_Start,HU_Stop,HU_Unload,HU_Ticker,HU_IsActive,HU_Responder,HU_GetState } from '../linuxdoom-1.10/hu_stuff';
 import { ST_Responder,ST_InitResponderContext,ST_ResetCheats,ST_InitContext,ST_CanLoad,ST_Init,ST_Start,ST_Stop,ST_unloadData,ST_Ticker,ST_IsRunning,type status_responder_context_t } from '../linuxdoom-1.10/st_stuff';
@@ -14,7 +17,8 @@ import type { event_t } from '../linuxdoom-1.10/d_event.h';
 import { leveltime } from '../linuxdoom-1.10/p_tick';
 import { playerstate_t as PST } from '../linuxdoom-1.10/d_player.h';
 import type { ticcmd_t } from '../linuxdoom-1.10/d_ticcmd.h';
-import { I_LinkStateActions } from '../linuxdoom-1.10/info';
+import { I_LinkStateActions,states,mobjinfo } from '../linuxdoom-1.10/info';
+import { statenum_t as STATE,mobjtype_t as MT } from '../linuxdoom-1.10/info.h';
 import { P_InitMobjContext,P_RespawnSpecials,type mobj_context_t } from '../linuxdoom-1.10/p_mobj';
 import { P_InitSetupContext,P_SetupLevel,P_Init,type setup_context_t } from '../linuxdoom-1.10/p_setup';
 import { P_InitPlayerContext,P_PlayerThink } from '../linuxdoom-1.10/p_user';
@@ -34,12 +38,18 @@ import { W_CheckNumForName } from '../linuxdoom-1.10/w_wad';
 export interface level_result_t {mapname:string;secret:boolean;terminal:boolean;kills:number;maxkills:number;items:number;maxitems:number;secrets:number;maxsecrets:number;tics:number}
 export interface game_presentation_t {
     resetStatus():void;resetMessages():void;closeAutomap():void;
+    setVolumes?(effects:number,music:number):void;returnToInspection?():void;
     tactile(on:number,off:number,total:number):void;onExit(secret:boolean):void;
 }
 type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t&newgame_context_t&automap_context_t&status_responder_context_t;
 export function detectGameMode(mapname:string):GameMode_t {
     return mapname.startsWith('MAP')?GameMode_t.commercial:W_CheckNumForName('E4M1')>=0?GameMode_t.retail:W_CheckNumForName('E2M1')>=0?GameMode_t.registered:GameMode_t.shareware;
 }
+// A fresh browser session replaces the original process lifetime. Restore the
+// mutable Nightmare tables when creating one; deferred games within it use G_InitNew.
+const normalFastTics=states.slice(STATE.S_SARG_RUN1,STATE.S_SARG_PAIN2+1).map(s=>s.tics);
+const fastProjectiles=[MT.MT_BRUISERSHOT,MT.MT_HEADSHOT,MT.MT_TROOPSHOT];
+const normalProjectileSpeeds=fastProjectiles.map(id=>mobjinfo[id].speed);
 export class GameSession {
     readonly state:session_state_t;
     result:level_result_t|null=null;
@@ -47,7 +57,10 @@ export class GameSession {
     private advanceFinale=false;
     get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
     get headsUp(){return HU_IsActive()?HU_GetState():null;}
+    get menu(){return M_GetState();}
     respond(event:event_t):boolean {
+        if(M_Responder(event))return true;
+        if(menuactive&&event.type===EV.ev_keydown)return true;
         if(this.state.gamestate===GS.GS_FINALE)return F_Responder(event);
         if(this.state.gamestate!==GS.GS_LEVEL)return false;
         if(HU_IsActive()&&HU_Responder(event))return true;if(ST_Responder(event))return true;
@@ -64,6 +77,7 @@ export class GameSession {
     }
     get nextAvailable():boolean {const name=this.nextMapName;return !!name&&W_CheckNumForName(name)>=0;}
     constructor(mapname:string,private presentation:game_presentation_t){
+        normalFastTics.forEach((tics,i)=>states[STATE.S_SARG_RUN1+i].tics=tics);fastProjectiles.forEach((id,i)=>mobjinfo[id].speed=normalProjectileSpeeds[i]);
         ST_ResetCheats();const mode=detectGameMode(mapname),match=/^E(\d)M(\d)$/.exec(mapname);
         if(!match&&!/^MAP\d\d$/.test(mapname))throw new Error('Unsupported classic map name');
         const showFinale=()=>{F_StartFinale();presentation.onExit(this.state.secretexit);};
@@ -84,7 +98,10 @@ export class GameSession {
         WI_InitContext({get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get deathmatch(){return state.deathmatch;},get players(){return state.players;},playeringame:state.playeringame,S_StartSound,S_ChangeMusic,
             G_WorldDone:()=>{this.intermissionEnded=true;if(this.result?.terminal||this.nextAvailable)G_WorldDone();}});
         ST_InitContext({get players(){return state.players;},get consoleplayer(){return state.consoleplayer;},get deathmatch(){return state.deathmatch;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},I_SetPalette});if(ST_CanLoad())ST_Init();
-        HU_InitContext({get gamemode(){return state.gamemode;},get gameepisode(){return state.gameepisode;},get gamemap(){return state.gamemap;},get players(){return state.players;},get playeringame(){return state.playeringame;},get consoleplayer(){return state.consoleplayer;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},french:false,showMessages:true,S_StartSound});if(HU_CanLoad())HU_Init();
+        HU_InitContext({get gamemode(){return state.gamemode;},get gameepisode(){return state.gameepisode;},get gamemap(){return state.gamemap;},get players(){return state.players;},get playeringame(){return state.playeringame;},get consoleplayer(){return state.consoleplayer;},get netgame(){return state.netgame;},get automapactive(){return state.automapactive;},french:false,get showMessages(){return showMessages;},S_StartSound});if(HU_CanLoad())HU_Init();
+        M_InitContext({...state,get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get demoplayback(){return state.demoplayback;},get usergame(){return state.usergame;},get players(){return state.players;},get automapactive(){return state.automapactive;},R_SetViewSize,
+            setVolumes:(effects,music)=>{S_SetSfxVolume(Math.round(effects*127/15));S_SetMusicVolume(Math.round(music*127/15));this.presentation.setVolumes?.(effects,music);},
+            endGame:()=>this.presentation.returnToInspection?.()});if(newGame)M_Init();
         AM_InitContext(state);ST_InitResponderContext(state);G_InitNewContext(state);
         S_InitMusicContext(state);F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
@@ -122,6 +139,7 @@ export class GameSession {
             else G_DoNewGame();
         }
         this.finishIfRequested();
+        if(menuactive&&this.state.gamestate!==GS.GS_LEVEL)return;
         if(this.state.gamestate===GS.GS_INTERMISSION){
             Object.assign(this.player.cmd,command);
             // A DOM click becomes a release/press pair on simulation tics, so it
@@ -142,7 +160,7 @@ export class GameSession {
         if(this.completed)return;
         if(this.player.playerstate===PST.PST_REBORN){this.start(false);return;}
         Object.assign(this.player.cmd,command);
-        P_Ticker({paused:false,netgame:false,menuactive:false,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
+        P_Ticker({paused:this.state.paused,netgame:false,menuactive,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
             P_PlayerThink,P_UpdateSpecials,P_RespawnSpecials});
         if(ST_IsRunning())ST_Ticker();AM_Ticker();if(HU_IsActive())HU_Ticker();
         this.state.gametic=(this.state.gametic+1)|0;this.finishIfRequested();S_UpdateSounds(this.player.mo!);
