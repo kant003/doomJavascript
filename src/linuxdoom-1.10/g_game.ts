@@ -1,5 +1,5 @@
 // Copyright (C) 1993-1996 id Software, Inc. GPL-2.0-only.
-// Partial g_game.c: player lifecycle, completion and native deferred new games.
+// Partial g_game.c: player lifecycle, progression, command building and demo streams.
 import { playerstate_t as PST,type player_t } from './d_player.h';
 import { weapontype_t as WP,ammotype_t as AM,MAXPLAYERS } from './doomdef.h';
 import { maxammo } from './p_inter';
@@ -123,3 +123,132 @@ export function G_InitNew(skill:skill_t,episode:number,map:number):void {
     g.usergame=true;g.paused=g.demoplayback=g.automapactive=false;g.viewactive=true;g.gameepisode=episode;g.gamemap=map;g.gameskill=skill;
     g.SetSkyForLevel(episode,map);g.G_DoLoadLevel();
 }
+
+// Original command builder. Device events are collected by the platform adapter.
+import * as KEY from './doomdef.h';
+import { buttoncode_t as BT } from './d_event.h';
+import type { ticcmd_t } from './d_ticcmd.h';
+import { I_BaseTiccmd } from './i_system';
+export interface controls_context_t {
+    gamekeydown:Uint8Array;mousebuttons:boolean[];joybuttons:boolean[];mousex:number;mousey:number;joyxmove:number;joyymove:number;
+    turnheld:number;dclicktime:number;dclickstate:boolean;dclicks:number;dclicktime2:number;dclickstate2:boolean;dclicks2:number;
+    key_right:number;key_left:number;key_up:number;key_down:number;key_strafeleft:number;key_straferight:number;key_fire:number;key_use:number;key_strafe:number;key_speed:number;
+    mousebfire:number;mousebstrafe:number;mousebforward:number;joybfire:number;joybstrafe:number;joybuse:number;joybspeed:number;
+    ticdup:number;consoleplayer:number;maketic:number;consistancy:Int16Array[];sendpause:boolean;sendsave:boolean;savegameslot:number;
+    HU_dequeueChatChar():number;
+}
+export function G_CreateControls():controls_context_t {
+    return {gamekeydown:new Uint8Array(256),mousebuttons:[false,false,false],joybuttons:[false,false,false,false],mousex:0,mousey:0,joyxmove:0,joyymove:0,turnheld:0,
+        dclicktime:0,dclickstate:false,dclicks:0,dclicktime2:0,dclickstate2:false,dclicks2:0,
+        key_right:KEY.KEY_RIGHTARROW,key_left:KEY.KEY_LEFTARROW,key_up:KEY.KEY_UPARROW,key_down:KEY.KEY_DOWNARROW,key_strafeleft:44,key_straferight:46,key_fire:KEY.KEY_RCTRL,key_use:32,key_strafe:KEY.KEY_RALT,key_speed:KEY.KEY_RSHIFT,
+        mousebfire:0,mousebstrafe:1,mousebforward:2,joybfire:0,joybstrafe:1,joybuse:3,joybspeed:2,
+        ticdup:1,consoleplayer:0,maketic:0,consistancy:Array.from({length:4},()=>new Int16Array(12)),sendpause:false,sendsave:false,savegameslot:0,HU_dequeueChatChar:()=>0};
+}
+let controls:controls_context_t;
+export function G_InitControlsContext(value:controls_context_t):void {controls=value;}
+export const forwardmove=[0x19,0x32],sidemove=[0x18,0x28],angleturn=[640,1280,320];
+export function G_CmdChecksum(cmd:ticcmd_t):number {return ((cmd.forwardmove&255)|((cmd.sidemove&255)<<8)|((cmd.angleturn&65535)<<16))|0;}
+export function G_BuildTiccmd(cmd:ticcmd_t):void {
+    const g=controls;if(!g)throw new Error('Command controls context is not linked');
+    Object.assign(cmd,I_BaseTiccmd());cmd.consistancy=g.consistancy[g.consoleplayer][g.maketic%12];
+    const down=(key:number)=>!!g.gamekeydown[key],mouse=(button:number)=>!!g.mousebuttons[button],joy=(button:number)=>!!g.joybuttons[button];
+    const strafe=down(g.key_strafe)||mouse(g.mousebstrafe)||joy(g.joybstrafe),speed=Number(down(g.key_speed)||joy(g.joybspeed));
+    let forward=0,side=0;
+    if(g.joyxmove||down(g.key_right)||down(g.key_left))g.turnheld+=g.ticdup;else g.turnheld=0;
+    const tspeed=g.turnheld<6?2:speed;
+    if(strafe){if(down(g.key_right))side+=sidemove[speed];if(down(g.key_left))side-=sidemove[speed];if(g.joyxmove>0)side+=sidemove[speed];if(g.joyxmove<0)side-=sidemove[speed];}
+    else {if(down(g.key_right))cmd.angleturn-=angleturn[tspeed];if(down(g.key_left))cmd.angleturn+=angleturn[tspeed];if(g.joyxmove>0)cmd.angleturn-=angleturn[tspeed];if(g.joyxmove<0)cmd.angleturn+=angleturn[tspeed];}
+    if(down(g.key_up))forward+=forwardmove[speed];if(down(g.key_down))forward-=forwardmove[speed];if(g.joyymove<0)forward+=forwardmove[speed];if(g.joyymove>0)forward-=forwardmove[speed];
+    if(down(g.key_straferight))side+=sidemove[speed];if(down(g.key_strafeleft))side-=sidemove[speed];
+    cmd.chatchar=g.HU_dequeueChatChar();
+    if(down(g.key_fire)||mouse(g.mousebfire)||joy(g.joybfire))cmd.buttons|=BT.BT_ATTACK;
+    if(down(g.key_use)||joy(g.joybuse)){cmd.buttons|=BT.BT_USE;g.dclicks=0;}
+    for(let i=0;i<KEY.weapontype_t.NUMWEAPONS-1;i++)if(down(49+i)){cmd.buttons|=BT.BT_CHANGE|(i<<BT.BT_WEAPONSHIFT);break;}
+    const forwardButton=mouse(g.mousebforward);if(forwardButton)forward+=forwardmove[speed];
+    if(forwardButton!==g.dclickstate&&g.dclicktime>1){g.dclickstate=forwardButton;if(g.dclickstate)g.dclicks++;if(g.dclicks===2){cmd.buttons|=BT.BT_USE;g.dclicks=0;}else g.dclicktime=0;}
+    else {g.dclicktime+=g.ticdup;if(g.dclicktime>20){g.dclicks=0;g.dclickstate=false;}}
+    const bstrafe=mouse(g.mousebstrafe)||joy(g.joybstrafe);
+    if(bstrafe!==g.dclickstate2&&g.dclicktime2>1){g.dclickstate2=bstrafe;if(g.dclickstate2)g.dclicks2++;if(g.dclicks2===2){cmd.buttons|=BT.BT_USE;g.dclicks2=0;}else g.dclicktime2=0;}
+    else {g.dclicktime2+=g.ticdup;if(g.dclicktime2>20){g.dclicks2=0;g.dclickstate2=false;}}
+    forward+=g.mousey;if(strafe)side+=g.mousex*2;else cmd.angleturn-=g.mousex*8;g.mousex=g.mousey=0;
+    forward=Math.max(-forwardmove[1],Math.min(forwardmove[1],forward));side=Math.max(-forwardmove[1],Math.min(forwardmove[1],side));
+    cmd.forwardmove+=forward;cmd.sidemove+=side;
+    // C assigns these fields to signed char / signed short storage.
+    cmd.forwardmove=(cmd.forwardmove<<24)>>24;cmd.sidemove=(cmd.sidemove<<24)>>24;cmd.angleturn=(cmd.angleturn<<16)>>16;
+    if(g.sendpause){g.sendpause=false;cmd.buttons=BT.BT_SPECIAL|BT.BTS_PAUSE;}
+    if(g.sendsave){g.sendsave=false;cmd.buttons=BT.BT_SPECIAL|BT.BTS_SAVEGAME|(g.savegameslot<<BT.BTS_SAVESHIFT);}
+}
+
+// Original four-byte demo stream. Host callbacks replace file writes and title/process exit.
+import { VERSION } from './doomdef.h';
+import { W_CacheLumpName } from './w_wad';
+export const DEMOMARKER=0x80;
+export interface demo_header_t {version:number;skill:skill_t;episode:number;map:number;deathmatch:number;respawnparm:boolean;fastparm:boolean;nomonsters:boolean;consoleplayer:number;playeringame:boolean[];tics:number;end:number}
+export function G_ReadDemoHeader(data:Uint8Array,allowVersion109=false):demo_header_t {
+    if(data.length<14)throw new Error('Demo truncada: falta la cabecera o el marcador final.');
+    if(data[0]!==VERSION&&!(allowVersion109&&data[0]===109))throw new Error(`Versión de demo ${data[0]} no compatible (se admite ${allowVersion109?'109 o ':''}${VERSION}).`);
+    if(data[1]>skill_t.sk_nightmare||!data[2]||!data[3]||data[4]>2||data[8]>=MAXPLAYERS||[...data.subarray(5,8),...data.subarray(9,13)].some(value=>value>1))throw new Error('Cabecera de demo inválida.');
+    const playeringame=Array.from(data.subarray(9,13),Boolean),count=playeringame.filter(Boolean).length;
+    if(!count||!playeringame[data[8]])throw new Error('La demo no tiene un jugador de vista activo.');
+    let offset=13,commands=0;
+    while(offset<data.length&&data[offset]!==DEMOMARKER){if(offset+4>data.length)throw new Error('Comando de demo truncado.');offset+=4;commands++;}
+    if(offset>=data.length)throw new Error('La demo no contiene un marcador final.');
+    if(commands%count)throw new Error('La demo termina a mitad de un tic multijugador.');
+    return {version:data[0],skill:data[1],episode:data[2],map:data[3],deathmatch:data[4],respawnparm:!!data[5],fastparm:!!data[6],nomonsters:!!data[7],consoleplayer:data[8],playeringame,tics:commands/count,end:offset+1};
+}
+export interface demo_context_t extends newgame_context_t {
+    demorecording:boolean;singledemo:boolean;netdemo:boolean;
+    allowDemo109?:boolean;readDemo?(name:string):Uint8Array;
+    writeDemo(name:string,data:Uint8Array):void;demoEnded():void;
+}
+let demo:demo_context_t,demobuffer=new Uint8Array(),demo_p=0,demoname='',defdemoname='',demoTics=0,demoTotal=0,lastDemo:Uint8Array|null=null;
+export function G_InitDemoContext(value:demo_context_t):void {demo=value;}
+export function G_ResetDemo():void {if(demo){demo.demoplayback=demo.demorecording=false;}demobuffer=new Uint8Array();demo_p=demoTics=demoTotal=0;lastDemo=null;}
+export function G_GetDemoState(){return {recording:demo?.demorecording??false,playing:demo?.demoplayback??false,name:demoname,tics:demoTics,total:demoTotal,bytes:demo_p};}
+export function G_GetRecordedDemo():Uint8Array|null {return lastDemo?.slice()??null;}
+export function G_ReadDemoTiccmd(cmd:ticcmd_t):boolean {
+    if(demo_p>=demobuffer.length)throw new Error('Comando de demo fuera del buffer.');
+    if(demobuffer[demo_p]===DEMOMARKER){G_CheckDemoStatus();return false;}
+    if(demo_p+4>demobuffer.length)throw new Error('Comando de demo truncado.');
+    cmd.forwardmove=(demobuffer[demo_p++]<<24)>>24;cmd.sidemove=(demobuffer[demo_p++]<<24)>>24;
+    cmd.angleturn=(demobuffer[demo_p++]<<24)>>16;cmd.buttons=demobuffer[demo_p++];return true;
+}
+export function G_WriteDemoTiccmd(cmd:ticcmd_t):boolean {
+    if(controls?.gamekeydown[113]){G_CheckDemoStatus();return false;}
+    if(demo_p+4>demobuffer.length)throw new Error('Buffer de grabación agotado.');
+    demobuffer[demo_p++]=cmd.forwardmove;demobuffer[demo_p++]=cmd.sidemove;demobuffer[demo_p++]=(cmd.angleturn+128)>>8;demobuffer[demo_p++]=cmd.buttons;demo_p-=4;
+    if(demo_p>demobuffer.length-16){G_CheckDemoStatus();return false;}
+    // The simulation MUST use the quantized command too, as in the original.
+    return G_ReadDemoTiccmd(cmd);
+}
+export function G_RecordDemo(name:string,maxsize=0x20000):void {
+    if(!Number.isInteger(maxsize)||maxsize<32||maxsize>16*1024*1024)throw new Error('Tamaño de grabación inválido.');
+    if(demo.demoplayback||demo.demorecording)throw new Error('Ya hay una demo activa.');
+    demo.usergame=false;demoname=name.endsWith('.lmp')?name:`${name}.lmp`;demobuffer=new Uint8Array(maxsize);demo_p=demoTics=demoTotal=0;lastDemo=null;demo.demorecording=true;
+}
+export function G_BeginRecording():void {
+    if(!demo.demorecording)throw new Error('G_RecordDemo debe preceder a G_BeginRecording.');
+    demo_p=0;demobuffer.set([VERSION,demo.gameskill,demo.gameepisode,demo.gamemap,demo.deathmatch,Number(demo.respawnparm),Number(demo.fastparm),Number(demo.nomonsters),demo.consoleplayer,...demo.playeringame.map(Number)]);demo_p=13;
+}
+export function G_DeferedPlayDemo(name:string):void {defdemoname=name;demo.gameaction=GA.ga_playdemo;}
+export function G_DoPlayDemo():void {
+    const g=demo;g.gameaction=GA.ga_nothing;
+    const bytes=(g.readDemo?.(defdemoname)??W_CacheLumpName(defdemoname,1)).slice(),header=G_ReadDemoHeader(bytes,g.allowDemo109);
+    demobuffer=bytes.subarray(0,header.end);demo_p=13;demoTics=0;demoTotal=header.tics;demoname=defdemoname;
+    g.deathmatch=header.deathmatch;g.respawnparm=header.respawnparm;g.fastparm=header.fastparm;g.nomonsters=header.nomonsters;g.consoleplayer=header.consoleplayer;
+    for(let i=0;i<MAXPLAYERS;i++)g.playeringame[i]=header.playeringame[i];
+    g.netgame=g.netdemo=header.playeringame[1];
+    G_InitNew(header.skill,header.episode,header.map);g.usergame=false;g.demoplayback=true;
+}
+export function G_CheckDemoStatus():boolean {
+    const g=demo;
+    if(g.demoplayback){
+        g.demoplayback=g.netdemo=g.netgame=false;g.deathmatch=0;g.playeringame[1]=g.playeringame[2]=g.playeringame[3]=false;
+        g.respawnparm=g.fastparm=g.nomonsters=false;g.consoleplayer=0;g.demoEnded();return true;
+    }
+    if(g.demorecording){
+        demobuffer[demo_p++]=DEMOMARKER;lastDemo=demobuffer.slice(0,demo_p);g.demorecording=false;g.writeDemo(demoname,lastDemo.slice());return false;
+    }return false;
+}
+// The driver calls this once per whole tic, after all participating commands.
+export function G_DemoTic():void {demoTics++;}

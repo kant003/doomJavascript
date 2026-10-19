@@ -1,3 +1,5 @@
+import { G_ReadDemoHeader } from '../linuxdoom-1.10/g_game';
+import { GameSession } from './game-session';
 import { M_SetVolumes } from '../linuxdoom-1.10/m_menu';
 import { ST_IsRunning } from '../linuxdoom-1.10/st_stuff';
 import { stateenum_t as WI } from '../linuxdoom-1.10/wi_stuff.h';
@@ -10,7 +12,7 @@ import { S_Init,S_StartSound,S_StopSound,S_SetSfxVolume,S_SetMusicVolume,S_GetMu
 import { S_sfx } from '../linuxdoom-1.10/sounds';
 import { V_Init, V_DrawPatch, V_PatchHeader, V_SetGamma, usegamma, screens } from '../linuxdoom-1.10/v_video';
 import { I_InitGraphics, I_SetPalette, I_FinishUpdate, I_ShutdownGraphics } from '../linuxdoom-1.10/i_video';
-import { W_InitMultipleFiles, W_CacheLumpName, W_CheckNumForName, W_NumLumps } from '../linuxdoom-1.10/w_wad';
+import { W_InitMultipleFiles, W_CacheLumpName, W_CheckNumForName, W_NumLumps,lumpinfo } from '../linuxdoom-1.10/w_wad';
 import { wipe_StartScreen, wipe_EndScreen, wipe_ScreenWipe } from '../linuxdoom-1.10/f_wipe';
 import { listMaps, loadMapPreview, drawMapPreview } from './map-preview';
 import { playableDemoWad } from './playable-demo';
@@ -44,6 +46,8 @@ const wipeButton = element<HTMLButtonElement>('wipe'), demoButton = element<HTML
 const textureSelect = element<HTMLSelectElement>('textures');
 const soundSelect=element<HTMLSelectElement>('sounds'),soundPlay=element<HTMLButtonElement>('sound-play');
 const soundStop=element<HTMLButtonElement>('sound-stop'),soundStatus=element('sound-status'),soundVolume=element<HTMLInputElement>('sound-volume');
+const demoSelect=element<HTMLSelectElement>('demo-select'),demoStatus=element('demo-status');
+let recordedDemo:{name:string;data:Uint8Array}|null=null;
 const musicVolume=element<HTMLInputElement>('music-volume'),musicStatus=element('music-status');
 const audio=new WebAudioBackend();I_InstallSoundBackend(audio);I_InstallMusicBackend(new WebMusicBackend(()=>audio.getContext()));
 let soundGeneration=0,syntheticAudio=false;
@@ -70,17 +74,22 @@ const normalGameHelp=element('game-help').textContent;
 const gameHud=element('game-hud'),gameMessage=element('game-message'),summary=element('level-summary');
 let focusCompletion=false;
 const browserGame=new BrowserGame(session=>{
+    const replay=session.demo;
+    element<HTMLButtonElement>('demo-record').disabled=replay.recording||replay.playing||session.completed;
+    element<HTMLButtonElement>('demo-finish').disabled=!replay.recording;
+    element<HTMLButtonElement>('demo-stop').disabled=!replay.playing&&!replay.finished;
+    if(replay.recording||replay.playing||replay.finished){const text=replay.recording?`Grabando ${replay.name} · ${Math.floor(replay.tics/35)} s`:replay.finished?`Demo finalizada · ${replay.tics} tics · ${(replay.tics/35).toFixed(1)} s`:`Reproduciendo ${replay.name} · ${Math.floor(replay.tics/35)} / ${Math.ceil(replay.total/35)} s${browserGame.paused?' · PAUSA':''}`;if(demoStatus.textContent!==text)demoStatus.textContent=text;}
     const music=S_GetMusicState();musicStatus.textContent=music.name?`Tema ${music.name.toUpperCase()} · ${music.paused?'pausa':music.volume===0?'silenciado':music.playing?'reproduciendo':'finalizado'} · síntesis básica`:'Música detenida';
     soundVolume.value=String(session.menu.sfxVolume);musicVolume.value=String(session.menu.musicVolume);
     element('gamma').textContent=`Gamma: ${usegamma}`;
     const p=session.player,ammo=weaponinfo[p.readyweapon].ammo,text=`Salud ${p.health} · Armadura ${p.armorpoints} · ${ammo===AM.am_noammo?'Cuerpo a cuerpo':`Munición ${p.ammo[ammo]}`} · Bajas ${p.killcount}/${session.state.totalkills}${browserGame.paused?' · PAUSA':''}`;
-    label.textContent=`${session.mapname} / ${session.menu.active?'MENÚ':session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':session.state.automapactive?'AUTOMAPA':'PARTIDA'}`;
+    label.textContent=`${session.mapname} / ${session.menu.active?'MENÚ':session.demo.playing?'DEMO':session.demo.recording?'GRABACIÓN':session.demo.finished?'DEMO FINALIZADA':session.state.gamestate===GS.GS_FINALE?'FINAL':session.completed?'RESUMEN':session.state.automapactive?'AUTOMAPA':'PARTIDA'}`;
     const selected=Array.from(mapSelect.options).find(option=>option.textContent===session.mapname);if(selected&&mapSelect.value!==selected.value)mapSelect.value=selected.value;
     const result=session.result,fs=session.finale,wi=session.intermission;summary.hidden=!result;
     element('game-help').hidden=session.completed&&!session.menu.active;
-    element('game-help').textContent=session.menu.active?'Menú: flechas para elegir y ajustar · Intro: aceptar · Retroceso: volver · Esc: cerrar · Y/N: confirmar o cancelar.':session.state.automapactive?'Tab: volver · =/−: zoom · 0: vista amplia · F: seguir jugador · Flechas: desplazar con seguimiento desactivado · G: cuadrícula · M: marca · C: borrar marcas · Esc: menú.':normalGameHelp;
+    element('game-help').textContent=session.demo.playing&&!session.menu.active?'Reproducción automática · Pausa: detener temporalmente · Cualquier tecla abre el menú · Detener reproducción: volver a inspección.':session.menu.active?'Menú: flechas para elegir y ajustar · Intro: aceptar · Retroceso: volver · Esc: cerrar · Y/N: confirmar o cancelar.':session.state.automapactive?'Tab: volver · =/−: zoom · 0: vista amplia · F: seguir jugador · Flechas: desplazar con seguimiento desactivado · G: cuadrícula · M: marca · C: borrar marcas · Esc: menú.':normalGameHelp;
     element('frame-state').textContent=fs?`Final original · ${fs.stage===0?'texto':fs.stage===1?'imagen de episodio':'reparto'}${fs.drawable?'':' · recursos gráficos ausentes'}`:session.completed?`Intermisión · ${wi?.drawable?'gráficos originales del WAD':'resumen HTML'} · 35 tics/s`:`Partida · ${ST_IsRunning()?'barra del WAD':'HUD textual'} · 35 tics/s`;
-    element<HTMLButtonElement>('game-pause').disabled=session.completed;
+    element<HTMLButtonElement>('game-pause').disabled=(session.completed&&!replay.playing&&!replay.recording)||replay.finished;
     if(result){
         element('level-summary-title').textContent=`${result.mapname} · ${result.terminal?(session.state.gamemode===MODE.commercial?'Fin de campaña':'Fin de episodio'):result.secret?'Salida secreta':'Nivel completado'}`;
         const score=(value:number,total:number,count:number)=>`${value} / ${total} · ${count<0?'—':`${count}%`}`;
@@ -96,10 +105,10 @@ const browserGame=new BrowserGame(session=>{
         const next=session.nextMapName,finale=session.state.gamestate===GS.GS_FINALE;
         const counting=!!wi&&wi.state===WI.StatCount&&wi.sp_state!==10;
         const entering=!!wi&&wi.state!==WI.StatCount;
-        element('intermission-help').textContent=finale?(session.state.gamemode===MODE.commercial?(fs?.stage===2?'Pulsa una tecla en la pantalla para animar el reparto.':'F o Espacio: avanzar después de la pausa inicial.'):'El final avanza automáticamente al terminar el texto.'):counting?'F o Espacio: completar el recuento.':!result.terminal&&!session.nextAvailable?'Falta el mapa de destino.':entering?(result.terminal?'Preparando el final…':'Preparando el siguiente mapa…'):'F o Espacio: avanzar.';
+        element('intermission-help').textContent=replay.playing?'La demo avanza con sus comandos grabados.':replay.recording?'Grabando: usa F o Espacio en la pantalla para avanzar el resumen.':finale?(session.state.gamemode===MODE.commercial?(fs?.stage===2?'Pulsa una tecla en la pantalla para animar el reparto.':'F o Espacio: avanzar después de la pausa inicial.'):'El final avanza automáticamente al terminar el texto.'):counting?'F o Espacio: completar el recuento.':!result.terminal&&!session.nextAvailable?'Falta el mapa de destino.':entering?(result.terminal?'Preparando el final…':'Preparando el siguiente mapa…'):'F o Espacio: avanzar.';
         element('next-map').textContent=result.terminal?'Puedes reiniciar o elegir otro mapa.':session.nextAvailable?`${finale?'Fin de tramo. ':''}Siguiente mapa: ${next}`:`El mapa ${next} no está cargado. Selecciona un WAD que lo incluya para jugarlo.`;
         const button=element<HTMLButtonElement>('next-level');button.hidden=finale&&(session.state.gamemode!==MODE.commercial||fs?.stage===2);
-        button.disabled=(!counting&&!result.terminal&&!session.nextAvailable)||wi?.state===WI.NoState;
+        button.disabled=replay.playing||replay.recording||replay.finished||(!counting&&!result.terminal&&!session.nextAvailable)||wi?.state===WI.NoState;
         button.textContent=finale&&result.terminal?'Ver reparto':counting?'Completar recuento':result.terminal?'Finalizar':entering?`Entrar en ${next}`:`Continuar a ${next}`;
         if(focusCompletion){focusCompletion=false;const target=finale||wi?.drawable?canvas:summary;target.scrollIntoView({block:'nearest'});target.focus({preventScroll:true});}
     }
@@ -109,6 +118,7 @@ const browserGame=new BrowserGame(session=>{
     if((!session.completed||session.menu.active)&&gameMessage.textContent!==message)gameMessage.textContent=message;
     lastView=screens[0].slice();
 },error=>report(error instanceof Error?error.message:String(error),true),{
+    recordedDemo:(name,data)=>{recordedDemo={name,data};element<HTMLButtonElement>('demo-download').disabled=false;const header=G_ReadDemoHeader(data);demoStatus.textContent=`Grabación lista: ${name} · ${header.tics} tics · ${data.length.toLocaleString('es')} bytes. Pulsa Descargar .lmp.`;},
     setVolumes:(effects,music)=>{soundVolume.value=String(effects);musicVolume.value=String(music);},returnToInspection:()=>queueMicrotask(()=>{gameStartGeneration++;playing=false;render();}),
     resetStatus:()=>{gameHud.textContent='Iniciando jugador…';},resetMessages:()=>{gameMessage.textContent='';},
     closeAutomap:()=>{viewSelect.value='world';},tactile:()=>{if(!ST_IsRunning())canvas.animate([{opacity:0.6},{opacity:1}],{duration:180});},
@@ -129,7 +139,7 @@ function initResources(): void {
     if (texturestate.numtextures > 1) textureSelect.value = '1';
 }
 function render(): void {
-    stopWipe(); worldPreview.stop();browserGame.stop();musicStatus.textContent='Música detenida · pulsa Jugar para escuchar el tema del nivel.';summary.hidden=true;focusCompletion=false;
+    stopWipe(); worldPreview.stop();browserGame.stop();for(const id of ['demo-finish','demo-stop'])element<HTMLButtonElement>(id).disabled=true;element<HTMLButtonElement>('demo-record').disabled=!loaded||mapSelect.disabled;musicStatus.textContent='Música detenida · pulsa Jugar para escuchar el tema del nivel.';summary.hidden=true;focusCompletion=false;
     element('camera-help').hidden = playing||viewSelect.value !== 'world'; element('camera-buttons').hidden = playing||viewSelect.value !== 'world'; element('camera-reset').hidden = playing||viewSelect.value !== 'world';
     for(const id of ['game-buttons','game-help','game-hud','game-message'])element(id).hidden=!playing;
     element('game-start').textContent=playing?'Reiniciar partida':'Jugar este mapa';
@@ -213,6 +223,10 @@ function load(files: WadFile[], synthetic: boolean): void {
     if (!maps.length) mapSelect.add(new Option('Sin mapas', ''));
     viewSelect.value = maps.length ? 'world' : 'title';
     report(`${synthetic ? 'Datos sintéticos de prueba' : files.map(f => f.name).join(' + ')} · ${W_NumLumps().toLocaleString('es')} recursos · ${maps.length} ${maps.length === 1 ? 'mapa' : 'mapas'}`);
+    const demos=[...new Set(lumpinfo.map(lump=>lump.name).filter(name=>/^DEMO[0-9]+$/.test(name)))];
+    demoSelect.replaceChildren(...demos.map(name=>new Option(name,name)));demoSelect.disabled=element<HTMLButtonElement>('demo-play').disabled=!demos.length;
+    if(!demos.length)demoSelect.add(new Option('Sin demos disponibles',''));
+    demoStatus.textContent='La grabación reinicia el mapa para poder reproducir la partida completa.';
     render();
     if (synthetic && viewSelect.value === 'title') { label.textContent = 'PRUEBA DE VÍDEO / SIN DATOS COMERCIALES'; }
 }
@@ -263,6 +277,27 @@ element('game-start').addEventListener('click',async()=>{
 });
 summary.addEventListener('keydown',event=>{if(event.target===summary&&!event.repeat&&[' ','f','F','Control'].includes(event.key)){event.preventDefault();browserGame.continueLevel();}});
 element('next-level').addEventListener('click',()=>safely(()=>{browserGame.continueLevel();canvas.focus();}));
+async function playRecordedDemo(data:Uint8Array,name:string):Promise<void> {
+    const metadata=GameSession.validateDemo(data),generation=++gameStartGeneration;
+    await audio.resume();if(generation!==gameStartGeneration)return;
+    const map=Array.from(mapSelect.options).find(option=>option.textContent===metadata.mapname);
+    if(!map)throw new Error('El mapa de la demo no está disponible.');
+    mapSelect.value=map.value;viewSelect.value='world';playing=true;render();browserGame.playDemo(data,name);canvas.focus();
+}
+element('demo-play').addEventListener('click',()=>{if(!demoSelect.value)return;void playRecordedDemo(W_CacheLumpName(demoSelect.value,1),demoSelect.value).catch(error=>{demoStatus.textContent=error instanceof Error?error.message:String(error);});});
+element('demo-file').addEventListener('change',async()=>{
+    const field=element<HTMLInputElement>('demo-file'),file=field.files?.[0],wadGeneration=loadGeneration;
+    try{if(!file)return;if(file.size>16*1024*1024)throw new Error('La demo supera el límite de 16 MiB.');const data=new Uint8Array(await file.arrayBuffer());if(wadGeneration!==loadGeneration)return;await playRecordedDemo(data,file.name);}
+    catch(error){demoStatus.textContent=error instanceof Error?error.message:String(error);}finally{field.value='';}
+});
+element('demo-record').addEventListener('click',async()=>{
+    const generation=++gameStartGeneration;
+    try{await audio.resume();if(generation!==gameStartGeneration)return;if(!playing){playing=true;render();}browserGame.recordDemo();canvas.focus();}
+    catch(error){demoStatus.textContent=error instanceof Error?error.message:String(error);}
+});
+element('demo-finish').addEventListener('click',()=>{browserGame.session?.finishRecording();element<HTMLButtonElement>('demo-finish').disabled=true;canvas.focus();});
+element('demo-download').addEventListener('click',()=>{if(!recordedDemo)return;const url=URL.createObjectURL(new Blob([recordedDemo.data.slice().buffer],{type:'application/octet-stream'})),anchor=document.createElement('a');anchor.href=url;anchor.download=recordedDemo.name;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+element('demo-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;browserGame.session?.stopDemo();playing=false;render();demoStatus.textContent='Reproducción detenida.';}));
 element('game-stop').addEventListener('click',()=>safely(()=>{gameStartGeneration++;playing=false;render();}));
 element('game-mouse').addEventListener('click',async()=>{try{canvas.focus();await canvas.requestPointerLock();}catch{report('Este navegador no permite capturar el ratón. Puedes seguir jugando con el teclado.',true);}});
 let mouseCaptured=false;

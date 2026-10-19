@@ -320,7 +320,7 @@
       "target": "src/linuxdoom-1.10/g_game.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.ts",
       "status": "partial",
-      "notes": "Diez funciones originales: rebirth, finish-level/salidas/completion/WorldDone/carga siguiente y G_DeferedInitNew, G_DoNewGame, G_InitNew. Reglas skill/episodio, fast/nightmare y reinicio enlazadas; resto del loop, demos y guardado pendientes.",
+      "notes": "Diecinueve funciones originales: ciclo de jugador/salidas/completion/WorldDone, nuevas partidas diferidas, G_CmdChecksum, G_BuildTiccmd y siete rutinas de demos (Read/WriteTiccmd, Record, BeginRecording, DeferedPlay, DoPlay y CheckDemoStatus). Formato 110 nativo, compatibilidad 109 explícita en web, controles y flujos de un jugador enlazados. G_Responder/G_Ticker completos, timedemo, guardado, título/demos automáticas y red pendientes.",
       "lines": 1690,
       "sha256": "bc8e2e0d76a70f8120174946641a82c46f0116a624f51c011b292e2ffcb78a29"
     },
@@ -329,7 +329,7 @@
       "target": "src/linuxdoom-1.10/g_game.h.ts",
       "plannedTarget": "src/linuxdoom-1.10/g_game.h.ts",
       "status": "partial",
-      "notes": "Cinco declaraciones públicas convertidas: InitNew, DeferedInitNew, ExitLevel, SecretExitLevel y WorldDone. Cabecera parcial por demos, guardado, red y bucle principal.",
+      "notes": "Nueve declaraciones originales convertidas: nuevas partidas, salidas/WorldDone y DeferedPlayDemo, RecordDemo, BeginRecording, CheckDemoStatus. Guardado, timedemo, loop principal y red pendientes.",
       "lines": 79,
       "sha256": "ab47e29d7506cda9a702073c451d6e533204e49a064a0ccc6e98ae4c5e9faa60"
     },

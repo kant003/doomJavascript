@@ -1,3 +1,4 @@
+import { demoRecordingFixture } from './demo-recording';
 import { menuDemoAssets } from './menu-demo';
 import { statusDemoAssets,statusDemoPalettes } from './status-demo';
 // Authored test assets only. Gameplay comes from the original actor/state definitions.
@@ -57,5 +58,5 @@ export function playableDemoWad(withCampaign=false):Uint8Array {
     if(!withCampaign)lumps.push(...finaleDemoAssets().filter(lump=>lump.name.startsWith('STCFN')));
     const palette=lumps.find(l=>l.name==='PLAYPAL')!;palette.data=statusDemoPalettes(palette.data);
     for(const name of ['DSPSTOP','DSSTNMOV','DSSWTCHN','DSSWTCHX','DSOOF'])lumps.push({name,data:lumps.find(l=>l.name==='DSPISTOL')!.data.slice()});
-    lumps.push(...statusDemoAssets(),...demoMusicAssets(),...menuDemoAssets());return makeWad(lumps);
+    lumps.push({name:'DEMO1',data:demoRecordingFixture()},...statusDemoAssets(),...demoMusicAssets(),...menuDemoAssets());return makeWad(lumps);
 }

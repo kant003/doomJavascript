@@ -47,7 +47,7 @@ test('Player renderer draws changing simulation and weapon overlays on the nativ
 });
 test('Death, use and the next session tic restart the level with fresh resources and player state',()=>{
  const {session}=init();session.player.armorpoints=0;P_DamageMobj(session.player.mo!,null,null,10000);assert.equal(session.player.playerstate,PST.PST_DEAD);
- session.step(cmd(BT.BT_USE));assert.equal(session.player.playerstate,PST.PST_REBORN);session.step(cmd());assert.equal(session.player.health,100);assert.equal(session.player.ammo[0],50);assert.equal(session.player.playerstate,PST.PST_LIVE);assert.equal(actors().length,4);assert.equal(leveltime,0);assert.equal(session.player.frags[0],1);
+ session.step(cmd(BT.BT_USE));assert.equal(session.player.playerstate,PST.PST_REBORN);session.step(cmd());assert.equal(session.player.health,100);assert.equal(session.player.ammo[0],50);assert.equal(session.player.playerstate,PST.PST_LIVE);assert.equal(actors().length,4);assert.equal(leveltime,1);assert.equal(session.player.frags[0],1);
 });
 test('Repeated restart resets counters, thinkers, clocks and sound channels instead of accumulating objects',()=>{
  const {session}=init();for(let n=0;n<3;n++){for(let i=0;i<40;i++)session.step(cmd());session.start();assert.equal(actors().length,4);assert.equal(leveltime,0);assert.equal(session.state.gametic,0);assert.equal(session.player.killcount,0);assert.equal(channels.filter(c=>c.sfxinfo).length,0);}

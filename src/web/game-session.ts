@@ -1,4 +1,5 @@
-import { M_InitContext,M_Init,M_Responder,M_GetState,menuactive,showMessages } from '../linuxdoom-1.10/m_menu';
+import { G_InitDemoContext,G_ResetDemo,G_ReadDemoHeader,G_DeferedPlayDemo,G_DoPlayDemo,G_ReadDemoTiccmd,G_WriteDemoTiccmd,G_RecordDemo,G_BeginRecording,G_CheckDemoStatus,G_DemoTic,G_GetDemoState,type demo_context_t } from '../linuxdoom-1.10/g_game';
+import { M_StartControlPanel,M_ClearMenus,M_InitContext,M_Init,M_Responder,M_GetState,menuactive,showMessages } from '../linuxdoom-1.10/m_menu';
 import { R_SetViewSize } from '../linuxdoom-1.10/r_main';
 import { S_SetSfxVolume,S_SetMusicVolume } from '../linuxdoom-1.10/s_sound';
 import { AM_InitContext,AM_CanLoad,AM_ResetLevel,AM_Responder,AM_Stop,AM_Ticker,type automap_context_t } from '../linuxdoom-1.10/am_map';
@@ -31,17 +32,17 @@ import { P_UseSpecialLine } from '../linuxdoom-1.10/p_switch';
 import { EV_DoFloor } from '../linuxdoom-1.10/p_floor';
 import { EV_DoDoor } from '../linuxdoom-1.10/p_doors';
 import { P_Ticker } from '../linuxdoom-1.10/p_tick';
-import { S_Start,S_StartMusic,S_ChangeMusic,S_InitMusicContext,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds,S_ResumeSound } from '../linuxdoom-1.10/s_sound';
+import { S_Start,S_StartMusic,S_ChangeMusic,S_InitMusicContext,S_InitSoundContext,S_StartSound,S_StopSound,S_UpdateSounds,S_PauseSound,S_ResumeSound } from '../linuxdoom-1.10/s_sound';
 import { M_ClearRandom } from '../linuxdoom-1.10/m_random';
 import { setupMapSky } from './map-sky';
-import { W_CheckNumForName } from '../linuxdoom-1.10/w_wad';
+import { W_CacheLumpName,W_CheckNumForName } from '../linuxdoom-1.10/w_wad';
 export interface level_result_t {mapname:string;secret:boolean;terminal:boolean;kills:number;maxkills:number;items:number;maxitems:number;secrets:number;maxsecrets:number;tics:number}
 export interface game_presentation_t {
     resetStatus():void;resetMessages():void;closeAutomap():void;
-    setVolumes?(effects:number,music:number):void;returnToInspection?():void;
+    setVolumes?(effects:number,music:number):void;returnToInspection?():void;recordedDemo?(name:string,data:Uint8Array):void;
     tactile(on:number,off:number,total:number):void;onExit(secret:boolean):void;
 }
-type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t&newgame_context_t&automap_context_t&status_responder_context_t;
+type session_state_t=mobj_context_t&setup_context_t&specials_game_t&enemy_gameplay_t&interaction_context_t&completion_context_t&finale_context_t&newgame_context_t&demo_context_t&automap_context_t&status_responder_context_t;
 export function detectGameMode(mapname:string):GameMode_t {
     return mapname.startsWith('MAP')?GameMode_t.commercial:W_CheckNumForName('E4M1')>=0?GameMode_t.retail:W_CheckNumForName('E2M1')>=0?GameMode_t.registered:GameMode_t.shareware;
 }
@@ -53,6 +54,32 @@ const normalProjectileSpeeds=fastProjectiles.map(id=>mobjinfo[id].speed);
 export class GameSession {
     readonly state:session_state_t;
     result:level_result_t|null=null;
+    private demoSource:{name:string;data:Uint8Array}|null=null;
+    private recordingRequested:string|null=null;
+    private demoFinished=false;
+    get demo(){return {...G_GetDemoState(),finished:this.demoFinished};}
+    static validateDemo(data:Uint8Array){
+        if(data.length>16*1024*1024)throw new Error('La demo supera el límite de 16 MiB.');
+        const header=G_ReadDemoHeader(data,true);
+        if(header.deathmatch||header.consoleplayer!==0||header.playeringame.some((active,i)=>active&&i!==0))throw new Error('Sólo se admiten demos de un jugador, sin deathmatch.');
+        const commercial=W_CheckNumForName('MAP01')>=0,name=commercial?`MAP${String(header.map).padStart(2,'0')}`:`E${header.episode}M${header.map}`;
+        if(W_CheckNumForName(name)<0||(!commercial&&(header.episode>4||header.map>9)))throw new Error(`La demo necesita el mapa ${name}; carga su WAD antes de reproducirla.`);
+        return {...header,mapname:name};
+    }
+    playDemo(data:Uint8Array,name='replay.lmp'):void {
+        const header=GameSession.validateDemo(data);
+        if(detectGameMode(header.mapname)!==this.state.gamemode)throw new Error('La demo no corresponde al juego cargado.');
+        if(this.state.demorecording)G_CheckDemoStatus();
+        this.recordingRequested=null;this.demoFinished=false;this.demoSource={name,data:data.slice()};M_ClearMenus();G_DeferedPlayDemo(name);
+    }
+    recordDemo(name='partida'):void {
+        if(this.state.demoplayback||this.completed)throw new Error('Inicia una partida para grabar una demo.');
+        if(this.state.demorecording)throw new Error('Ya se está grabando una demo.');
+        this.demoFinished=false;this.recordingRequested=name;M_ClearMenus();G_DeferedInitNew(this.state.gameskill,this.state.gameepisode,this.state.gamemap);
+    }
+    finishRecording():void {this.recordingRequested=null;if(this.state.demorecording){G_CheckDemoStatus();this.state.usergame=true;}}
+    stopDemo():void {if(this.state.demoplayback)G_CheckDemoStatus();this.demoFinished=true;this.state.paused=false;S_ResumeSound();}
+
     private advanceTics=0;
     private advanceFinale=false;
     get finale(){return this.state.gamestate===GS.GS_FINALE?{...F_GetState(),drawable:F_CanDraw()}:null;}
@@ -61,6 +88,10 @@ export class GameSession {
     respond(event:event_t):boolean {
         if(M_Responder(event))return true;
         if(menuactive&&event.type===EV.ev_keydown)return true;
+        if(this.state.demoplayback||this.demoFinished){
+            if(event.type===EV.ev_keydown||(event.type===EV.ev_mouse&&event.data1)){M_StartControlPanel();return true;}
+            return false;
+        }
         if(this.state.gamestate===GS.GS_FINALE)return F_Responder(event);
         if(this.state.gamestate!==GS.GS_LEVEL)return false;
         if(HU_IsActive()&&HU_Responder(event))return true;if(ST_Responder(event))return true;
@@ -82,13 +113,15 @@ export class GameSession {
         if(!match&&!/^MAP\d\d$/.test(mapname))throw new Error('Unsupported classic map name');
         const showFinale=()=>{F_StartFinale();presentation.onExit(this.state.secretexit);};
         this.state={gamemode:mode,gameskill:skill_t.sk_medium,gameepisode:match?+match[1]:1,gamemap:match?+match[2]:Number(mapname.slice(3)),gametic:0,
-            deathmatch:0,netgame:false,singledemo:false,paused:false,demoplayback:false,netdemo:false,respawnparm:false,usergame:true,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
+            deathmatch:0,netgame:false,singledemo:false,paused:false,demoplayback:false,demorecording:false,netdemo:false,respawnparm:false,usergame:true,fastparm:false,nomonsters:false,respawnmonsters:false,players:Array.from({length:4},G_CreatePlayer),playeringame:[true,false,false,false],consoleplayer:0,
             playerstarts:[],deathmatchstarts:[],totalkills:0,totalitems:0,totalsecret:0,wminfo:G_CreateIntermission(),wipegamestate:GS.GS_LEVEL,automapactive:false,viewactive:true,secretexit:false,gameaction:GA.ga_nothing,gamestate:GS.GS_LEVEL,
             get ceilingline(){return mapclip.ceilingline;},get linetarget(){return mapclip.linetarget;},get attackrange(){return mapclip.attackrange;},
             P_TryMove,P_CheckPosition,P_SlideMove,P_AimLineAttack,S_StartMusic,S_ChangeMusic,S_StartSound,S_StopSound,G_PlayerReborn,P_SetupPsprites,P_GivePower,G_DeferedInitNew,ST_Responder,S_ResumeSound,SetSkyForLevel:()=>setupMapSky(this.mapname),
             ST_Start:()=>{if(ST_CanLoad())ST_Start();presentation.resetStatus();},HU_Start:()=>{if(HU_CanLoad())HU_Start();presentation.resetMessages();},AM_Stop:()=>{if(this.state.automapactive)AM_Stop();presentation.closeAutomap();},I_Tactile:presentation.tactile,
             P_UseSpecialLine,EV_DoDoor,EV_DoFloor,G_ExitLevel,G_SecretExitLevel,
             WI_Start:info=>{WI_Start(info);presentation.onExit(this.state.secretexit);},F_StartFinale:showFinale,G_DoLoadLevel:()=>{for(let i=0;i<this.state.players.length;i++)if(this.state.playeringame[i]&&this.state.players[i].playerstate===PST.PST_DEAD)this.state.players[i].playerstate=PST.PST_REBORN;this.start(false);},
+            allowDemo109:true,readDemo:name=>this.demoSource?.name===name?this.demoSource.data:W_CacheLumpName(name,1),
+            writeDemo:(name,data)=>presentation.recordedDemo?.(name,data),demoEnded:()=>{this.demoFinished=true;this.state.paused=false;S_ResumeSound();},
             StopLevelSounds:S_Start};
     }
     get player(){return this.state.players[0];}
@@ -102,7 +135,7 @@ export class GameSession {
         M_InitContext({...state,get gamemode(){return state.gamemode;},get netgame(){return state.netgame;},get demoplayback(){return state.demoplayback;},get usergame(){return state.usergame;},get players(){return state.players;},get automapactive(){return state.automapactive;},R_SetViewSize,
             setVolumes:(effects,music)=>{S_SetSfxVolume(Math.round(effects*127/15));S_SetMusicVolume(Math.round(music*127/15));this.presentation.setVolumes?.(effects,music);},
             endGame:()=>this.presentation.returnToInspection?.()});if(newGame)M_Init();
-        AM_InitContext(state);ST_InitResponderContext(state);G_InitNewContext(state);
+        AM_InitContext(state);ST_InitResponderContext(state);G_InitNewContext(state);G_InitDemoContext(state);if(newGame){G_ResetDemo();this.demoFinished=false;this.recordingRequested=null;}
         S_InitMusicContext(state);F_InitContext(state);G_InitGameContext(state);G_InitCompletionContext(state);P_InitMobjContext(state);P_InitSetupContext(state);P_InitInteractionContext(state);
         P_InitEnemyContext({gamemode:state.gamemode,S_StartSound,S_StartGlobalSound:s=>S_StartSound(null,s),gameplay:state});
         P_InitMapContext({gamemap:state.gamemap,P_DamageMobj,P_TouchSpecialThing,P_CrossSpecialLine,P_ShootSpecialLine,P_UseSpecialLine,S_StartSound});
@@ -122,6 +155,7 @@ export class GameSession {
         HU_Stop();ST_Stop();G_DoCompleted();if((s.gameaction as GA)===GA.ga_victory)s.F_StartFinale();
     }
     continueLevel():boolean {
+        if(this.state.demoplayback||this.state.demorecording||this.demoFinished)return false;
         if(!this.completed||!this.result)return false;
         if(this.state.gamestate===GS.GS_INTERMISSION){
             const wi=WI_GetState();
@@ -133,10 +167,26 @@ export class GameSession {
         this.advanceFinale=true;return true;
     }
     step(command:ticcmd_t):void {
+        if(this.state.gameaction===GA.ga_playdemo){this.state.gametic=0;G_DoPlayDemo();this.demoFinished=false;}
         if(this.state.gameaction===GA.ga_newgame){
             const request=G_GetDeferredNewGame(),name=this.state.gamemode===GameMode_t.commercial?`MAP${String(request.map).padStart(2,'0')}`:`E${request.episode}M${request.map}`;
-            if(W_CheckNumForName(name)<0){this.state.gameaction=GA.ga_nothing;this.player.message=`El mapa ${name} no está cargado.`;}
-            else G_DoNewGame();
+            if(W_CheckNumForName(name)<0){this.recordingRequested=null;this.state.gameaction=GA.ga_nothing;this.player.message=`El mapa ${name} no está cargado.`;}
+            else {if(this.state.demorecording)G_CheckDemoStatus();if(this.recordingRequested)this.state.gametic=0;G_DoNewGame();this.demoFinished=false;
+                if(this.recordingRequested){const name=this.recordingRequested;this.recordingRequested=null;G_RecordDemo(name);G_BeginRecording();}}
+
+        }
+        if(this.demoFinished)return;
+        // Freeze playback/recording under menus without dropping a stream tic.
+        if(menuactive&&(this.state.demoplayback||this.state.demorecording))return;
+        if(this.state.gamestate===GS.GS_LEVEL&&this.player.playerstate===PST.PST_REBORN)this.start(false);
+        const stream=this.state.demoplayback||this.state.demorecording;
+        if(this.state.demoplayback){command={...command};if(!G_ReadDemoTiccmd(command))return;}
+        let recorded=true;
+        if(this.state.demorecording){command={...command};recorded=G_WriteDemoTiccmd(command);if(!this.state.demorecording)this.state.usergame=true;}
+        if(stream&&recorded)G_DemoTic();
+        if(command.buttons&BT.BT_SPECIAL){
+            if((command.buttons&BT.BT_SPECIALMASK)===BT.BTS_PAUSE){this.state.paused=!this.state.paused;if(this.state.paused)S_PauseSound();else S_ResumeSound();}
+            else if((command.buttons&BT.BT_SPECIALMASK)===BT.BTS_SAVEGAME)this.player.message='La demo solicita un guardado; guardar partidas sigue pendiente.';
         }
         this.finishIfRequested();
         if(menuactive&&this.state.gamestate!==GS.GS_LEVEL)return;
@@ -144,23 +194,22 @@ export class GameSession {
             Object.assign(this.player.cmd,command);
             // A DOM click becomes a release/press pair on simulation tics, so it
             // observes the same native edge detection as F or Space.
-            if(this.advanceTics)this.player.cmd.buttons=this.advanceTics--===2?0:BT.BT_USE;
+            if(this.advanceTics&&!stream)this.player.cmd.buttons=this.advanceTics--===2?0:BT.BT_USE;
             if(!this.intermissionEnded)WI_Ticker();
             this.state.gametic=(this.state.gametic+1)|0;
             if(this.state.gameaction===GA.ga_worlddone)G_DoWorldDone();
             S_UpdateSounds(this.player.mo!);return;
         }
         if(this.state.gamestate===GS.GS_FINALE){
-            Object.assign(this.player.cmd,command);if(this.advanceFinale)this.player.cmd.buttons=BT.BT_USE;
+            Object.assign(this.player.cmd,command);if(this.advanceFinale&&!stream)this.player.cmd.buttons=BT.BT_USE;
             F_Ticker();this.state.gametic=(this.state.gametic+1)|0;
             if(F_GetState().stage===2||this.state.gameaction===GA.ga_worlddone)this.advanceFinale=false;
             if(this.state.gameaction===GA.ga_worlddone&&this.nextAvailable)G_DoWorldDone();
             S_UpdateSounds(this.player.mo!);return;
         }
         if(this.completed)return;
-        if(this.player.playerstate===PST.PST_REBORN){this.start(false);return;}
         Object.assign(this.player.cmd,command);
-        P_Ticker({paused:this.state.paused,netgame:false,menuactive,demoplayback:false,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
+        P_Ticker({paused:this.state.paused,netgame:false,menuactive,demoplayback:this.state.demoplayback,players:this.state.players,consoleplayer:0,playeringame:this.state.playeringame,
             P_PlayerThink,P_UpdateSpecials,P_RespawnSpecials});
         if(ST_IsRunning())ST_Ticker();AM_Ticker();if(HU_IsActive())HU_Ticker();
         this.state.gametic=(this.state.gametic+1)|0;this.finishIfRequested();S_UpdateSounds(this.player.mo!);
